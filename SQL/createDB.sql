@@ -10,6 +10,14 @@ CREATE TABLE Game (
     gameGenre varchar(50)
 );
 
+CREATE TABLE News (
+    newsID int PRIMARY KEY AUTO_INCREMENT,
+    newsTitle varchar(255) NOT NULL,
+    newsContent TEXT NOT NULL,
+    newsAuthor varchar(100) NOT NULL,
+    newsImage varchar(255),
+    newsCreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+);
 
 CREATE TABLE PostalCode (
     PostalCodeID varchar(20) PRIMARY KEY NOT NULL,
@@ -88,4 +96,12 @@ CREATE TABLE Booking_Seat (
     CONSTRAINT PK_Booking_Seat PRIMARY KEY (bookingID, seatID),
     FOREIGN KEY (bookingID) REFERENCES Booking(bookingID),
     FOREIGN KEY (seatID) REFERENCES Seat(seatID)
+);
+
+CREATE TABLE Tournament_Hall (
+    tournamentID INT,
+    hallID INT,
+    PRIMARY KEY (tournamentID, hallID),
+    FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID),
+    FOREIGN KEY (hallID) REFERENCES Hall(hallID)
 );
