@@ -16,7 +16,7 @@ CREATE TABLE News (
     newsContent TEXT NOT NULL,
     newsAuthor varchar(100) NOT NULL,
     newsImage varchar(255),
-    newsCreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    newsCreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE PostalCode (
