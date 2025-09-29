@@ -77,6 +77,7 @@ session_start();
             <a href="users.php">Community</a>
             <a href="logout.php">Logout</a>
         <?php else: ?>
+            <a href="admin_login.php">Admin Login</a>
             <a href="login.php">Login</a>
             <a href="register.php">Register</a>
         <?php endif; ?>
@@ -90,7 +91,7 @@ session_start();
     <?php if(!isset($_SESSION['user_id'])): ?>
         <a href="register.php" class="btn">Get Started</a>
     <?php else: ?>
-        <a href="users.php" class="btn">View Community</a>
+        <a href="" class="btn">View Community</a>
     <?php endif; ?>
 </section>
 

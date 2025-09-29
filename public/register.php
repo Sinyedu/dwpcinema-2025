@@ -9,6 +9,7 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($controller->register($_POST)) {
         $success = "Registration successful! You can now log in.";
+        header("Location: login.php");
     } else {
         $error = "Registration failed. Maybe the email is already used.";
     }

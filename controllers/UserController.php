@@ -9,24 +9,24 @@ class UserController {
     }
 
     public function register($data) {
-        return $this->userModel->register(
-            $data['firstName'],
-            $data['lastName'],
-            $data['email'],
-            $data['password']
-        );
+        $firstName = $data['firstName'];
+        $lastName  = $data['lastName'];
+        $email     = $data['email'];
+        $password  = $data['password'];
+
+        if ($this->userModel->emailExists($email)) {
+            return false; // Email already used
+        }
+
+        return $this->userModel->register($firstName, $lastName, $email, $password);
     }
 
     public function login($data) {
-        return $this->userModel->login(
-            $data['email'],
-            $data['password']
-        );
+        return $this->userModel->login($data['email'], $data['password']);
     }
 
     public function listUsers() {
         return $this->userModel->getAllUsers();
-}
-
+    }
 }
 ?>

@@ -9,15 +9,23 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $controller->login($_POST);
     if ($user) {
+        // Store session info
         $_SESSION['user_id'] = $user['userID'];
         $_SESSION['user_name'] = $user['firstName'];
-        header("Location: index.php");
+        $_SESSION['isAdmin'] = $user['isAdmin'];
+
+        if ($user['isAdmin'] == 1) {
+            header("Location: ../views/admin_dashboard.php"); 
+        } else {
+            header("Location: index.php");
+        }
         exit;
     } else {
         $error = "Invalid email or password";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
