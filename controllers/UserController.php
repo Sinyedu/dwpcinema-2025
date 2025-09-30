@@ -15,7 +15,7 @@ class UserController {
         $password  = $data['password'];
 
         if ($this->userModel->emailExists($email)) {
-            return false; // Email already used
+            return false; 
         }
 
         return $this->userModel->register($firstName, $lastName, $email, $password);
