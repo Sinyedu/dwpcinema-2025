@@ -2,26 +2,29 @@
 require_once "../models/News.php";
 
 class NewsController {
-    private $newsModel;
+    private News $newsModel;
 
-    public function __construct($pdo) {
+    public function __construct(PDO $pdo) {
         $this->newsModel = new News($pdo);
     }
 
-    public function getAllNews() {
+    public function getAllNews(): array {
         return $this->newsModel->getAll();
     }
 
-    public function createNews($data) {
+    public function getNewsById(int $newsID): ?array {
+        return $this->newsModel->getNewsById($newsID);
+    }
+
+    public function createNews(array $data): bool {
         return $this->newsModel->create($data);
     }
 
-    public function updateNews($id, $data) {
-        return $this->newsModel->update($id, $data);
+    public function updateNews(int $newsID, array $data): bool {
+        return $this->newsModel->update($newsID, $data);
     }
 
-    public function deleteNews($id) {
-        return $this->newsModel->delete($id);
+    public function deleteNews(int $newsID): bool {
+        return $this->newsModel->delete($newsID);
     }
 }
-?>

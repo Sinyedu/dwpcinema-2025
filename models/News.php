@@ -1,45 +1,53 @@
 <?php
 class News {
-    private $pdo;
-    private $table = "News";
+    private PDO $pdo;
 
-    public function __construct($pdo) {
+    public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
     }
 
-    public function getAll() {
-        $stmt = $this->pdo->query("SELECT * FROM {$this->table} ORDER BY newsCreatedAt DESC");
+    public function getAll(): array {
+        $stmt = $this->pdo->query("SELECT * FROM News ORDER BY newsCreatedAt DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create($data) {
-        $stmt = $this->pdo->prepare(
-            "INSERT INTO {$this->table} (newsTitle, newsContent, newsAuthor, newsImage) VALUES (?, ?, ?, ?)"
-        );
+    public function create(array $data): bool {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO News (newsTitle, newsContent, newsAuthor, newsImage)
+            VALUES (:title, :content, :author, :image)
+        ");
         return $stmt->execute([
-            $data['newsTitle'],
-            $data['newsContent'],
-            $data['newsAuthor'],
-            $data['newsImage'] ?? null
+            ':title' => $data['newsTitle'],
+            ':content' => $data['newsContent'],
+            ':author' => $data['newsAuthor'],
+            ':image' => $data['newsImage'] ?? null
         ]);
     }
 
-    public function update($id, $data) {
-        $stmt = $this->pdo->prepare(
-            "UPDATE {$this->table} SET newsTitle = ?, newsContent = ?, newsAuthor = ?, newsImage = ? WHERE newsID = ?"
-        );
+    public function update(int $newsID, array $data): bool {
+        $stmt = $this->pdo->prepare("
+            UPDATE News
+            SET newsTitle = :title, newsContent = :content, newsAuthor = :author, newsImage = :image
+            WHERE newsID = :id
+        ");
         return $stmt->execute([
-            $data['newsTitle'],
-            $data['newsContent'],
-            $data['newsAuthor'],
-            $data['newsImage'] ?? null,
-            $id
+            ':title' => $data['newsTitle'],
+            ':content' => $data['newsContent'],
+            ':author' => $data['newsAuthor'],
+            ':image' => $data['newsImage'] ?? null,
+            ':id' => $newsID
         ]);
     }
 
-    public function delete($id) {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE newsID = ?");
-        return $stmt->execute([$id]);
+    public function getNewsById(int $newsID): ?array {
+        $stmt = $this->pdo->prepare("SELECT * FROM News WHERE newsID = :id");
+        $stmt->execute([':id' => $newsID]);
+        $news = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $news ?: null;
+    }
+
+    public function delete(int $newsID): bool {
+        $stmt = $this->pdo->prepare("DELETE FROM News WHERE newsID = :id");
+        return $stmt->execute([':id' => $newsID]);
     }
 }
-?>

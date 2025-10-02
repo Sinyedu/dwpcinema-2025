@@ -22,6 +22,7 @@ $stmt2 = $pdo->query("
 $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +31,6 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-gray-900">
-
   <header class="border-b border-gray-200 bg-gray-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
       <h1 class="text-xl font-semibold">DWP Esports Cinema</h1>
