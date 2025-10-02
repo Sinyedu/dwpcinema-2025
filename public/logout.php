@@ -1,27 +1,19 @@
 <?php
 session_start();
 
-// Unset all session variables
-$_SESSION = [];
+unset($_SESSION['user_id'], $_SESSION['user_name']);
+unset($_SESSION['admin_id'], $_SESSION['admin_name']);
 
-// Destroy the session
 session_destroy();
 
-// Optional: delete the session cookie (extra security)
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
-    setcookie(
-        session_name(), 
-        '', 
-        time() - 42000,
-        $params["path"], 
-        $params["domain"],
-        $params["secure"], 
-        $params["httponly"]
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
     );
 }
 
-// Redirect to landing page
-header("Location: index.php");
+header("Location: logged_out.php");
 exit;
 ?>

@@ -9,7 +9,6 @@ class User {
         $this->pdo = $pdo;
     }
 
-    // Check if email already exists
     public function emailExists($email) {
         $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM {$this->table} WHERE userEmail = ?");
         $stmt->execute([$email]);
@@ -18,7 +17,7 @@ class User {
 
     public function register($firstName, $lastName, $email, $password) {
         if ($this->emailExists($email)) {
-            return false; // Email already used
+            return false; 
         }
 
         $hashedPw = PasswordHasher::hash($password);
@@ -41,10 +40,14 @@ class User {
     }
 
     public function getAllUsers() {
-        $stmt = $this->pdo->prepare("SELECT userID, firstName, lastName, userEmail FROM User ORDER BY userID ASC");
+        $stmt = $this->pdo->prepare("SELECT userID, firstName, lastName, userEmail FROM {$this->table} ORDER BY userID ASC");
         $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    public function deleteUser($userID) {
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE userID = ?");
+        return $stmt->execute([$userID]);
+    }
 }
 ?>

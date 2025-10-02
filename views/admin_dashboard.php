@@ -2,109 +2,85 @@
 session_start();
 require_once "../database/connection.php";
 require_once "../controllers/AdminController.php";
+require_once "../controllers/TournamentController.php";
+require_once "../controllers/NewsController.php";
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
+    header("Location: ../../public/admin_login.php");
     exit;
 }
 
 $adminController = new AdminController($pdo);
+$tournamentController = new TournamentController($pdo);
+$newsController = new NewsController($pdo);
+
 $users = $adminController->getAllUsers();
+$tournaments = $tournamentController->getAllTournaments();
+$news = $newsController->getAllNews();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard - DWP Cinema</title>
-<style>
-    body {
-        font-family: 'Orbitron', sans-serif;
-        background: #0b0b0b;
-        color: #fff;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background: #111;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 0 15px #ff007f;
-    }
-    header h1 {
-        color: #ff007f;
-        margin: 0;
-        text-shadow: 0 0 10px #ff007f;
-    }
-    header a {
-        color: #fff;
-        text-decoration: none;
-        background: #ff007f;
-        padding: 10px 15px;
-        border-radius: 6px;
-        font-weight: bold;
-    }
-    header a:hover {
-        background: #ff40bf;
-    }
-    .container {
-        padding: 30px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        background: #111;
-        box-shadow: 0 0 10px #1e90ff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #222;
-    }
-    th {
-        background: #1e90ff;
-        color: #fff;
-    }
-    tr:hover {
-        background: #222;
-    }
-</style>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - DWP Esports Cinema</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-900 min-h-screen">
 
-<header>
-    <h1>Admin Dashboard</h1>
-    <a href="../public/logout.php">Logout</a>
-</header>
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-semibold">Admin Dashboard</h1>
+      <a href="../../public/logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
+    </div>
+  </header>
 
-<div class="container">
-    <h2>All Registered Users</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($users as $user): ?>
-            <tr>
-                <td><?= htmlspecialchars($user['userID']) ?></td>
-                <td><?= htmlspecialchars($user['firstName']) ?></td>
-                <td><?= htmlspecialchars($user['lastName']) ?></td>
-                <td><?= htmlspecialchars($user['userEmail']) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-8">Manage Content</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div class="bg-white rounded shadow p-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-semibold">Tournaments</h3>
+          <a href="tournaments.php" class="text-blue-600 hover:underline text-sm">Manage</a>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
+          <?php foreach ($tournaments as $t): ?>
+            <li>
+              <span class="font-medium"><?= htmlspecialchars($t['tournamentName']) ?></span>
+              <span class="text-gray-500">(<?= htmlspecialchars($t['startDate']) ?>)</span>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded shadow p-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-semibold">News</h3>
+          <a href="news.php" class="text-blue-600 hover:underline text-sm">Manage</a>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
+          <?php foreach ($news as $n): ?>
+            <li><?= htmlspecialchars($n['newsTitle']) ?></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded shadow p-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-semibold">Users</h3>
+          <a href="users.php" class="text-blue-600 hover:underline text-sm">Manage</a>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
+          <?php foreach ($users as $u): ?>
+            <li><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?> <span class="text-gray-400">(<?= htmlspecialchars($u['userEmail']) ?>)</span></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+
+    </div>
+  </main>
 
 </body>
 </html>
