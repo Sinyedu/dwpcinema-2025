@@ -1,7 +1,6 @@
 <?php
 
 
-// Fetch latest 5 news items
 try {
     $stmt = $pdo->query("SELECT newsID, newsTitle, newsDescription, createdAt FROM news ORDER BY createdAt DESC LIMIT 5");
     $newsItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -20,7 +19,6 @@ try {
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-<!-- Header -->
 <header class="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-sm shadow z-50">
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
         <h1 class="text-yellow-400 font-bold text-xl">🎬 Star Cinema</h1>
@@ -33,7 +31,6 @@ try {
     </div>
 </header>
 
-<!-- Hero Section -->
 <section class="relative h-screen flex items-center justify-center text-center mt-16">
     <img src="https://source.unsplash.com/1600x900/?cinema,movie-theater"
          alt="Cinema"
@@ -47,7 +44,6 @@ try {
     </div>
 </section>
 
-<!-- News Section -->
 <section class="max-w-7xl mx-auto px-6 py-16">
     <h2 class="text-3xl font-bold text-yellow-400 text-center mb-10">🎥 Latest News</h2>
     <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -63,7 +59,6 @@ try {
     </div>
 </section>
 
-<!-- Footer -->
 <footer class="bg-gray-800 py-6 mt-12 text-center text-gray-400 text-sm">
     &copy; <?= date("Y") ?> Star Cinema. All rights reserved.
 </footer>
