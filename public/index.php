@@ -31,7 +31,6 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-white text-gray-900">
 
-  <!-- Header -->
   <header class="border-b border-gray-200 bg-gray-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
       <h1 class="text-xl font-semibold">DWP Esports Cinema</h1>
@@ -49,7 +48,6 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section class="relative bg-gray-900 text-white">
     <img src="https://via.placeholder.com/1600x600" alt="Hero" class="w-full h-[400px] object-cover opacity-70">
     <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
@@ -63,7 +61,6 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </section>
 
-  <!-- Featured Tournaments -->
   <section class="max-w-6xl mx-auto px-6 py-16">
     <h3 class="text-2xl font-semibold text-center">Featured Tournaments</h3>
     <div class="grid md:grid-cols-3 gap-8 mt-8">

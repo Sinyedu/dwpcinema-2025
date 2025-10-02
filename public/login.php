@@ -9,7 +9,6 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $controller->login($_POST);
     if ($user) {
-        // Store session info
         $_SESSION['user_id'] = $user['userID'];
         $_SESSION['user_name'] = $user['firstName'];
         $_SESSION['isAdmin'] = $user['isAdmin'];
@@ -26,35 +25,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login - DWP Cinema</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-<style>
-    body { background: #0b0b0b; font-family: 'Orbitron', sans-serif; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .login-container { background: #111; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px #1e90ff; width: 350px; text-align: center; }
-    h1 { color: #1e90ff; margin-bottom: 30px; text-shadow: 0 0 10px #1e90ff; }
-    input { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 6px; background: #222; color: #fff; }
-    input:focus { outline: 2px solid #1e90ff; }
-    .btn { background: #1e90ff; color: #fff; padding: 12px; width: 100%; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px #1e90ff; transition: 0.3s; }
-    .btn:hover { background: #63b8ff; box-shadow: 0 0 20px #63b8ff; }
-    p.error { color: #ff007f; font-weight: bold; }
-</style>
+<title>Login - DWP Esports Cinema</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-<div class="login-container">
-    <h1>Login</h1>
-    <?php if($error) echo "<p class='error'>$error</p>"; ?>
-    <form method="POST">
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit" class="btn">Login</button>
+<div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6 text-center">Login</h1>
+
+    <?php if($error): ?>
+        <p class="bg-red-100 text-red-800 px-4 py-2 rounded mb-4 text-center"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-gray-700 mb-1" for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="you@example.com" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+            <label class="block text-gray-700 mb-1" for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="********" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition">Login</button>
     </form>
-    <p>Don't have an account? <a href="register.php" style="color:#ff007f;">Register</a></p>
+
+    <p class="mt-4 text-center text-gray-600">
+        Don't have an account? 
+        <a href="register.php" class="text-blue-600 hover:underline">Register</a>
+    </p>
 </div>
 
 </body>

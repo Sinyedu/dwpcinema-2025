@@ -23,75 +23,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Login - DWP Cinema</title>
-<style>
-    body {
-        background: #0b0b0b;
-        font-family: 'Orbitron', sans-serif;
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-    .container {
-        background: #111;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 0 20px #ff007f;
-        width: 350px;
-        text-align: center;
-    }
-    h1 {
-        color: #ff007f;
-        margin-bottom: 30px;
-        text-shadow: 0 0 10px #ff007f;
-    }
-    input {
-        width: 100%;
-        padding: 12px;
-        margin: 10px 0;
-        border: none;
-        border-radius: 6px;
-        background: #222;
-        color: #fff;
-    }
-    input:focus {
-        outline: 2px solid #ff007f;
-    }
-    .btn {
-        background: #ff007f;
-        color: #fff;
-        padding: 12px;
-        width: 100%;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 0 10px #ff007f;
-        transition: 0.3s;
-    }
-    .btn:hover {
-        background: #ff40bf;
-        box-shadow: 0 0 20px #ff40bf;
-    }
-    p.error {
-        color: #ff007f;
-        font-weight: bold;
-    }
-</style>
+<title>Admin Login - DWP Esports Cinema</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-<div class="container">
-    <h1>Admin Login</h1>
-    <?php if($error) echo "<p class='error'>$error</p>"; ?>
-    <form method="POST">
-        <input type="email" name="email" placeholder="Admin Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit" class="btn">Login</button>
+<div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6 text-center">Admin Login</h1>
+
+    <?php if($error): ?>
+        <p class="bg-red-100 text-red-800 px-4 py-2 rounded mb-4 text-center"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-gray-700 mb-1" for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="admin@example.com" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+            <label class="block text-gray-700 mb-1" for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="********" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition">Login</button>
     </form>
+
+    <p class="mt-4 text-center text-gray-600">
+        Back to <a href="index.php" class="text-blue-600 hover:underline">Homepage</a>
+    </p>
 </div>
 
 </body>
