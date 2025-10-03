@@ -20,3 +20,4 @@ try {
 } catch (PDOException $e) {
     echo "Error creating admin: " . $e->getMessage();
 }
+x

@@ -72,7 +72,7 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                     <h4 class="font-semibold text-lg"><?= htmlspecialchars($t['tournamentName']) ?></h4>
                     <p class="text-sm text-gray-600 mt-1"><?= htmlspecialchars($t['gameName']) ?> — <?= htmlspecialchars($t['startDate']) ?></p>
                     <p class="text-sm text-gray-700 mt-2"><?= htmlspecialchars(substr($t['tournamentDescription'], 0, 120)) ?>...</p>
-                    <a href="#" class="mt-2 inline-block text-blue-600 hover:text-blue-800 font-medium">Book Tickets</a>
+                    <a href="booking.php" class="mt-2 inline-block text-blue-600 hover:text-blue-800 font-medium">Book Tickets</a>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -92,7 +92,7 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                         <h4 class="font-semibold text-lg"><?= htmlspecialchars($n['newsTitle']) ?></h4>
                         <p class="text-gray-700 text-sm mt-1"><?= htmlspecialchars(substr($n['newsContent'], 0, 100)) ?>...</p>
                         <p class="text-gray-500 text-xs mt-2">By <?= htmlspecialchars($n['newsAuthor']) ?> | <?= htmlspecialchars($n['newsCreatedAt']) ?></p>
-                        <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1 inline-block">Read More</a>
+                        <a href="news.php" class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-1 inline-block">Read More</a>
                     </div>
                 </div>
             <?php endforeach; ?>
