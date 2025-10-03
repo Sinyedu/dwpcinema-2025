@@ -2,7 +2,6 @@
 session_start();
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
-// Fetch all tournaments
 $stmt = $pdo->query("
     SELECT t.tournamentID, t.tournamentName, t.tournamentDescription, t.startDate, t.endDate, g.gameName
     FROM Tournament t
