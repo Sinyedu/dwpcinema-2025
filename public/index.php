@@ -1,5 +1,7 @@
 <?php
 session_start();
+include __DIR__ . '/../includes/navbar.php';
+
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
 $stmt = $pdo->query("
@@ -37,26 +39,6 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-gray-900">
-
-<header class="bg-gray-100 border-b border-gray-300">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">DWP Esports Cinema</h1>
-        <nav class="flex gap-6 text-sm items-center">
-            <a href="index.php" class="hover:text-gray-800 font-medium">Home</a>
-            <a href="tournaments.php" class="hover:text-gray-800 font-medium">Tournaments</a>
-            <a href="news.php" class="hover:text-gray-800 font-medium">News</a>
-            <?php if(isset($_SESSION['user_id'])): ?>
-                <a href="users.php" class="hover:text-gray-800 font-medium">Community</a>
-                <span class="text-gray-600">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?></span>
-                <a href="logout.php" class="hover:text-gray-800 font-medium">Logout</a>
-            <?php else: ?>
-                <a href="admin_login.php" class="hover:text-gray-800 font-medium">Admin Login</a>
-                <a href="login.php" class="hover:text-gray-800 font-medium">Login</a>
-                <a href="register.php" class="hover:text-gray-800 font-medium">Register</a>
-            <?php endif; ?>
-        </nav>
-    </div>
-</header>
 
 <section class="relative bg-gray-900 text-white">
     <img src="https://via.placeholder.com/1600x600" alt="Hero" class="w-full h-[400px] object-cover opacity-80">

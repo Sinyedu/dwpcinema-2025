@@ -1,5 +1,7 @@
 <?php
 session_start();
+include __DIR__ . '/../includes/navbar.php';
+
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
 $stmt = $pdo->query("
@@ -23,17 +25,6 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-gray-900">
-
-<header class="bg-gray-100 border-b border-gray-300">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">DWP Esports Cinema</h1>
-        <nav class="flex gap-6 text-sm items-center">
-            <a href="index.php" class="hover:text-gray-800 font-medium">Home</a>
-            <a href="tournaments.php" class="hover:text-gray-800 font-medium">Tournaments</a>
-            <a href="news.php" class="hover:text-gray-800 font-medium">News</a>
-        </nav>
-    </div>
-</header>
 
 <main class="max-w-6xl mx-auto px-6 py-16">
     <h2 class="text-2xl font-semibold mb-6 text-center">Latest News</h2>
