@@ -3,7 +3,12 @@ session_start();
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
 $stmt = $pdo->query("
-    SELECT newsID, newsTitle, newsContent, newsAuthor, newsImage, newsCreatedAt
+    SELECT newsID, 
+           newsTitle, 
+           newsContent, 
+           newsAuthor, 
+           newsImage, 
+           newsCreatedAt
     FROM News
     ORDER BY newsCreatedAt DESC
 ");

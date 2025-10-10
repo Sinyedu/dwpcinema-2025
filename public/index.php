@@ -3,7 +3,11 @@ session_start();
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
 $stmt = $pdo->query("
-    SELECT t.tournamentID, t.tournamentName, t.tournamentDescription, t.startDate, g.gameName
+    SELECT t.tournamentID, 
+           t.tournamentName, 
+           t.tournamentDescription, 
+           t.startDate, 
+           g.gameName
     FROM Tournament t
     JOIN Game g ON t.gameID = g.gameID
     ORDER BY t.startDate ASC
@@ -12,7 +16,12 @@ $stmt = $pdo->query("
 $featured = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt2 = $pdo->query("
-    SELECT newsID, newsTitle, newsContent, newsAuthor, newsImage, newsCreatedAt
+    SELECT newsID, 
+           newsTitle, 
+           newsContent, 
+           newsAuthor, 
+           newsImage, 
+           newsCreatedAt
     FROM News
     ORDER BY newsCreatedAt DESC
     LIMIT 3

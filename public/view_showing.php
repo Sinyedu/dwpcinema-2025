@@ -15,7 +15,14 @@ if (!isset($_GET['showingID'])) {
 $showingID = (int)$_GET['showingID'];
 
 $stmt = $pdo->prepare("
-    SELECT s.showingID, s.showingDate, s.showingTime, h.hallID, h.hallName, h.totalSeats, m.tournamentID, t.tournamentName
+    SELECT s.showingID, 
+           s.showingDate, 
+           s.showingTime, 
+           h.hallID, 
+           h.hallName, 
+           h.totalSeats, 
+           m.tournamentID, 
+           t.tournamentName
     FROM Showing s
     JOIN Hall h ON s.hallID = h.hallID
     JOIN `Match` m ON s.matchID = m.matchID
