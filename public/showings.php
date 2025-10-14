@@ -1,22 +1,12 @@
 <?php
 session_start();
+include __DIR__ . '/../includes/navbar.php';
+
 $pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['showingID'])) {
-    $userID = $_SESSION['user_id'];
-    $showingID = (int)$_POST['showingID'];
-
-    $stmt = $pdo->prepare("INSERT INTO Booking (userID, showingID, bookingDate) VALUES (?, ?, NOW())");
-    if ($stmt->execute([$userID, $showingID])) {
-        $success = "Booking successful!";
-    } else {
-        $error = "Booking failed. Try again.";
-    }
 }
 
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate ASC")->fetchAll(PDO::FETCH_ASSOC);
@@ -63,13 +53,6 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="max-w-6xl mx-auto px-6 py-10">
     <h1 class="text-2xl font-bold mb-6">Showings</h1>
 
-    <?php if (!empty($success)): ?>
-        <p class="mb-4 p-2 bg-green-100 text-green-800 rounded"><?= htmlspecialchars($success) ?></p>
-    <?php endif; ?>
-    <?php if (!empty($error)): ?>
-        <p class="mb-4 p-2 bg-red-100 text-red-800 rounded"><?= htmlspecialchars($error) ?></p>
-    <?php endif; ?>
-
     <form method="GET" class="mb-8">
         <label for="tournamentID" class="block mb-2 font-semibold">Filter by Tournament:</label>
         <select name="tournamentID" id="tournamentID" class="w-full border px-3 py-2 rounded mb-2">
@@ -94,9 +77,9 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <p class="text-sm text-gray-600">Seats: <?= $availableSeats ?> available / <?= $s['totalSeats'] ?> total</p>
 
             <?php if($availableSeats > 0): ?>
-            <form method="POST" class="mt-3">
+            <form method="GET" action="view_showing.php" class="mt-3">
                 <input type="hidden" name="showingID" value="<?= $s['showingID'] ?>">
-                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-500">Book Now</button>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-500">View & Book Seats</button>
             </form>
             <?php else: ?>
             <p class="mt-3 text-red-600 font-semibold">Sold Out</p>

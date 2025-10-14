@@ -1,7 +1,4 @@
 <?php
-/*
- * TODO: CREATE A MORE COMPREHENSIVE TOURNAMENTS VIEWING
- * */
 session_start();
 include __DIR__ . '/../includes/navbar.php';
 
@@ -13,7 +10,16 @@ $stmt = $pdo->query("
            t.tournamentDescription, 
            t.startDate, 
            t.endDate, 
-           g.gameName
+           g.gameName,
+           g.gameGenre,
+           (SELECT COUNT(*) FROM `Match` m 
+            JOIN Showing s ON m.matchID = s.matchID
+            WHERE m.tournamentID = t.tournamentID
+            AND s.showingDate >= CURDATE()) AS upcomingShowings,
+           (SELECT MIN(s.showingDate) FROM `Match` m 
+            JOIN Showing s ON m.matchID = s.matchID
+            WHERE m.tournamentID = t.tournamentID
+            AND s.showingDate >= CURDATE()) AS nextShowing
     FROM Tournament t
     JOIN Game g ON t.gameID = g.gameID
     ORDER BY t.startDate ASC
@@ -28,20 +34,30 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <title>Tournaments - DWP Esports Cinema</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-gray-50 text-gray-900">
 
 <main class="max-w-6xl mx-auto px-6 py-16">
-    <h2 class="text-2xl font-semibold mb-6 text-center">All Tournaments</h2>
-    <div class="grid md:grid-cols-3 gap-6">
+    <h2 class="text-3xl font-bold mb-10 text-center">Upcoming Tournaments</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
         <?php foreach ($tournaments as $t): ?>
-            <div class="bg-gray-100 rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-                <div class="p-4">
-                    <h3 class="font-semibold text-lg"><?= htmlspecialchars($t['tournamentName']) ?></h3>
-                    <p class="text-gray-600 text-sm mt-1"><?= htmlspecialchars($t['gameName']) ?> | <?= htmlspecialchars($t['startDate']) ?> - <?= htmlspecialchars($t['endDate']) ?></p>
-                    <p class="mt-2 text-gray-700 text-sm"><?= htmlspecialchars(substr($t['tournamentDescription'], 0, 120)) ?>...</p>
-                    <a href="booking.php?tournamentID=<?= $t['tournamentID'] ?>" class="mt-2 inline-block text-blue-600 hover:text-blue-800 font-medium">Book Tickets</a>
-                </div>
+        <div class="bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
+            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
+                <?= htmlspecialchars($t['gameName']) ?> Image
             </div>
+            <div class="p-4">
+                <h3 class="text-xl font-semibold mb-1"><?= htmlspecialchars($t['tournamentName']) ?></h3>
+                <p class="text-gray-600 text-sm mb-2"><?= htmlspecialchars($t['gameGenre']) ?> | <?= htmlspecialchars($t['startDate']) ?> - <?= htmlspecialchars($t['endDate']) ?></p>
+                <p class="text-gray-700 text-sm mb-2"><?= htmlspecialchars(substr($t['tournamentDescription'], 0, 120)) ?>...</p>
+
+                <?php if ($t['upcomingShowings'] > 0): ?>
+                    <p class="text-green-600 text-sm font-medium mb-2">Next Showing: <?= htmlspecialchars($t['nextShowing']) ?></p>
+                    <a href="showings.php?tournamentID=<?= $t['tournamentID'] ?>" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 font-medium">View Showings</a>
+                <?php else: ?>
+                    <p class="text-red-600 font-medium mb-2">No upcoming showings</p>
+                <?php endif; ?>
+            </div>
+        </div>
         <?php endforeach; ?>
     </div>
 </main>

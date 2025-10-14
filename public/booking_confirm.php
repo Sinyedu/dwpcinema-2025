@@ -1,0 +1,30 @@
+<?php
+session_start();
+$pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
+
+if (!isset($_SESSION['user_id'])) header("Location: login.php");
+
+$userID = $_SESSION['user_id'];
+$showingID = $_POST['showingID'];
+$seatIDs = $_POST['seatIDs'] ?? [];
+
+if (!$seatIDs) die("No seats selected.");
+
+$pdo->beginTransaction();
+try {
+    $stmt = $pdo->prepare("INSERT INTO Booking (userID, showingID, bookingDate) VALUES (?, ?, NOW())");
+    $stmt->execute([$userID, $showingID]);
+    $bookingID = $pdo->lastInsertId();
+
+    $stmt2 = $pdo->prepare("INSERT INTO Booking_Seat (bookingID, seatID) VALUES (?, ?)");
+    foreach ($seatIDs as $seatID) {
+        $stmt2->execute([$bookingID, $seatID]);
+    }
+
+    $pdo->commit();
+    header("Location: booking_success.php?bookingID=$bookingID");
+} catch (Exception $e) {
+    $pdo->rollBack();
+    die("Booking failed: " . $e->getMessage());
+}
+?>
