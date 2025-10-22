@@ -21,7 +21,7 @@ $stmt = $pdo->query("
             AND s.showingDate >= CURDATE()) AS nextShowing
     FROM Tournament t
     JOIN Game g ON t.gameID = g.gameID
-    ORDER BY t.startDate ASC
+    ORDER BY t.startDate DESC
     LIMIT 3
 ");
 $featured = $stmt->fetchAll(PDO::FETCH_ASSOC);
