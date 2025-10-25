@@ -1,13 +1,13 @@
 <?php
 session_start();
-include __DIR__ . '/../includes/navbar.php';
-
-$pdo = new PDO("mysql:host=mysql119.unoeuro.com;dbname=simonnyblom_com_db;charset=utf8", "simonnyblom_com", "hwEG2df9rADt5gab4kFp");
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+include __DIR__ . '/includes/navbar.php';
+
+$pdo = new PDO("mysql:host=mysql119.unoeuro.com;dbname=simonnyblom_com_db;charset=utf8", "simonnyblom_com", "hwEG2df9rADt5gab4kFp");
 
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate ASC")->fetchAll(PDO::FETCH_ASSOC);
 
