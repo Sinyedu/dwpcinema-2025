@@ -1,6 +1,6 @@
 <?php
 require_once "../database/connection.php";
-require_once "../hash/PasswordHasher.php";
+require_once "../hash/passwordHasher.php";
 
 $firstName = "Admin";
 $lastName  = "User";

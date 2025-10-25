@@ -1,5 +1,5 @@
 <?php
-require_once "../hash/PasswordHasher.php";
+require_once "../hash/passwordHasher.php";
 
 class User {
     private $pdo;
