@@ -1,6 +1,6 @@
 <?php
-require_once "../database/connection.php";
-require_once "../controllers/UserController.php";
+require_once "database/connection.php";
+require_once "controllers/UserController.php";
 
 $controller = new UserController($pdo);
 $error = '';
