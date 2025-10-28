@@ -2,10 +2,10 @@
 require_once "../database/connection.php";
 require_once "../hash/passwordHasher.php";
 
-$firstName = "Admin";
+$firstName = "Super";
 $lastName  = "User";
-$email     = "admin@example.com"; 
-$password  = "Admin123";          
+$email     = "DWPEsports@gmail.com"; 
+$password  = "Dxa2@as!1";          
 
 $hashedPw = PasswordHasher::hash($password);
 
