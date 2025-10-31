@@ -1,6 +1,6 @@
 <?php
 require_once "models/User.php";
-
+require_once "controllers/SecurityController.php";
 class UserController {
     private $userModel;
 
@@ -9,10 +9,10 @@ class UserController {
     }
 
     public function register($data) {
-        $firstName = $data['firstName'];
-        $lastName  = $data['lastName'];
-        $email     = $data['email'];
-        $password  = $data['password'];
+        $firstName = SecurityController::sanitizeInput($data['firstName']);
+        $lastName  = SecurityController::sanitizeInput($data['lastName']);
+        $email     = SecurityController::sanitizeInput($data['email']);
+        $password  = SecurityController::sanitizeInput($data['password']);
 
         if ($this->userModel->emailExists($email)) {
             return false; 

@@ -1,0 +1,26 @@
+# Ignore PhpStorm / IntelliJ settings
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Composer dependencies
+/vendor/
+
+# Config and credentials
+/config/config.php
+.env
+.env.*
+
+# Logs and cache
+/storage/
+*.log
+
+# Temporary or uploaded files
+/tmp/
+uploads/
+
+# Node / frontend builds (optional)
+node_modules/
+dist/
