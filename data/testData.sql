@@ -9,13 +9,14 @@ INSERT INTO Game (gameName, gameGenre) VALUES
 ('Rocket League', 'Sports/Arcade');
 
 INSERT INTO Hall (hallName, totalSeats) VALUES
-('Main Arena', 200),
-('VIP Lounge', 50),
-('Esports Dome', 150),
-('Community Hall', 100);
+('Hall 1', 500),
+('Hall 2', 500),
+('Hall 3', 500),
+('Hall 4', 500);
 
 
 INSERT INTO SeatTier (tierName, basePrice, description) VALUES
+('BOX/Enterprise', 500.00, 'A top view within a box where service and customer experience is top level.'),
 ('VIP', 120.00, 'Front-row leather recliners with table service.'),
 ('Premium', 80.00, 'Center view, extra legroom.'),
 ('Standard', 50.00, 'Regular seating, great for general audience.');
@@ -86,11 +87,11 @@ FROM (
 ) AS seats;
 
 INSERT INTO Tournament (gameID, tournamentName, startDate, endDate, tournamentDescription) VALUES
-(1, 'League of Legends: Worlds 2025', '2025-11-10', '2025-11-20', 'The grand finale of competitive LoL featuring global champions.'),
-(2, 'Valorant Masters Tokyo 2025', '2025-07-15', '2025-07-25', 'Top teams from around the world face off in Japan.'),
-(3, 'CS2 Major: London 2025', '2025-09-01', '2025-09-10', 'The premier Counter-Strike 2 Major event of the year.'),
-(4, 'Dota 2 International 2025', '2025-10-05', '2025-10-15', 'World’s biggest Dota 2 championship.'),
-(5, 'Rocket League World Cup', '2025-06-20', '2025-06-25', 'Fast cars, high-flying goals, global teams.');
+(1, 'League of Legends: Worlds 2026', '2026-11-10', '2026-11-20', 'The grand finale of competitive LoL featuring global champions.'),
+(2, 'Valorant Masters Chilé', '2026-07-15', '2026-07-25', 'The Twelve best teams in the world will face off for a Valorant Masters Trophy in Chilé'),
+(3, 'CS2 Major: London 2026', '2026-09-01', '2026-09-10', 'The premier Counter-Strike 2 Major event of the year.'),
+(4, 'Dota 2 International 2026', '2026-10-05', '2026-10-15', 'World’s biggest Dota 2 championship.'),
+(5, 'Rocket League World Cup', '2026-06-20', '2026-06-25', 'Fast cars, high-flying goals, global teams.');
 
 INSERT INTO `Match` (tournamentID, gameID, matchDate, matchTime, hallID) VALUES
 (1, 1, '2025-11-10', '18:00:00', 1),
