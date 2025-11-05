@@ -1,5 +1,6 @@
 <?php
 session_start();
+include __DIR__ . '/../includes/adminSidebar.php';
 require_once "../database/connection.php";
 
 if (!isset($_SESSION['admin_id'])) {

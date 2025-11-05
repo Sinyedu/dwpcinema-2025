@@ -1,13 +1,15 @@
 <?php
 session_start();
-require_once "../database/connection.php";
 require_once "../controllers/AdminController.php";
+require_once __DIR__ . '/../classes/Database.php';
 require_once "../controllers/TournamentController.php";
 require_once "../controllers/NewsController.php";
-include "../includes/adminSidebar.php";
+include __DIR__ . '/../includes/adminSidebar.php';
+
+$pdo = Database::getInstance();
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../../public/admin_login.php");
+    header("Location: ../public/admin_login.php");
     exit;
 }
 

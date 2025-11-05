@@ -1,27 +1,22 @@
 <?php
-require_once __DIR__ . '/../classes/Controller.php';
+require_once __DIR__ . '/../models/Admin.php';
 
-class AdminController extends Controller {
-    private $userModel;
+class AdminController {
+    private Admin $adminModel;
 
-    public function __construct($pdo = null) {
-        parent::__construct($pdo);
-        $this->userModel = $this->model('User');
+    public function __construct() {
+        $this->adminModel = new Admin();
     }
 
-    public function login($email, $password) {
-        $user = $this->userModel->login($email, $password);
-        if ($user && isset($user['isAdmin']) && $user['isAdmin'] == 1) {
-            return $user;
-        }
-        return false;
+    public function login(string $email, string $password) {
+        return $this->adminModel->login($email, $password);
     }
 
-    public function getAllUsers() {
-        return $this->userModel->getAllUsers();
+    public function getAllUsers(): array {
+        return $this->adminModel->getAllUsers();
     }
 
-    public function deleteUser($userID) {
-        return $this->userModel->deleteUser($userID);
+    public function deleteUser(int $userID): bool {
+        return $this->adminModel->deleteUser($userID);
     }
 }

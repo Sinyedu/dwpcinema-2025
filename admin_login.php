@@ -1,8 +1,9 @@
 <?php
 session_start();
-require_once "../database/connection.php";
-require_once "../controllers/AdminController.php";
+require_once "controllers/AdminController.php";
+require_once __DIR__ . '/classes/Database.php';
 
+$pdo = Database::getInstance();
 $controller = new AdminController($pdo);
 $error = '';
 
@@ -11,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($admin) {
         $_SESSION['admin_id'] = $admin['userID'];
         $_SESSION['admin_name'] = $admin['firstName'];
-        header("Location: ../views/admin_dashboard.php");
+        header("Location: views/admin_dashboard.php");
         exit;
     } else {
         $error = "Invalid admin credentials!";

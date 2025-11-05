@@ -1,59 +1,52 @@
 <?php
-require_once "models/User.php";
-require_once "controllers/SecurityController.php";
-require_once "classes/ImageUploader.php";
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/SecurityController.php';
+require_once __DIR__ . '/../classes/ImageUploader.php';
 
 class UserController {
-    private $userModel;
+    private User $userModel;
 
-    public function __construct($pdo) {
-        $this->userModel = new User($pdo);
+    public function __construct() {
+        $this->userModel = new User();
     }
 
-    public function register($data) {
+    public function register(array $data): bool {
         $firstName = SecurityController::sanitizeInput($data['firstName']);
-        $lastName  = SecurityController::sanitizeInput($data['lastName']);
-        $email     = SecurityController::sanitizeInput($data['email']);
-        $password  = SecurityController::sanitizeInput($data['password']);
+        $lastName = SecurityController::sanitizeInput($data['lastName']);
+        $email = SecurityController::sanitizeInput($data['email']);
+        $password = SecurityController::sanitizeInput($data['password']);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Invalid email address.");
-        }
-
-        if ($this->userModel->emailExists($email)) {
-            return false; 
-        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("Invalid email address.");
+        if ($this->userModel->emailExists($email)) return false;
 
         return $this->userModel->register($firstName, $lastName, $email, $password);
     }
 
-    public function login($data) {
+    public function login(array $data) {
         return $this->userModel->login($data['email'], $data['password']);
     }
 
-    public function listUsers() {
+    public function listUsers(): array {
         return $this->userModel->getAllUsers();
     }
 
-    public function getProfile($userID) {
+    public function getProfile(int $userID) {
         return $this->userModel->getUserById($userID);
     }
 
-    public function updateProfile($userID, $data, $files) {
+    public function updateProfile(int $userID, array $data, array $files): bool {
         $firstName = SecurityController::sanitizeInput($data['firstName']);
-        $lastName  = SecurityController::sanitizeInput($data['lastName']);
-        $email     = SecurityController::sanitizeInput($data['email']);
+        $lastName = SecurityController::sanitizeInput($data['lastName']);
+        $email = SecurityController::sanitizeInput($data['email']);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Invalid email address.");
-        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("Invalid email address.");
 
         $user = $this->userModel->getUserById($userID);
         $avatarPath = $user['avatar'] ?? 'uploads/avatars/default.png';
 
         if (!empty($files['avatar']['name'])) {
             $uploader = new ImageUploader();
-            $avatarPath = $uploader->upload($files['avatar']); 
+            $avatarPath = $uploader->upload($files['avatar']);
         }
 
         $this->userModel->updateUser($userID, $firstName, $lastName, $email, $avatarPath);
