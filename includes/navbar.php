@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-<nav class="flex flex-wrap justify-between items-center bg-white shadow px-6 py-3 rounded-b-lg">
+<nav class="flex flex-wrap justify-between items-center bg-white shadow px-6 py-3">
 
     <div class="flex items-center space-x-6">
         <a href="index.php" class="text-lg font-semibold text-gray-800 hover:text-blue-600">
