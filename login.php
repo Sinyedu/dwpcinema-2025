@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user) {
         $_SESSION['user_id'] = $user['userID'];
         $_SESSION['user_name'] = $user['firstName'];
+        $_SESSION['user_avatar'] = $user['avatar'] ?? null;
         $_SESSION['isAdmin'] = $user['isAdmin'];
 
         if ($user['isAdmin'] == 1) {
