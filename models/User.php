@@ -49,5 +49,20 @@ class User {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE userID = ?");
         return $stmt->execute([$userID]);
     }
+
+    public function getUserById($userID) {
+    $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE userID = ?");
+    $stmt->execute([$userID]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateUser($userID, $firstName, $lastName, $email, $avatarPath) {
+    $stmt = $this->pdo->prepare("
+        UPDATE {$this->table}
+        SET firstName = ?, lastName = ?, userEmail = ?, avatar = ?
+        WHERE userID = ?
+    ");
+    return $stmt->execute([$firstName, $lastName, $email, $avatarPath, $userID]);
+    }
 }
 ?>
