@@ -1,17 +1,18 @@
 <?php
 session_start();
 include __DIR__ . '/../includes/navbar.php';
+require_once "../models/Showing.php";
+require_once "../models/Booking.php";
+require_once "../controllers/BookingController.php";
+require_once __DIR__ . '/classes/Database.php';
 
-$pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
+$pdo = Database::getInstance();
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-require_once "../models/Showing.php";
-require_once "../models/Booking.php";
-require_once "../controllers/BookingController.php";
 
 $showingModel = new Showing($pdo);
 $bookingModel = new Booking($pdo);

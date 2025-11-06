@@ -7,7 +7,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 include __DIR__ . '/includes/navbar.php';
 
-$pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
+require_once __DIR__ . '/classes/Database.php';
+
+$pdo = Database::getInstance();
 
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate ASC")->fetchAll(PDO::FETCH_ASSOC);
 

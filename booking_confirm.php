@@ -1,6 +1,8 @@
 <?php
 session_start();
-$pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
+require_once __DIR__ . '/classes/Database.php';
+
+$pdo = Database::getInstance();
 
 if (!isset($_SESSION['user_id'])) header("Location: login.php");
 

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../classes/Hasher.php';
+require_once __DIR__ . '/../classes/Database.php';
 
 class User {
     private PDO $pdo;

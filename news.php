@@ -1,8 +1,9 @@
 <?php
 session_start();
 include __DIR__ . '/includes/navbar.php';
+require_once __DIR__ . '/classes/Database.php';
 
-$pdo = new PDO("mysql:host=localhost;dbname=dwpcinemaDB;charset=utf8", "root", "");
+$pdo = Database::getInstance();
 
 $stmt = $pdo->query("
     SELECT newsID, 
