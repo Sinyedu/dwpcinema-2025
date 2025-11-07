@@ -17,7 +17,6 @@ jobs:
       - name: 📂 Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: simmonnyblom.com
-          username: simonnyblom.com # or whatever your FTP username is
+          username: simonnyblom.com
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
