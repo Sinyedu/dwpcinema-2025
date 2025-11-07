@@ -49,10 +49,10 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-white text-gray-900">
 
     <section class="relative bg-gray-900 text-white">
-        <img src="https://via.placeholder.com/1600x600" alt="Hero" class="w-full h-[400px] object-cover opacity-80">
-        <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+        <img src="img/hero.jpg" alt="Hero" class="w-full h-[400px] object-cover opacity-80">
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6 backdrop-blur-sm">
             <h2 class="text-4xl font-bold">Esports on the Big Screen</h2>
-            <p class="mt-4 text-lg text-gray-200 max-w-2xl">
+            <p class="mt-4 text-lg text-white max-w-2xl">
                 Book your seat for the biggest esports tournaments and join the community experience.
             </p>
             <a href="register.php" class="mt-6 inline-block px-6 py-3 rounded-md font-medium bg-blue-600 hover:bg-blue-500 transition">
@@ -60,6 +60,7 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             </a>
         </div>
     </section>
+
     <section id="tournaments" class="max-w-6xl mx-auto px-6 py-16">
         <h3 class="text-2xl font-semibold text-center mb-6">Featured Tournaments</h3>
         <div class="grid md:grid-cols-3 gap-6">
