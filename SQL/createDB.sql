@@ -56,7 +56,7 @@ CREATE TABLE `User` (
     userEmail VARCHAR(100) NOT NULL UNIQUE,
     isAdmin BOOLEAN DEFAULT FALSE,
     passwordHash VARCHAR(255) NOT NULL,
-    userAvatar VARCHAR(255) DEFAULT NULL,
+    avatar VARCHAR(255) DEFAULT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP
 );

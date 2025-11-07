@@ -1,5 +1,6 @@
 USE dwpcinemaDB;
 
+
 INSERT INTO Game (gameName, gameGenre) VALUES
 ('League of Legends', 'MOBA'),
 ('Valorant', 'FPS'),
@@ -16,6 +17,7 @@ INSERT INTO Hall (hallName, totalSeats) VALUES
 
 
 INSERT INTO SeatTier (tierName, basePrice, description) VALUES
+-- BOX/ENTERPRISE tier will be a part of my contact form so the 500$ price is just a placeholder --
 ('BOX/Enterprise', 500.00, 'A top view within a box where service and customer experience is top level.'),
 ('VIP', 120.00, 'Front-row leather recliners with table service.'),
 ('Premium', 80.00, 'Center view, extra legroom.'),
@@ -94,34 +96,34 @@ INSERT INTO Tournament (gameID, tournamentName, startDate, endDate, tournamentDe
 (5, 'Rocket League World Cup', '2026-06-20', '2026-06-25', 'Fast cars, high-flying goals, global teams.');
 
 INSERT INTO `Match` (tournamentID, gameID, matchDate, matchTime, hallID) VALUES
-(1, 1, '2025-11-10', '18:00:00', 1),
-(1, 1, '2025-11-12', '19:00:00', 1),
-(2, 2, '2025-07-16', '20:00:00', 2),
-(2, 2, '2025-07-20', '20:00:00', 2),
-(3, 3, '2025-09-02', '19:00:00', 3),
-(3, 3, '2025-09-08', '19:00:00', 3),
-(4, 4, '2025-10-06', '18:00:00', 1),
-(4, 4, '2025-10-10', '18:00:00', 1),
-(5, 6, '2025-06-21', '17:00:00', 4),
-(5, 6, '2025-06-24', '17:00:00', 4);
+(1, 1, '2026-11-10', '18:00:00', 1),
+(1, 1, '2026-11-12', '19:00:00', 1),
+(2, 2, '2026-07-16', '20:00:00', 2),
+(2, 2, '2026-07-20', '20:00:00', 2),
+(3, 3, '2026-09-02', '19:00:00', 3),
+(3, 3, '2026-09-08', '19:00:00', 3),
+(4, 4, '2026-10-06', '18:00:00', 1),
+(4, 4, '2026-10-10', '18:00:00', 1),
+(5, 6, '2026-06-21', '17:00:00', 4),
+(5, 6, '2026-06-24', '17:00:00', 4);
 
 
 INSERT INTO Showing (matchID, hallID, showingDate, showingTime) VALUES
-(1, 1, '2025-11-10', '18:00:00'),
-(2, 1, '2025-11-12', '19:00:00'),
-(3, 2, '2025-07-16', '20:00:00'),
-(4, 2, '2025-07-20', '20:00:00'),
-(5, 3, '2025-09-02', '19:00:00'),
-(6, 3, '2025-09-08', '19:00:00'),
-(7, 1, '2025-10-06', '18:00:00'),
-(8, 1, '2025-10-10', '18:00:00'),
-(9, 4, '2025-06-21', '17:00:00'),
-(10, 4, '2025-06-24', '17:00:00');
+(1, 1, '2026-11-10', '18:00:00'),
+(2, 1, '2026-11-12', '19:00:00'),
+(3, 2, '2026-07-16', '20:00:00'),
+(4, 2, '2026-07-20', '20:00:00'),
+(5, 3, '2026-09-02', '19:00:00'),
+(6, 3, '2026-09-08', '19:00:00'),
+(7, 1, '2026-10-06', '18:00:00'),
+(8, 1, '2026-10-10', '18:00:00'),
+(9, 4, '2026-06-21', '17:00:00'),
+(10, 4, '2026-06-24', '17:00:00');
 
 
 INSERT INTO News (newsTitle, newsContent, newsAuthor, newsImage) VALUES
 ('Esports Cinema Expands!', 'We are proud to announce the opening of two new halls designed for esports tournaments and screenings.', 'Admin', 'https://via.placeholder.com/600x400'),
-('Partnership with Riot Games', 'Our cinema will officially host the 2025 League of Legends Worlds screening events!', 'Admin', 'https://via.placeholder.com/600x400'),
+('Partnership with Riot Games', 'Our cinema will officially host the 2026 League of Legends Worlds screening events!', 'Admin', 'https://via.placeholder.com/600x400'),
 ('New VIP Lounges', 'Experience tournaments like never before with luxury seating, in-seat service, and exclusive viewing angles.', 'Admin', 'https://via.placeholder.com/600x400'),
 ('Community Event: Meet the Pros', 'Fans can meet professional players and streamers during special Q&A sessions.', 'Admin', 'https://via.placeholder.com/600x400'),
 ('Summer Lineup Announced', 'Valorant Masters and Rocket League World Cup confirmed for this summer!', 'Admin', 'https://via.placeholder.com/600x400');
