@@ -1,7 +1,6 @@
 <?php
 session_start();
 include __DIR__ . '/includes/navbar.php';
-
 require_once __DIR__ . '/classes/Database.php';
 
 $pdo = Database::getInstance();
@@ -148,7 +147,8 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </section>
-
+    <?php include __DIR__ . '/includes/contactform.php'; ?>
+    <?php include __DIR__ . '/includes/footer.php'; ?>
 </body>
 
 </html>
