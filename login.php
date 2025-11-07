@@ -10,23 +10,21 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $controller->login($_POST);
     if ($user) {
-        $_SESSION['user_id'] = $user['userID'];
-        $_SESSION['user_name'] = $user['firstName'];
-        $_SESSION['user_avatar'] = $user['avatar'] ?? null;
-        $_SESSION['isAdmin'] = $user['isAdmin'];
-
-        if ($user['isAdmin'] == 1) {
-            header("Location: ../views/admin_dashboard.php"); 
+        if (!empty($user['isAdmin']) && $user['isAdmin'] == 1) {
+            $error = "Invalid email or password";
         } else {
+            $_SESSION['user_id'] = $user['userID'];
+            $_SESSION['user_name'] = $user['firstName'];
+            $_SESSION['user_avatar'] = $user['avatar'] ?? null;
+
             header("Location: index.php");
+            exit;
         }
-        exit;
     } else {
         $error = "Invalid email or password";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
