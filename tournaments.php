@@ -91,7 +91,7 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?= htmlspecialchars($t['endDate']) ?>
                         </p>
                         <p class="text-gray-700 text-sm mb-2">
-                            <?= htmlspecialchars(substr($t['tournamentDescription'], 0, 120)) ?>...
+                            <?= substr($t['tournamentDescription'], 0, 120) ?>...
                         </p>
 
                         <?php if ($t['upcomingShowings'] > 0): ?>

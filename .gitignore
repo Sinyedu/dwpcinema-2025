@@ -4,7 +4,6 @@
 # OS files
 .DS_Store
 Thumbs.db
-
 # Composer dependencies
 /vendor/
 
@@ -20,7 +19,7 @@ Thumbs.db
 # Temporary or uploaded files
 /tmp/
 uploads/
-
+admin/
 # Node / frontend builds (optional)
 node_modules/
 dist/
