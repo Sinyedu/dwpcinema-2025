@@ -14,8 +14,8 @@ if (!$seatIDs) die("No seats selected.");
 
 $pdo->beginTransaction();
 try {
-    $stmt = $pdo->prepare("INSERT INTO Booking (userID, showingID, bookingDate, totalAmount) VALUES (?, ?, NOW(), ?)");
-    $stmt->execute([$userID, $showingID, $totalAmount]);
+    $stmt = $pdo->prepare("INSERT INTO Booking (userID, showingID, bookingDate) VALUES (?, ?, NOW())");
+    $stmt->execute([$userID, $showingID]);
     $bookingID = $pdo->lastInsertId();
 
     $stmt2 = $pdo->prepare("INSERT INTO Booking_Seat (bookingID, seatID) VALUES (?, ?)");
