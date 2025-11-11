@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id'])) header("Location: login.php");
 $userID = $_SESSION['user_id'];
 $showingID = $_POST['showingID'];
 $seatIDs = $_POST['seatIDs'] ?? [];
-$totalAmount = $_POST ['totalAmount'];
 
 if (!$seatIDs) die("No seats selected.");
 
@@ -28,6 +27,5 @@ try {
     header("Location: booking_success.php?bookingID=$bookingID");
 } catch (Exception $e) {
     $pdo->rollBack();
-    die("Booking failed: " . $e->getMessage()); 
+    die("Booking failed: " . $e->getMessage());
 }
-?>
