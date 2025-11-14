@@ -1,4 +1,3 @@
 <?php
-/*
-CREATE ROUTING!!
- * /
+
+//TODO: Create routing
