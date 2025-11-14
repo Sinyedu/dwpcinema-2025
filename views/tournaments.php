@@ -1,7 +1,8 @@
 <?php
 session_start();
 include __DIR__ . '/../includes/adminSidebar.php';
-require_once "../database/connection.php";
+require_once __DIR__ . '/../classes/Database.php';
+$pdo = Database::getInstance();
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_login.php");
@@ -31,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (:name, :description, :startDate, :endDate, :gameID)
         ");
         $stmt->execute([
-                ':name' => $_POST['tournamentName'],
-                ':description' => $_POST['tournamentDescription'],
-                ':startDate' => $_POST['startDate'],
-                ':endDate' => $_POST['endDate'],
-                ':gameID' => $_POST['gameID']
+            ':name' => $_POST['tournamentName'],
+            ':description' => $_POST['tournamentDescription'],
+            ':startDate' => $_POST['startDate'],
+            ':endDate' => $_POST['endDate'],
+            ':gameID' => $_POST['gameID']
         ]);
         header("Location: tournaments.php");
         exit;
@@ -52,12 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE tournamentID = :id
         ");
         $stmt->execute([
-                ':name' => $_POST['tournamentName'],
-                ':description' => $_POST['tournamentDescription'],
-                ':startDate' => $_POST['startDate'],
-                ':endDate' => $_POST['endDate'],
-                ':gameID' => $_POST['gameID'],
-                ':id' => $_POST['tournamentID']
+            ':name' => $_POST['tournamentName'],
+            ':description' => $_POST['tournamentDescription'],
+            ':startDate' => $_POST['startDate'],
+            ':endDate' => $_POST['endDate'],
+            ':gameID' => $_POST['gameID'],
+            ':id' => $_POST['tournamentID']
         ]);
         header("Location: tournaments.php");
         exit;
@@ -81,95 +82,98 @@ if (isset($_GET['edit'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Tournaments - DWP Esports Cinema</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
-<div class="max-w-6xl mx-auto px-6 py-10">
-    <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
+    <div class="max-w-6xl mx-auto px-6 py-10">
+        <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
 
-    <?php if ($editTournament): ?>
-        <h2 class="text-xl font-semibold mb-2">Edit Tournament</h2>
-        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
-            <input type="hidden" name="tournamentID" value="<?= $editTournament['tournamentID'] ?>">
+        <?php if ($editTournament): ?>
+            <h2 class="text-xl font-semibold mb-2">Edit Tournament</h2>
+            <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
+                <input type="hidden" name="tournamentID" value="<?= $editTournament['tournamentID'] ?>">
 
-            <input type="text" name="tournamentName" value="<?= htmlspecialchars($editTournament['tournamentName']) ?>" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
+                <input type="text" name="tournamentName" value="<?= htmlspecialchars($editTournament['tournamentName']) ?>" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
 
-            <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required><?= htmlspecialchars($editTournament['tournamentDescription']) ?></textarea>
+                <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required><?= htmlspecialchars($editTournament['tournamentDescription']) ?></textarea>
 
+                <div class="flex space-x-2">
+                    <input type="date" name="startDate" value="<?= $editTournament['startDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
+                    <input type="date" name="endDate" value="<?= $editTournament['endDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
+                </div>
+
+                <select name="gameID" class="w-full border rounded px-3 py-2" required>
+                    <option value="">Select Game</option>
+                    <?php foreach ($games as $g): ?>
+                        <option value="<?= $g['gameID'] ?>" <?= $g['gameID'] == $editTournament['gameID'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($g['gameName']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <div class="flex space-x-2">
+                    <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update</button>
+                    <a href="tournaments.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
+                </div>
+            </form>
+        <?php endif; ?>
+
+        <h2 class="text-xl font-semibold mb-2">Add Tournament</h2>
+        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
+            <input type="text" name="tournamentName" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
+            <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required></textarea>
             <div class="flex space-x-2">
-                <input type="date" name="startDate" value="<?= $editTournament['startDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
-                <input type="date" name="endDate" value="<?= $editTournament['endDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
+                <input type="date" name="startDate" class="w-1/2 border rounded px-3 py-2" required>
+                <input type="date" name="endDate" class="w-1/2 border rounded px-3 py-2" required>
             </div>
-
             <select name="gameID" class="w-full border rounded px-3 py-2" required>
                 <option value="">Select Game</option>
                 <?php foreach ($games as $g): ?>
-                    <option value="<?= $g['gameID'] ?>" <?= $g['gameID'] == $editTournament['gameID'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($g['gameName']) ?>
-                    </option>
+                    <option value="<?= $g['gameID'] ?>"><?= htmlspecialchars($g['gameName']) ?></option>
                 <?php endforeach; ?>
             </select>
-
-            <div class="flex space-x-2">
-                <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update</button>
-                <a href="tournaments.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
-            </div>
+            <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Tournament</button>
         </form>
-    <?php endif; ?>
 
-    <h2 class="text-xl font-semibold mb-2">Add Tournament</h2>
-    <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
-        <input type="text" name="tournamentName" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
-        <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required></textarea>
-        <div class="flex space-x-2">
-            <input type="date" name="startDate" class="w-1/2 border rounded px-3 py-2" required>
-            <input type="date" name="endDate" class="w-1/2 border rounded px-3 py-2" required>
-        </div>
-        <select name="gameID" class="w-full border rounded px-3 py-2" required>
-            <option value="">Select Game</option>
-            <?php foreach ($games as $g): ?>
-                <option value="<?= $g['gameID'] ?>"><?= htmlspecialchars($g['gameName']) ?></option>
-            <?php endforeach; ?>
-        </select>
-        <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Tournament</button>
-    </form>
+        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Name</th>
+                    <th class="px-4 py-2">Game</th>
+                    <th class="px-4 py-2">Start</th>
+                    <th class="px-4 py-2">End</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($tournaments as $t): ?>
+                    <tr class="border-b">
+                        <td class="px-4 py-2"><?= $t['tournamentID'] ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($t['tournamentName']) ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($t['gameName']) ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($t['startDate']) ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($t['endDate']) ?></td>
+                        <td class="px-4 py-2 space-x-2">
+                            <a href="tournaments.php?edit=<?= $t['tournamentID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
+                            <form method="POST" class="inline">
+                                <input type="hidden" name="tournamentID" value="<?= $t['tournamentID'] ?>">
+                                <button type="submit" name="delete" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-500">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-    <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
-        <thead>
-        <tr class="bg-gray-200">
-            <th class="px-4 py-2">ID</th>
-            <th class="px-4 py-2">Name</th>
-            <th class="px-4 py-2">Game</th>
-            <th class="px-4 py-2">Start</th>
-            <th class="px-4 py-2">End</th>
-            <th class="px-4 py-2">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($tournaments as $t): ?>
-            <tr class="border-b">
-                <td class="px-4 py-2"><?= $t['tournamentID'] ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($t['tournamentName']) ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($t['gameName']) ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($t['startDate']) ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($t['endDate']) ?></td>
-                <td class="px-4 py-2 space-x-2">
-                    <a href="tournaments.php?edit=<?= $t['tournamentID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
-                    <form method="POST" class="inline">
-                        <input type="hidden" name="tournamentID" value="<?= $t['tournamentID'] ?>">
-                        <button type="submit" name="delete" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-500">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-
-</div>
+    </div>
 
 </body>
+
 </html>

@@ -3,14 +3,17 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/SecurityController.php';
 require_once __DIR__ . '/../classes/ImageUploader.php';
 
-class UserController {
+class UserController
+{
     private User $userModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->userModel = new User();
     }
 
-    public function register(array $data): bool {
+    public function register(array $data): bool
+    {
         $firstName = SecurityController::sanitizeInput($data['firstName']);
         $lastName = SecurityController::sanitizeInput($data['lastName']);
         $email = SecurityController::sanitizeInput($data['email']);
@@ -22,19 +25,27 @@ class UserController {
         return $this->userModel->register($firstName, $lastName, $email, $password);
     }
 
-    public function login(array $data) {
-        return $this->userModel->login($data['email'], $data['password']);
+    public function login(array $data)
+    {
+        try {
+            return $this->userModel->login($data['email'], $data['password']);
+        } catch (Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
     }
 
-    public function listUsers(): array {
+    public function listUsers(): array
+    {
         return $this->userModel->getAllUsers();
     }
 
-    public function getProfile(int $userID) {
+    public function getProfile(int $userID)
+    {
         return $this->userModel->getUserById($userID);
     }
 
-    public function updateProfile(int $userID, array $data, array $files): bool {
+    public function updateProfile(int $userID, array $data, array $files): bool
+    {
         $firstName = SecurityController::sanitizeInput($data['firstName']);
         $lastName = SecurityController::sanitizeInput($data['lastName']);
         $email = SecurityController::sanitizeInput($data['email']);
@@ -55,5 +66,20 @@ class UserController {
         $_SESSION['user_avatar'] = '/' . $avatarPath;
 
         return true;
+    }
+
+    public function deactivateUser(int $userID): bool
+    {
+        return $this->userModel->deactivateUser($userID);
+    }
+
+    public function activateUser(int $userID): bool
+    {
+        return $this->userModel->activateUser($userID);
+    }
+
+    public function deleteUser(int $userID): bool
+    {
+        return $this->userModel->deleteUser($userID);
     }
 }

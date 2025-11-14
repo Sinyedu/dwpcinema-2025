@@ -26,11 +26,13 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>My Profile - DWP Esports Cinema</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 text-gray-900 min-h-screen">
 
     <?php include __DIR__ . '/includes/navbar.php'; ?>
@@ -56,38 +58,38 @@ try {
 
                     <div class="flex flex-col items-center">
                         <div class="relative">
-                            <img src="/dwpcinema-2025/public/<?= htmlspecialchars($user['avatar']) ?>" 
-                                 alt="Avatar" 
-                                 class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-md">
+                            <img src="/public/<?= htmlspecialchars($user['avatar']) ?>"
+                                alt="Avatar"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-md">
                         </div>
                         <label class="mt-3 text-sm text-gray-600 font-medium">Change Avatar</label>
-                        <input type="file" name="avatar" accept="image/*" 
-                               class="mt-1 w-full md:w-64 text-sm text-gray-700 border rounded px-3 py-2 
+                        <input type="file" name="avatar" accept="image/*"
+                            class="mt-1 w-full md:w-64 text-sm text-gray-700 border rounded px-3 py-2 
                                       focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" name="firstName" value="<?= htmlspecialchars($user['firstName']) ?>" 
-                                   class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <input type="text" name="firstName" value="<?= htmlspecialchars($user['firstName']) ?>"
+                                class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" name="lastName" value="<?= htmlspecialchars($user['lastName']) ?>" 
-                                   class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <input type="text" name="lastName" value="<?= htmlspecialchars($user['lastName']) ?>"
+                                class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" name="email" value="<?= htmlspecialchars($user['userEmail']) ?>" 
-                               class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <input type="email" name="email" value="<?= htmlspecialchars($user['userEmail']) ?>"
+                            class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                     </div>
 
                     <div class="flex justify-end">
-                        <button type="submit" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">
                             Save Changes
                         </button>
                     </div>
@@ -103,4 +105,5 @@ try {
     </div>
 
 </body>
+
 </html>

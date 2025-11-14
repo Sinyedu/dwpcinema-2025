@@ -1,5 +1,5 @@
 <?php
-
+// TODO: Refactor this
 class ImageUploader {
     private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
     private array $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];

@@ -18,9 +18,9 @@ if (session_status() === PHP_SESSION_NONE) {
         <?php if (isset($_SESSION['user_id'])): ?>
 
             <a href="user_profile.php" class="flex items-center space-x-2 hover:text-blue-600 font-medium text-sm">
-               <img src="/dwpcinema-2025/public/<?= htmlspecialchars($_SESSION['user_avatar'] ?? 'uploads/avatars/default.png') ?>" 
-                alt="Avatar" 
-                class="w-8 h-8 rounded-full border object-cover">
+                <img src="/public/<?= htmlspecialchars($_SESSION['user_avatar'] ?? 'uploads/avatars/default.png') ?>"
+                    alt="Avatar"
+                    class="w-8 h-8 rounded-full border object-cover">
                 <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
             </a>
 
