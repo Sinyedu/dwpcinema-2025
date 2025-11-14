@@ -1,6 +1,7 @@
 <?php
-// TODO: Refactor this
-class ImageUploader {
+// TODO: Refactor this, it looks massive. Although it is robust and secure for image uploading
+class ImageUploader
+{
     private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
     private array $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
     private int $maxSize;
@@ -8,7 +9,8 @@ class ImageUploader {
     private int $maxWidth = 512;
     private int $maxHeight = 512;
 
-    public function __construct(string $uploadDir = __DIR__ . '/../public/uploads/avatars/', int $maxSize = 5242880) {
+    public function __construct(string $uploadDir = __DIR__ . '/../public/uploads/avatars/', int $maxSize = 5242880)
+    {
         $this->uploadDir = rtrim($uploadDir, '/') . '/';
         $this->maxSize = $maxSize;
 
@@ -17,7 +19,8 @@ class ImageUploader {
         }
     }
 
-    public function upload(array $file): string {
+    public function upload(array $file): string
+    {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("File upload error (code {$file['error']}).");
         }
