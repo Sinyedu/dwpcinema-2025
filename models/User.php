@@ -25,7 +25,7 @@ class User
 
         $hashedPw = PasswordHasher::hash($password);
         $stmt = $this->pdo->prepare(
-            "INSERT INTO {$this->table} (firstName, lastName, userEmail, passwordHash, isActive) VALUES (?, ?, ?, ?, 1)"
+            "INSERT INTO {$this->table} (firstName, lastName, userEmail, passwordHash) VALUES (?, ?, ?, ?)"
         );
         return $stmt->execute([$firstName, $lastName, $email, $hashedPw]);
     }
@@ -36,20 +36,9 @@ class User
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$user) {
+        if (!$user || !PasswordHasher::verify($password, $user['passwordHash'])) {
             throw new Exception("Invalid email or password.");
         }
-
-        if (!PasswordHasher::verify($password, $user['passwordHash'])) {
-            throw new Exception("Invalid email or password.");
-        }
-
-        if ((int)$user['isActive'] === 0) {
-            throw new Exception("Your account has been deactivated. Please contact the site administrator.");
-        }
-
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET lastActive = NOW() WHERE userID = ?");
-        $stmt->execute([$user['userID']]);
 
         return $user;
     }
@@ -57,7 +46,7 @@ class User
     public function getAllUsers(): array
     {
         $stmt = $this->pdo->query("
-            SELECT userID, firstName, lastName, userEmail, avatar, isActive, lastActive
+            SELECT userID, firstName, lastName, userEmail, avatar
             FROM {$this->table}
             ORDER BY userID DESC
         ");
@@ -84,18 +73,6 @@ class User
     public function deleteUser(int $userID): bool
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE userID = ?");
-        return $stmt->execute([$userID]);
-    }
-
-    public function activateUser(int $userID): bool
-    {
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET isActive = 1 WHERE userID = ?");
-        return $stmt->execute([$userID]);
-    }
-
-    public function deactivateUser(int $userID): bool
-    {
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET isActive = 0 WHERE userID = ?");
         return $stmt->execute([$userID]);
     }
 }

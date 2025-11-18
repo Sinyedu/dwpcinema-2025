@@ -3,7 +3,6 @@ CREATE DATABASE dwpcinemaDB;
 USE dwpcinemaDB;
 SET default_storage_engine=InnoDB;
 
-
 CREATE TABLE Game (
     gameID INT PRIMARY KEY AUTO_INCREMENT,
     gameName VARCHAR(100) NOT NULL,
@@ -26,16 +25,29 @@ CREATE TABLE Tournament (
     FOREIGN KEY (gameID) REFERENCES Game(gameID)
 );
 
+CREATE TABLE Teams (
+    teamID INT PRIMARY KEY AUTO_INCREMENT,
+    teamName VARCHAR(100) NOT NULL,
+    teamDescription TEXT,
+    teamGame VARCHAR(100),
+    players TEXT,
+    country VARCHAR(100)
+);
+
 CREATE TABLE `Match` (
     matchID INT PRIMARY KEY AUTO_INCREMENT,
     tournamentID INT,
     gameID INT,
+    team1ID INT,
+    team2ID INT,
     matchDate DATE NOT NULL,
     matchTime TIME NOT NULL,
     hallID INT,
     FOREIGN KEY (hallID) REFERENCES Hall(hallID),
     FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID),
-    FOREIGN KEY (gameID) REFERENCES Game(gameID)
+    FOREIGN KEY (gameID) REFERENCES Game(gameID),
+    FOREIGN KEY (team1ID) REFERENCES Teams(teamID),
+    FOREIGN KEY (team2ID) REFERENCES Teams(teamID)
 );
 
 CREATE TABLE Showing (
@@ -47,20 +59,6 @@ CREATE TABLE Showing (
     FOREIGN KEY (hallID) REFERENCES Hall(hallID),
     FOREIGN KEY (matchID) REFERENCES `Match`(matchID)
 );
-
-
-CREATE TABLE `User` (
-    userID INT PRIMARY KEY AUTO_INCREMENT,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    userEmail VARCHAR(100) NOT NULL UNIQUE,
-    isAdmin BOOLEAN DEFAULT FALSE,
-    passwordHash VARCHAR(255) NOT NULL,
-    avatar VARCHAR(255) DEFAULT NULL,
-    role ENUM('user', 'admin') DEFAULT 'user',
-    dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
 
 CREATE TABLE SeatTier (
     tierID INT PRIMARY KEY AUTO_INCREMENT,
@@ -79,15 +77,28 @@ CREATE TABLE Seat (
     FOREIGN KEY (tierID) REFERENCES SeatTier(tierID)
 );
 
+CREATE TABLE `User` (
+    userID INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    userEmail VARCHAR(100) NOT NULL UNIQUE,
+    isAdmin BOOLEAN DEFAULT FALSE,
+    passwordHash VARCHAR(255) NOT NULL,
+    avatar VARCHAR(255) DEFAULT NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
+    dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE Booking (
     bookingID INT PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
     showingID INT NOT NULL,
+    seatID INT NOT NULL,
     bookingDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     totalAmount DECIMAL(10,2) DEFAULT 0,
     FOREIGN KEY (userID) REFERENCES `User`(userID),
-    FOREIGN KEY (showingID) REFERENCES Showing(showingID)
+    FOREIGN KEY (showingID) REFERENCES Showing(showingID),
+    FOREIGN KEY (seatID) REFERENCES Seat(seatID)
 );
 
 CREATE TABLE Booking_Seat (
@@ -105,4 +116,27 @@ CREATE TABLE News (
     newsAuthor VARCHAR(100) NOT NULL,
     newsImage VARCHAR(255),
     newsCreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Contactform (
+    contactID INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    userEmail VARCHAR(100) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    submittedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE About (
+    aboutID INT PRIMARY KEY AUTO_INCREMENT,
+    aboutContent TEXT NOT NULL,
+    aboutImage VARCHAR(255),
+    lastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE FAQ (
+    faqID INT PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(255) NOT NULL,
+    answer TEXT NOT NULL
 );

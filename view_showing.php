@@ -32,7 +32,8 @@ $seatStmt->execute([$showing['hallID']]);
 $seats = $seatStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $bookedStmt = $pdo->prepare("
-    SELECT seatID FROM Booking_Seat bs
+    SELECT bs.seatID 
+    FROM Booking_Seat bs
     JOIN Booking b ON bs.bookingID = b.bookingID
     WHERE b.showingID = ?
 ");
