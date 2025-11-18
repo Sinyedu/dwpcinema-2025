@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/SecurityController.php';
 require_once __DIR__ . '/../classes/ImageUploader.php';
-
+//! Potential refactor feels like it is handling too much logic, consider moving some to User model
 class UserController
 {
     private User $userModel;
@@ -66,6 +66,16 @@ class UserController
         $_SESSION['user_avatar'] = '/' . $avatarPath;
 
         return true;
+    }
+
+    public function deactivateUser(int $userID): bool
+    {
+        return $this->userModel->deactivateUser($userID);
+    }
+
+    public function activateUser(int $userID): bool
+    {
+        return $this->userModel->activateUser($userID);
     }
 
     public function deleteUser(int $userID): bool
