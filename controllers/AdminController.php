@@ -1,16 +1,14 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
-require_once __DIR__ . '/../models/ContactForm.php';
-
+//TODO Add more admin functionalities as needed
 class AdminController
 {
     private Admin $adminModel;
     private PDO $pdo;
 
-    public function __construct(PDO $pdo)
+    public function __construct()
     {
-        $this->pdo = $pdo;
-        $this->adminModel = new Admin($pdo);
+        $this->adminModel = new Admin();
     }
 
     public function login(string $email, string $password)

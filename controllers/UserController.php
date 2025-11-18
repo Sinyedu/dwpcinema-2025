@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/SecurityController.php';
 require_once __DIR__ . '/../classes/ImageUploader.php';
-
+//! Potential refactor feels like it is handling too much logic, consider moving some to User model
 class UserController
 {
     private User $userModel;
