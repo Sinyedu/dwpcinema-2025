@@ -3,7 +3,7 @@ name: Code Quality Checks
 on:
   pull_request:
     branches:
-      - dev
+      - development
 
 jobs:
   php-check:
