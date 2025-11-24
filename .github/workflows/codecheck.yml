@@ -42,5 +42,11 @@ jobs:
       - name: Install ESLint
         run: npm install eslint --no-package-lock
 
-      - name: Run ESLint
-        run: npx eslint . --ext .js --max-warnings=0
+      - name: Run ESLint (self-contained)
+        run: |
+          npx eslint . --ext .js \
+            --no-eslintrc \
+            --rule 'semi: ["error", "always"]' \
+            --rule 'quotes: ["error", "single"]' \
+            --rule 'no-unused-vars: ["warn"]' \
+            --max-warnings=0
