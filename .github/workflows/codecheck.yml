@@ -3,7 +3,7 @@ name: Code Quality Checks
 on:
   pull_request:
     branches:
-      - development
+      - dev
 
 jobs:
   php-check:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install PHP_CodeSniffer
         run: |
-          curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+          wget https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar -O phpcs.phar
           chmod +x phpcs.phar
           sudo mv phpcs.phar /usr/local/bin/phpcs
 
@@ -40,7 +40,7 @@ jobs:
           node-version: "20"
 
       - name: Install ESLint
-        run: npm install eslint
+        run: npm install eslint --no-package-lock
 
       - name: Run ESLint
-        run: npx eslint . --ext .js
+        run: npx eslint . --ext .js --max-warnings=0
