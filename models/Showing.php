@@ -1,12 +1,15 @@
 <?php
-class Showing {
+class Showing
+{
     private $pdo;
 
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
         $this->pdo = $pdo;
     }
-
-    public function getAll($tournamentID = null) {
+    // Added comment to test out my yml file
+    public function getAll($tournamentID = null)
+    {
         $sql = "
             SELECT 
                 s.showingID,
@@ -35,7 +38,8 @@ class Showing {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getById($showingID) {
+    public function getById($showingID)
+    {
         $stmt = $this->pdo->prepare("
             SELECT s.showingID, s.showingDate, s.showingTime, h.hallName, h.totalSeats, m.tournamentID, t.tournamentName
             FROM Showing s
@@ -48,4 +52,3 @@ class Showing {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
-?>
