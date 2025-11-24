@@ -7,11 +7,9 @@ on:
 
 jobs:
   php-check:
-    name: PHP Code Sniffer (Lenient)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -33,25 +31,24 @@ jobs:
             --runtime-set tab_width 4
 
   js-check:
-    name: JavaScript Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
 
-      - name: Install ESLint v8
+      - name: Install ESLint
         run: npm install eslint@8 --no-package-lock
 
-      - name: Run ESLint (self-contained)
+      - name: Run ESLint (fixed)
         run: |
           npx eslint . --ext .js \
             --no-eslintrc \
             --rule 'semi: ["error", "always"]' \
             --rule 'quotes: ["error", "single"]' \
             --rule 'no-unused-vars: ["warn"]' \
+            --parser-options=ecmaVersion:2020 \
             --max-warnings=0
