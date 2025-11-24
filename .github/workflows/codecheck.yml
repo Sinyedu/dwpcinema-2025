@@ -1,0 +1,46 @@
+name: Code Quality Checks
+
+on:
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  php-check:
+    name: PHP Code Sniffer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Install PHP_CodeSniffer
+        run: |
+          curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+          chmod +x phpcs.phar
+          sudo mv phpcs.phar /usr/local/bin/phpcs
+
+      - name: Run PHP_CodeSniffer
+        run: phpcs --standard=PSR12 ./ --extensions=php
+
+  js-check:
+    name: JavaScript Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install ESLint
+        run: npm install eslint
+
+      - name: Run ESLint
+        run: npx eslint . --ext .js
