@@ -13,7 +13,7 @@ class ContactForm
     public function getReservations(): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT contactFormID, firstName, lastName, email, category, message, created_at
+            SELECT contactFormID, firstName, lastName, email, category, message, created_at, status
             FROM ContactForm
             WHERE category = 'Reservation'
             ORDER BY created_at DESC
@@ -22,12 +22,11 @@ class ContactForm
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    public function getAllSubmissions(string $category = null): array
+    public function getAllSubmissions(?string $category = null): array
     {
         if ($category) {
             $stmt = $this->pdo->prepare("
-                SELECT contactFormID, firstName, lastName, email, category, message, created_at
+                SELECT contactFormID, firstName, lastName, email, category, message, created_at, status
                 FROM ContactForm
                 WHERE category = :category
                 ORDER BY created_at DESC
