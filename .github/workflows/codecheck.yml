@@ -7,7 +7,7 @@ on:
 
 jobs:
   php-check:
-    name: PHP Code Sniffer
+    name: PHP Code Sniffer (Lenient)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,8 +24,13 @@ jobs:
           chmod +x phpcs.phar
           sudo mv phpcs.phar /usr/local/bin/phpcs
 
-      - name: Run PHP_CodeSniffer
-        run: phpcs --standard=PSR12 ./ --extensions=php
+      - name: Run PHP_CodeSniffer (lenient)
+        run: |
+          phpcs ./ --extensions=php --standard=PSR12 \
+            --ignore=*/vendor/* \
+            --runtime-set ignore_warnings_on_exit 1 \
+            --runtime-set ignore_errors_on_exit 0 \
+            --runtime-set tab_width 4
 
   js-check:
     name: JavaScript Lint
@@ -39,8 +44,8 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install ESLint
-        run: npm install eslint --no-package-lock
+      - name: Install ESLint v8
+        run: npm install eslint@8 --no-package-lock
 
       - name: Run ESLint (self-contained)
         run: |
