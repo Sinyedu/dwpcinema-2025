@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/SecurityController.php';
 require_once __DIR__ . '/../classes/ImageUploader.php';
+require_once __DIR__ . '/../classes/Database.php';
 //! Potential refactor feels like it is handling too much logic, consider moving some to User model
 class UserController
 {
@@ -9,7 +10,8 @@ class UserController
 
     public function __construct()
     {
-        $this->userModel = new User();
+        $pdo = Database::getInstance();
+        $this->userModel = new User($pdo);
     }
 
     public function register(array $data): bool
