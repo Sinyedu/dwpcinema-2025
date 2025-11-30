@@ -30,6 +30,7 @@ CREATE TABLE `Match` (
     matchID INT PRIMARY KEY AUTO_INCREMENT,
     tournamentID INT,
     gameID INT,
+    matchName VARCHAR(100) NOT NULL,
     matchDate DATE NOT NULL,
     matchTime TIME NOT NULL,
     hallID INT,
