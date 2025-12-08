@@ -23,7 +23,7 @@ if (!empty($selectedTournamentID)) {
     $params[] = $selectedTournamentID;
 }
 
-$sql = "
+$stmt = $pdo->prepare("
     SELECT 
         s.showingID,
         s.showingDate,
@@ -40,9 +40,8 @@ $sql = "
     JOIN Tournament t ON m.tournamentID = t.tournamentID
     $where
     ORDER BY s.showingDate ASC, s.showingTime ASC
-";
+");
 
-$stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
