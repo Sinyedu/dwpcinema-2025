@@ -107,3 +107,33 @@ CREATE TABLE News (
     newsImage VARCHAR(255),
     newsCreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE SupportTicket (
+    ticketID INT PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    status ENUM('open', 'pending', 'resolved', 'closed') DEFAULT 'open',
+    priority ENUM('low','medium','high') DEFAULT 'medium',
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES `User`(userID)
+);
+
+CREATE TABLE SupportMessage (
+    messageID INT PRIMARY KEY AUTO_INCREMENT,
+    ticketID INT NOT NULL,
+    senderID INT NOT NULL,               
+    senderRole ENUM('user','admin') NOT NULL,
+    message TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticketID) REFERENCES SupportTicket(ticketID),
+    FOREIGN KEY (senderID) REFERENCES `User`(userID)
+);
+
+CREATE TABLE SupportAttachment (
+    attachmentID INT PRIMARY KEY AUTO_INCREMENT,
+    messageID INT NOT NULL,
+    filePath VARCHAR(255) NOT NULL,
+    uploadedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (messageID) REFERENCES SupportMessage(messageID)
+);

@@ -90,7 +90,7 @@ foreach ($tiers as $tier) {
                     ?>
                         <label class="text-center cursor-pointer">
                             <input type="checkbox" name="seatIDs[]" value="<?= $seat['seatID'] ?>" data-tier="<?= $seat['tierID'] ?>" <?= $isBooked ? 'disabled' : '' ?> class="hidden peer seatCheckbox">
-                            <div class="w-6 h-6 rounded flex items-center justify-center text-xs font-semibold <?= $colorClass ?> peer-checked:ring-4 peer-checked:ring-green-500">
+                            <div class="w-6 h-6 rounded flex items-center justify-center text-xs font-semibold <?= $colorClass ?> peer-checked:ring-4 peer-checked:ring-yellow-500">
                                 <?= $seat['seatRow'] . $seat['seatNumber'] ?>
                             </div>
                         </label>
@@ -107,7 +107,7 @@ foreach ($tiers as $tier) {
     </form>
 
 
-    <div class="mt-6 grid grid-cols-4 gap-4 max-w-xs">
+    <div class="mt-6 grid grid-cols-4 gap-4">
         <?php foreach ($tiers as $tier): ?>
             <p class="flex items-center text-gray-700">
                 <span class="inline-block w-5 h-5 <?= $tierColors[$tier['tierID']] ?? 'bg-gray-200' ?> mr-2"></span>
@@ -117,26 +117,11 @@ foreach ($tiers as $tier) {
         <p class="flex items-center text-gray-700"><span class="inline-block w-5 h-5 bg-gray-400 mr-2"></span>Booked</p>
     </div>
     </div>
-
     <script>
         const tierPrices = <?= json_encode($tierPrices) ?>;
-        const checkboxes = document.querySelectorAll('.seatCheckbox');
-        const totalPriceEl = document.getElementById('totalPrice');
-
-        function updateTotal() {
-            let total = 0;
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    const tier = cb.dataset.tier;
-                    total += tierPrices[tier] || 0;
-                }
-            });
-            totalPriceEl.textContent = total.toFixed(2);
-        }
-
-        checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
-        updateTotal();
     </script>
+
+    <script src="public/js/seat_selection.js"></script>
 </body>
 
 </html>
