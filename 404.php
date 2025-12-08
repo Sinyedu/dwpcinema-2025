@@ -5,12 +5,14 @@ $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : '
 ?>
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>404 Not Found</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-800 flex items-center justify-center">
     <main class="w-full max-w-3xl p-8">
         <div class="rounded-2xl bg-white shadow-lg ring-1 ring-gray-100 overflow-hidden">
@@ -23,6 +25,7 @@ $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : '
 
                 <h1 class="text-6xl font-extrabold tracking-tight mb-2">404</h1>
                 <p class="text-lg text-gray-600 mb-6">Oops — we can't find the page you're looking for.</p>
+                <p class="text-lg text-gray-600 mb-6">Or the page you are trying to find is being built!</p>
 
                 <div class="flex flex-col sm:flex-row gap-3 items-center justify-center">
                     <a href="<?php echo htmlspecialchars($baseUrl ?: '/'); ?>" class="inline-flex items-center px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -43,4 +46,5 @@ $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : '
         </div>
     </main>
 </body>
+
 </html>
