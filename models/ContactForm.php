@@ -49,14 +49,15 @@ class ContactForm
         $email     = SecurityController::sanitizeInput($data['email']);
         $category  = SecurityController::sanitizeInput($data['category']);
         $message   = SecurityController::sanitizeInput($data['message']);
+        $tournamentID = !empty($data['tournament']) ? intval($data['tournament']) : null;
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Invalid email address.");
         }
 
         $stmt = $this->pdo->prepare("
-        INSERT INTO ContactForm (firstName, lastName, email, category, message)
-        VALUES (:firstName, :lastName, :email, :category, :message)
+        INSERT INTO ContactForm (firstName, lastName, email, category, message, tournamentID)
+        VALUES (:firstName, :lastName, :email, :category, :message, :tournamentID)
     ");
         return $stmt->execute([
             'firstName' => $firstName,
@@ -64,6 +65,7 @@ class ContactForm
             'email'     => $email,
             'category'  => $category,
             'message'   => $message,
+            'tournamentID' => $tournamentID
         ]);
     }
 }
