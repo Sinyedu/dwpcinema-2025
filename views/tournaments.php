@@ -1,13 +1,13 @@
 <?php
 session_start();
-include __DIR__ . '/../includes/adminSidebar.php';
 require_once __DIR__ . '/../classes/Database.php';
-$pdo = Database::getInstance();
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_login.php");
     exit;
 }
+
+$pdo = Database::getInstance();
 
 $stmt = $pdo->query("
     SELECT t.tournamentID,
@@ -78,6 +78,8 @@ if (isset($_GET['edit'])) {
     $stmt->execute([$_GET['edit']]);
     $editTournament = $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+include __DIR__ . '/../includes/adminSidebar.php';
 ?>
 
 <!DOCTYPE html>
@@ -89,8 +91,7 @@ if (isset($_GET['edit'])) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
-
+<body class="bg-gray-100 min-h-screen ml-64">
     <div class="max-w-6xl mx-auto px-6 py-10">
         <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
 
