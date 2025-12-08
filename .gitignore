@@ -23,3 +23,4 @@ admin/
 # Node / frontend builds (optional)
 node_modules/
 dist/
+/SQL/createDB.sql
