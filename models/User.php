@@ -13,7 +13,11 @@ class User
 
     public function emailExists($email)
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM {$this->table} WHERE userEmail = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) 
+            FROM {$this->table} 
+            WHERE userEmail = ?
+        ");
         $stmt->execute([$email]);
         return $stmt->fetchColumn() > 0;
     }
@@ -27,8 +31,9 @@ class User
         $hashedPw = PasswordHasher::hash($password);
 
         $stmt = $this->pdo->prepare("
-            INSERT INTO {$this->table} (firstName, lastName, userEmail, passwordHash)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO {$this->table} 
+                (firstName, lastName, userEmail, passwordHash, isActive, lastActive)
+            VALUES (?, ?, ?, ?, 1, NULL)
         ");
 
         return $stmt->execute([$firstName, $lastName, $email, $hashedPw]);
@@ -36,20 +41,40 @@ class User
 
     public function login($email, $password)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE userEmail = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT * 
+            FROM {$this->table} 
+            WHERE userEmail = ?
+        ");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && PasswordHasher::verify($password, $user['passwordHash'])) {
+
+            $update = $this->pdo->prepare("
+                UPDATE {$this->table} 
+                SET lastActive = NOW() 
+                WHERE userID = ?
+            ");
+            $update->execute([$user['userID']]);
+
             return $user;
         }
+
         return false;
     }
 
     public function getAllUsers()
     {
         $stmt = $this->pdo->prepare("
-            SELECT userID, firstName, lastName, userEmail
+            SELECT 
+                userID, 
+                firstName, 
+                lastName, 
+                userEmail,
+                isActive,
+                lastActive,
+                avatar
             FROM {$this->table}
             ORDER BY userID ASC
         ");
@@ -59,38 +84,61 @@ class User
 
     public function getUserById(int $userID): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE userID = ?");
+        $stmt = $this->pdo->prepare("
+            SELECT * 
+            FROM {$this->table} 
+            WHERE userID = ?
+        ");
         $stmt->execute([$userID]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user ?: null;
     }
 
-    public function updateUser(int $userID, string $firstName, string $lastName, string $email, string $avatar): bool
-    {
+    public function updateUser(
+        int $userID,
+        string $firstName,
+        string $lastName,
+        string $email,
+        string $avatar
+    ): bool {
         $stmt = $this->pdo->prepare("
-        UPDATE {$this->table} 
-        SET firstName = ?, lastName = ?, userEmail = ?, avatar = ?
-        WHERE userID = ?
-    ");
+            UPDATE {$this->table}
+            SET firstName = ?, 
+                lastName = ?, 
+                userEmail = ?, 
+                avatar = ?
+            WHERE userID = ?
+        ");
+
         return $stmt->execute([$firstName, $lastName, $email, $avatar, $userID]);
     }
 
     public function deactivateUser(int $userID): bool
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET isActive = 0 WHERE userID = ?");
+        $stmt = $this->pdo->prepare("
+            UPDATE {$this->table} 
+            SET isActive = 0 
+            WHERE userID = ?
+        ");
         return $stmt->execute([$userID]);
     }
 
     public function activateUser(int $userID): bool
     {
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET isActive = 1 WHERE userID = ?");
+        $stmt = $this->pdo->prepare("
+            UPDATE {$this->table} 
+            SET isActive = 1 
+            WHERE userID = ?
+        ");
         return $stmt->execute([$userID]);
     }
 
-
     public function deleteUser($userID)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->table} WHERE userID = ?");
+        $stmt = $this->pdo->prepare("
+            DELETE FROM {$this->table} 
+            WHERE userID = ?
+        ");
         return $stmt->execute([$userID]);
     }
 }
