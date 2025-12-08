@@ -21,7 +21,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <img src="/public/<?= htmlspecialchars($_SESSION['user_avatar'] ?? 'uploads/avatars/default.png') ?>"
                     alt="Avatar"
                     class="w-8 h-8 rounded-full border object-cover">
-                <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+                <span><?= ($_SESSION['user_name']) ?></span>
             </a>
 
             <a href="logout.php" class="hover:text-red-600 font-medium text-sm">Logout</a>
