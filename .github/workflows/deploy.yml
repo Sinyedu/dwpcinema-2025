@@ -21,3 +21,5 @@ jobs:
           username: simonnyblom.com
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
+          protocol: ftps
+          retrires: 3
