@@ -22,4 +22,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
           protocol: ftps
-          retrires: 3
+          passive: true
+          debug: true
+          timeout: 60
