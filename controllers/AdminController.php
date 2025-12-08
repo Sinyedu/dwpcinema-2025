@@ -1,13 +1,16 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
-//TODO Add more admin functionalities as needed
+require_once __DIR__ . '/../models/ContactForm.php';
+
 class AdminController
 {
     private Admin $adminModel;
+    private PDO $pdo;
 
-    public function __construct()
+    public function __construct(PDO $pdo)
     {
-        $this->adminModel = new Admin();
+        $this->pdo = $pdo;
+        $this->adminModel = new Admin($pdo);
     }
 
     public function login(string $email, string $password)
@@ -23,5 +26,11 @@ class AdminController
     public function deleteUser(int $userID): bool
     {
         return $this->adminModel->deleteUser($userID);
+    }
+
+    public function getReservations(): array
+    {
+        $contactForm = new ContactForm($this->pdo);
+        return $contactForm->getReservations();
     }
 }

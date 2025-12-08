@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const checkboxes = document.querySelectorAll(".seatCheckbox");
-    const totalPriceEl = document.getElementById("totalPrice");
+    let checkboxes = document.querySelectorAll(".seatCheckbox");
+    let totalPriceEl = document.getElementById("totalPrice");
+    
 
     function updateTotal() {
         let total = 0;
         checkboxes.forEach(cb => {
             if(cb.checked) {
-                const tierID = cb.dataset.tier;
+                let tierID = cb.dataset.tier;
                 total += parseFloat(tierPrices[tierID]);
             }
         });
