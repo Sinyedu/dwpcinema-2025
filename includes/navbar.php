@@ -12,6 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <a href="tournaments.php" class="hover:text-blue-600 font-medium text-sm">Tournaments</a>
         <a href="news.php" class="hover:text-blue-600 font-medium text-sm">News</a>
         <a href="users.php" class="hover:text-blue-600 font-medium text-sm">Community</a>
+        <a href="support.php" class="hover:text-blue-600 font-medium text-sm">Support</a>
     </div>
 
     <div class="flex items-center space-x-4">
@@ -21,7 +22,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <img src="/public/<?= htmlspecialchars($_SESSION['user_avatar'] ?? 'uploads/avatars/default.png') ?>"
                     alt="Avatar"
                     class="w-8 h-8 rounded-full border object-cover">
-                <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+                <span><?= ($_SESSION['user_name']) ?></span>
             </a>
 
             <a href="logout.php" class="hover:text-red-600 font-medium text-sm">Logout</a>
