@@ -26,6 +26,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </nav>
 
     <div class="p-4 border-t border-gray-700">
-        <a href="../views/logout.php" class="block bg-red-600 hover:bg-red-500 text-center py-2 rounded">Logout</a>
+        <a href="/views/logout.php" class="block bg-red-600 hover:bg-red-500 text-center py-2 rounded">Logout</a>
     </div>
 </aside>
