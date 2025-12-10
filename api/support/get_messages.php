@@ -1,5 +1,4 @@
 <?php
-// api/support/get_messages.php
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../controllers/SupportController.php';
 header('Content-Type: application/json');
