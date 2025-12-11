@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../controllers/AdminSupportController.php';
 require_once "../controllers/AdminController.php";
 require_once __DIR__ . '/../classes/Database.php';
 require_once "../controllers/TournamentController.php";
@@ -20,6 +21,9 @@ $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tournamentController = new TournamentController($pdo);
 $newsController = new NewsController($pdo);
 $gameController = new GameController($pdo);
+$adminSupport = new AdminSupportController($pdo);
+$tickets = $adminSupport->getAllTickets();
+
 
 $users = $adminController->getAllUsers();
 $tournaments = $tournamentController->getAllTournaments();
@@ -79,7 +83,6 @@ $games = $gameController->getAllGames();
                 </ul>
             </div>
 
-            <!-- NEWS PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">News</h3>
@@ -92,7 +95,6 @@ $games = $gameController->getAllGames();
                 </ul>
             </div>
 
-            <!-- USERS PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">Users</h3>
@@ -107,7 +109,6 @@ $games = $gameController->getAllGames();
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <!-- GAMES PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">Games</h3>
