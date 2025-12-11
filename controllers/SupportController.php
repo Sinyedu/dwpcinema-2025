@@ -36,9 +36,9 @@ class SupportController
         return $this->model->getMessages($ticketID);
     }
 
-    public function sendMessage(int $ticketID, int $userID, string $role, string $message): int
+    public function sendMessage(int $ticketID, int $senderID, string $role, string $message): int
     {
-        $message = SecurityController::sanitizeInput($message);
-        return $this->model->addMessage($ticketID, $userID, $role, $message);
+        $this->model->addMessage($ticketID, $senderID, $role, $message);
+        return true;
     }
 }

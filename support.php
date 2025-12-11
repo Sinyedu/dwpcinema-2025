@@ -11,6 +11,27 @@ if (!isset($_SESSION['user_id'])) {
 $pdo = Database::getInstance();
 $ctrl = new SupportController($pdo);
 
+if (isset($_GET['fetchMessages']) && $activeTicketID) {
+    header('Content-Type: application/json');
+    echo json_encode($ctrl->getMessages($activeTicketID));
+    exit;
+}
+
+if (isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
+    header('Content-Type: application/json');
+    $ticketID = (int)$_POST['replyTicketID'];
+    $message = $_POST['replyMessage'];
+    $userID = $_SESSION['user_id'];
+
+    try {
+        $ctrl->sendMessage($ticketID, $userID, 'user', $message);
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['message'], $_POST['priority'])) {
     try {
         $ticketID = $ctrl->createTicket(
@@ -25,6 +46,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['me
     } catch (Exception $e) {
         $error = $e->getMessage();
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
+    header('Content-Type: application/json');
+
+    try {
+        $ticketID = (int)$_POST['replyTicketID'];
+        $message = $_POST['replyMessage'];
+        $userID = (int)$_SESSION['user_id'];
+
+        $ctrl->sendMessage($ticketID, $userID, 'user', $message);
+
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+
+    exit;
 }
 
 $tickets = $ctrl->getUserTickets((int)$_SESSION['user_id']);
