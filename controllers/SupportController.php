@@ -36,9 +36,8 @@ class SupportController
         return $this->model->getMessages($ticketID);
     }
 
-    public function sendMessage(int $ticketID, int $senderID, string $role, string $message): int
+    public function sendMessage(int $ticketID, int $userID, string $message): bool
     {
-        $this->model->addMessage($ticketID, $senderID, $role, $message);
-        return true;
+        return $this->model->addMessage($ticketID, $userID, 'user', $message) > 0;
     }
 }
