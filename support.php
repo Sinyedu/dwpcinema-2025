@@ -34,7 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['replyTicketID'], $_PO
     }
     exit;
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['message'], $_POST['priority'])) {
+    header('Content-Type: application/json');
     try {
         $ticketID = $ctrl->createTicket(
             $_SESSION['user_id'],
@@ -42,17 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['me
             $_POST['message'],
             $_POST['priority']
         );
-        $_SESSION['success'] = "Ticket created successfully!";
-        header("Location: support.php?ticketID=$ticketID");
-        exit;
+        echo json_encode(['success' => true, 'ticketID' => $ticketID]);
     } catch (Exception $e) {
-        $error = $e->getMessage();
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
+    exit;
 }
 
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,6 +69,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 </head>
 
 <body class="bg-gray-50 min-h-screen flex flex-col">
+
     <?php include __DIR__ . '/includes/navbar.php'; ?>
 
     <main class="flex-1 max-w-6xl mx-auto w-full p-6 mt-24">

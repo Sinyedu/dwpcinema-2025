@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../controllers/AdminSupportController.php';
-include __DIR__ . '/../includes/adminSidebar.php';
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ../admin_login.php");
@@ -12,6 +11,11 @@ if (!isset($_SESSION['admin_id'])) {
 $pdo = Database::getInstance();
 $adminSupport = new AdminSupportController($pdo);
 $tickets = $adminSupport->getAllTickets();
+// This is sorting tickets based by priority so the admin can easier manage.
+usort($tickets, function ($a, $b) {
+    $order = ['high' => 1, 'medium' => 2, 'low' => 3];
+    return ($order[$a['priority']] ?? 4) - ($order[$b['priority']] ?? 4);
+});
 
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $adminSupport->getTicketMessages($activeTicketID) : [];
@@ -22,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['m
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,12 +54,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['m
                     <p class="text-gray-500 text-sm">No tickets found.</p>
                 <?php else: ?>
                     <ul class="space-y-2">
-                        <?php foreach ($tickets as $t): ?>
+                        <?php foreach ($tickets as $t):
+                            $priorityColor = match ($t['priority']) {
+                                'high' => 'bg-red-500',
+                                'medium' => 'bg-yellow-500',
+                                'low' => 'bg-green-500',
+                                default => 'bg-gray-300'
+                            };
+                        ?>
                             <li>
-                                <a href="?ticketID=<?= $t['ticketID'] ?>" class="block p-2 rounded hover:bg-gray-100 <?= $t['ticketID'] === $activeTicketID ? 'bg-gray-200' : '' ?>">
-                                    <div class="font-medium"><?= htmlspecialchars($t['subject']) ?></div>
-                                    <div class="text-xs text-gray-500">
-                                        <?= htmlspecialchars($t['firstName'] . ' ' . $t['lastName']) ?> • <?= htmlspecialchars($t['status']) ?>
+                                <a href="?ticketID=<?= $t['ticketID'] ?>" class="flex justify-between items-center p-2 rounded hover:bg-gray-100 <?= $t['ticketID'] === $activeTicketID ? 'bg-gray-200' : '' ?>">
+                                    <div>
+                                        <div class="font-medium"><?= htmlspecialchars($t['subject']) ?></div>
+                                        <div class="text-xs text-gray-500">
+                                            <?= htmlspecialchars($t['firstName'] . ' ' . $t['lastName']) ?> • <?= htmlspecialchars($t['status']) ?>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="px-2 py-1 text-xs text-white rounded <?= $priorityColor ?>">
+                                            <?= ucfirst($t['priority']) ?>
+                                        </span>
+                                        <span class="text-sm text-gray-500"><?= htmlspecialchars($t['updatedAt']) ?></span>
                                     </div>
                                 </a>
                             </li>
