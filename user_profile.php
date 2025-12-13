@@ -122,7 +122,7 @@ $seatStmt = $pdo->prepare("
                                             <span class="px-2 py-1 bg-gray-200 rounded text-sm"><?= htmlspecialchars($s['seatLabel'] ?? '', ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($s['tierName'] ?? '', ENT_QUOTES, 'UTF-8') ?>)</span>
                                         <?php endforeach; ?>
                                     </div>
-                                    <p class="font-semibold text-gray-800">Total Paid: $<?= number_format($b['totalAmount'] ?? 0, 2) ?></p>
+                                    <p class="font-semibold text-gray-800">Total Paid: $<?= number_format($b['totalAmount'], 2) ?></p>
                                 </div>
                             <?php endforeach; ?>
                         </div>

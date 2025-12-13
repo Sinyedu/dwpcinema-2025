@@ -33,7 +33,12 @@ $stmt = $pdo->prepare("
         m.tournamentID,
         t.tournamentName,
         m.matchName,
-        IFNULL((SELECT COUNT(*) FROM Booking b WHERE b.showingID = s.showingID), 0) AS bookedSeats
+        IFNULL((
+            SELECT COUNT(DISTINCT bs.seatID)
+            FROM Booking_Seat bs
+            JOIN Booking b ON bs.bookingID = b.bookingID
+            WHERE b.showingID = s.showingID
+        ), 0) AS bookedSeats
     FROM Showing s
     JOIN Hall h ON s.hallID = h.hallID
     JOIN `Match` m ON s.matchID = m.matchID
@@ -41,6 +46,7 @@ $stmt = $pdo->prepare("
     $where
     ORDER BY s.showingDate ASC, s.showingTime ASC
 ");
+
 
 $stmt->execute($params);
 $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);

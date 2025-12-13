@@ -59,7 +59,9 @@ CREATE TABLE `User` (
     passwordHash VARCHAR(255) NOT NULL,
     avatar VARCHAR(255) DEFAULT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
-    dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP
+    dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isActive BOOLEAN DEFAULT TRUE,
+    lastActive DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 
@@ -240,6 +242,14 @@ INSERT INTO Hall (hallName, totalSeats) VALUES
 ('Hall 3', 500),
 ('Hall 4', 500);
 
+
+INSERT INTO SeatTier (tierName, basePrice, description) VALUES
+-- BOX/ENTERPRISE tier will be a part of my contact form so the 500$ price is just a placeholder --
+('BOX/Enterprise', 500.00, 'A top view within a box where service and customer experience is top level.'),
+('VIP', 120.00, 'Front-row leather recliners with table service.'),
+('Premium', 80.00, 'Center view, extra legroom.'),
+('Standard', 50.00, 'Regular seating, great for general audience.');
+
 -- Hall 1
 INSERT INTO Seat (hallID, seatRow, seatNumber, tierID)
 SELECT 1,
@@ -309,12 +319,6 @@ FROM (
 WHERE n <= 500;
 
 
-INSERT INTO SeatTier (tierName, basePrice, description) VALUES
--- BOX/ENTERPRISE tier will be a part of my contact form so the 500$ price is just a placeholder --
-('BOX/Enterprise', 500.00, 'A top view within a box where service and customer experience is top level.'),
-('VIP', 120.00, 'Front-row leather recliners with table service.'),
-('Premium', 80.00, 'Center view, extra legroom.'),
-('Standard', 50.00, 'Regular seating, great for general audience.');
 
 INSERT INTO Tournament (gameID, tournamentName, startDate, endDate, tournamentDescription) VALUES
 (1, 'League of Legends: Worlds 2026', '2026-11-10', '2026-11-20', 'The grand finale of competitive LoL featuring global champions.'),
