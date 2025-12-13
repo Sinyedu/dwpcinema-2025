@@ -3,11 +3,6 @@ session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/UserSupportController.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
 $pdo = Database::getInstance();
 $ctrl = new UserSupportController($pdo);
 
@@ -17,16 +12,9 @@ if (
 ) {
     header('Content-Type: application/json');
 
-    error_reporting(E_ERROR | E_PARSE);
-
     try {
         if (isset($_POST['subject'], $_POST['message'])) {
-            $ticketID = $ctrl->createTicket(
-                $_SESSION['user_id'],
-                $_POST['subject'],
-                $_POST['message'],
-                $_POST['priority'] ?? 'medium'
-            );
+            $ticketID = $ctrl->createTicket($_SESSION['user_id'], $_POST['subject'], $_POST['message'], $_POST['priority'] ?? 'medium');
             echo json_encode(['success' => true, 'ticketID' => $ticketID]);
             exit;
         }
@@ -36,10 +24,7 @@ if (
             $message  = trim($_POST['replyMessage']);
 
             if (!$ctrl->canSendMessage($ticketID, $_SESSION['user_id'])) {
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Please wait for admin reply.'
-                ]);
+                echo json_encode(['success' => false, 'error' => 'Please wait for admin reply.']);
                 exit;
             }
 
@@ -56,9 +41,7 @@ if (
         }
 
         if (isset($_GET['fetchUnreadCount'])) {
-            echo json_encode([
-                'unreadCount' => $ctrl->getUnreadMessages($_SESSION['user_id'])
-            ]);
+            echo json_encode(['unreadCount' => $ctrl->getUnreadMessages($_SESSION['user_id'])]);
             exit;
         }
 
@@ -68,6 +51,11 @@ if (
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         exit;
     }
+}
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
 }
 
 $tickets = $ctrl->getUserTickets($_SESSION['user_id']);
