@@ -1,18 +1,15 @@
 <?php
-class BookingController {
-    private $showingModel;
-    private $bookingModel;
+class BookingController
+{
+    private Booking $bookingModel;
 
-    public function __construct(Showing $showingModel, Booking $bookingModel) {
-        $this->showingModel = $showingModel;
+    public function __construct(Booking $bookingModel)
+    {
         $this->bookingModel = $bookingModel;
     }
 
-    public function listShowings($tournamentID = null) {
-        return $this->showingModel->getAll($tournamentID);
-    }
-
-    public function book($userID, $showingID) {
-        return $this->bookingModel->create($userID, $showingID);
+    public function book(int $userID, int $showingID, array $seatIDs): int
+    {
+        return $this->bookingModel->create($userID, $showingID, $seatIDs);
     }
 }
