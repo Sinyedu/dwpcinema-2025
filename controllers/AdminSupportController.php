@@ -11,6 +11,11 @@ class AdminSupportController
         $this->model = new SupportModel($pdo);
     }
 
+    public function getReservationInfo(int $showingID): array
+    {
+        return $this->model->getReservationInfo($showingID);
+    }
+
     public function getAllTickets(): array
     {
         return $this->model->getAllTickets();
@@ -29,5 +34,26 @@ class AdminSupportController
     public function updateTicketStatus(int $ticketID, string $status): bool
     {
         return $this->model->updateTicketStatus($ticketID, $status);
+    }
+
+    public function getAllTicketsDetailed(): array
+    {
+        return $this->model->getAllTicketsWithDetails();
+    }
+
+    public function getAllTicketsWithReservation(): array
+    {
+        $tickets = $this->model->getAllTickets();
+
+        foreach ($tickets as &$t) {
+            if ($t['subject'] === 'Reservation' && !empty($t['showingID'])) {
+                $res = $this->model->getReservationInfo($t['showingID']);
+                $t['gameName'] = $res['gameName'] ?? '-';
+                $t['showingDate'] = $res['showingDate'] ?? '-';
+                $t['showingTime'] = $res['showingTime'] ?? '-';
+            }
+        }
+
+        return $tickets;
     }
 }

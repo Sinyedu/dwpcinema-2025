@@ -8,13 +8,13 @@ class SupportModel
         $this->pdo = $pdo;
     }
 
-    public function createTicket(int $userID, string $subject, string $priority = 'medium'): int
+    public function createTicket(int $userID, string $subject, string $priority = 'medium', ?int $gameID = null, ?int $showingID = null): int
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO SupportTicket (userID, subject, priority)
-            VALUES (?, ?, ?)
-        ");
-        $stmt->execute([$userID, $subject, $priority]);
+        INSERT INTO SupportTicket (userID, subject, priority, gameID, showingID)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+        $stmt->execute([$userID, $subject, $priority, $gameID, $showingID]);
         return (int)$this->pdo->lastInsertId();
     }
 
@@ -95,6 +95,33 @@ class SupportModel
     {
         $stmt = $this->pdo->prepare("UPDATE SupportTicket SET status = ? WHERE ticketID = ?");
         return $stmt->execute([$status, $ticketID]);
+    }
+
+    public function getAllTicketsWithDetails(): array
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT t.ticketID, t.userID, u.firstName, u.lastName, t.subject, t.status, t.priority, t.updatedAt,
+               g.gameName, s.showingDate, s.showingTime
+        FROM SupportTicket t
+        JOIN User u ON t.userID = u.userID
+        LEFT JOIN Game g ON t.gameID = g.gameID
+        LEFT JOIN Showing s ON t.showingID = s.showingID
+        ORDER BY t.updatedAt DESC
+    ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getReservationInfo(int $showingID): array
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT g.gameName, s.showingDate, s.showingTime
+        FROM Showing s
+        JOIN Game g ON s.gameID = g.gameID
+        WHERE s.showingID = ?
+    ");
+        $stmt->execute([$showingID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function countConsecutiveUserMessages(int $ticketID, int $userID): int

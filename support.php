@@ -11,67 +11,65 @@ if (!isset($_SESSION['user_id'])) {
 $pdo = Database::getInstance();
 $ctrl = new UserSupportController($pdo);
 
-$tickets = $ctrl->getUserTickets($_SESSION['user_id']);
-$activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
-
-if (isset($_GET['fetchUnreadCount'])) {
-    header('Content-Type: application/json');
-    $unread = $ctrl->getUnreadMessages($_SESSION['user_id']);
-    echo json_encode(['unreadCount' => $unread]);
-    exit;
-}
-
-if (isset($_GET['fetchMessages']) && isset($_GET['ticketID'])) {
+if (
+    isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+) {
     header('Content-Type: application/json');
 
-    $ticketID = (int)$_GET['ticketID'];
-
-    $ctrl->markMessagesRead($ticketID, $_SESSION['user_id']);
-
-    echo json_encode($ctrl->getMessages($ticketID));
-    exit;
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
-    header('Content-Type: application/json');
     try {
-        $ticketID = (int)$_POST['replyTicketID'];
-        $userID = $_SESSION['user_id'];
-        $message = trim($_POST['replyMessage']);
+        if (isset($_POST['subject'], $_POST['message'])) {
+            $ticketID = $ctrl->createTicket(
+                $_SESSION['user_id'],
+                $_POST['subject'],
+                $_POST['message'],
+                $_POST['priority'] ?? 'medium'
+            );
+            echo json_encode(['success' => true, 'ticketID' => $ticketID]);
+            exit;
+        }
 
-        if (!$ctrl->canSendMessage($ticketID, $userID)) {
+        if (isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
+            $ticketID = (int)$_POST['replyTicketID'];
+            $message  = trim($_POST['replyMessage']);
+
+            if (!$ctrl->canSendMessage($ticketID, $_SESSION['user_id'])) {
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'Please wait for admin reply.'
+                ]);
+                exit;
+            }
+
+            $success = $ctrl->sendMessage($ticketID, $_SESSION['user_id'], $message);
+            echo json_encode(['success' => $success]);
+            exit;
+        }
+
+        if (isset($_GET['fetchMessages'], $_GET['ticketID'])) {
+            $ticketID = (int)$_GET['ticketID'];
+            $ctrl->markMessagesRead($ticketID, $_SESSION['user_id']);
+            echo json_encode($ctrl->getMessages($ticketID));
+            exit;
+        }
+
+        if (isset($_GET['fetchUnreadCount'])) {
             echo json_encode([
-                'success' => false,
-                'error' => 'You have reached the message limit. Please wait for an admin reply before sending more messages.'
+                'unreadCount' => $ctrl->getUnreadMessages($_SESSION['user_id'])
             ]);
             exit;
         }
 
-        $success = $ctrl->sendMessage($ticketID, $userID, $message);
-        echo json_encode(['success' => $success]);
-    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        exit;
+    } catch (Throwable $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        exit;
     }
-    exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['message'], $_POST['priority'])) {
-    header('Content-Type: application/json');
-    try {
-        $ticketID = $ctrl->createTicket(
-            $_SESSION['user_id'],
-            $_POST['subject'],
-            $_POST['message'],
-            $_POST['priority']
-        );
-        echo json_encode(['success' => true, 'ticketID' => $ticketID]);
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-    }
-    exit;
-}
-
-
-
+$tickets = $ctrl->getUserTickets($_SESSION['user_id']);
+$activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 ?>
 
@@ -91,7 +89,6 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 </head>
 
 <body class="bg-gray-50 min-h-screen flex flex-col">
-
     <?php include __DIR__ . '/includes/navbar.php'; ?>
 
     <main class="flex-1 max-w-6xl mx-auto w-full p-6 mt-24">
@@ -100,13 +97,23 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
         <section class="mb-8">
             <form id="createTicketForm" class="bg-white p-6 rounded shadow space-y-4">
                 <h2 class="text-xl font-semibold">Create New Ticket</h2>
-                <input name="subject" placeholder="Subject" class="w-full p-2 border rounded" required>
+                <select name="subject" id="subjectSelect" class="w-full p-2 border rounded" required>
+                    <option value="" disabled selected>Select a subject</option>
+                    <option value="General Inquiry">General Inquiry</option>
+                    <option value="Technical Issue">Technical Issue</option>
+                    <option value="Reservation">Reservation</option>
+                    <option value="Billing">Billing</option>
+                    <option value="Feedback">Feedback</option>
+                </select>
+
                 <textarea name="message" rows="4" placeholder="Message" class="w-full p-2 border rounded" required></textarea>
+
                 <select name="priority" class="w-full p-2 border rounded">
                     <option value="medium">Medium</option>
                     <option value="low">Low</option>
                     <option value="high">High</option>
                 </select>
+
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Create Ticket
                 </button>

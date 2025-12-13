@@ -8,10 +8,21 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
+
 $pdo = Database::getInstance();
 $adminSupport = new AdminSupportController($pdo);
 $tickets = $adminSupport->getAllTickets();
-// This is sorting tickets based by priority so the admin can easier manage.
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['message'])) {
+    $adminSupport->replyToTicket(
+        (int)$_POST['ticketID'],
+        $_SESSION['admin_id'],
+        $_POST['message']
+    );
+    header("Location: ?ticketID=" . (int)$_POST['ticketID']);
+    exit;
+}
+
 usort($tickets, function ($a, $b) {
     $order = ['high' => 1, 'medium' => 2, 'low' => 3];
     return ($order[$a['priority']] ?? 4) - ($order[$b['priority']] ?? 4);
@@ -20,13 +31,15 @@ usort($tickets, function ($a, $b) {
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $adminSupport->getTicketMessages($activeTicketID) : [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['message'])) {
-    $adminSupport->replyToTicket((int)$_POST['ticketID'], (int)$_SESSION['admin_id'], $_POST['message']);
-    header("Location: support.php?ticketID=" . (int)$_POST['ticketID']);
-    exit;
+foreach ($tickets as &$t) {
+    if (!empty($t['showingID'])) {
+        $resInfo = $adminSupport->getReservationInfo($t['showingID']);
+        $t['gameName'] = $resInfo['gameName'] ?? '';
+        $t['showingDate'] = $resInfo['showingDate'] ?? '';
+        $t['showingTime'] = $resInfo['showingTime'] ?? '';
+    }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['m
 </head>
 
 <body class="bg-gray-100 flex min-h-screen">
-
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">
@@ -68,6 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticketID'], $_POST['m
                                         <div class="font-medium"><?= htmlspecialchars($t['subject']) ?></div>
                                         <div class="text-xs text-gray-500">
                                             <?= htmlspecialchars($t['firstName'] . ' ' . $t['lastName']) ?> • <?= htmlspecialchars($t['status']) ?>
+                                            <?php if ($t['subject'] === 'Reservation' && !empty($t['gameName'])): ?>
+                                                • Game: <?= htmlspecialchars($t['gameName']) ?>
+                                                • Showing: <?= htmlspecialchars($t['showingDate'] ?? '-') ?> <?= htmlspecialchars($t['showingTime'] ?? '-') ?>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-2">

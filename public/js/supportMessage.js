@@ -1,83 +1,120 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const ticketID = window.ticketID;
-    const messageBox = document.getElementById('messageBox');
-    const replyForm = document.getElementById('replyForm');
-    const newMessage = document.getElementById('newMessage');
-    const createTicketForm = document.getElementById('createTicketForm');
+document.addEventListener("DOMContentLoaded", () => {
+  const ticketID = window.ticketID;
+  const messageBox = document.getElementById("messageBox");
+  const replyForm = document.getElementById("replyForm");
+  const newMessage = document.getElementById("newMessage");
+  const createTicketForm = document.getElementById("createTicketForm");
+  const supportUnreadBadge = document.getElementById("supportUnreadBadge");
 
-    async function pollMessages() {
-        if (!ticketID || !messageBox) return;
-        try {
-            const res = await fetch(`support.php?ticketID=${ticketID}&fetchMessages=1`);
-            const messages = await res.json();
-            messageBox.innerHTML = '';
-            messages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = msg.senderRole === 'admin' ? 'text-red-600 mb-2' : 'text-blue-600 mb-2';
-                div.innerHTML = `<strong>${msg.senderRole}:</strong> ${msg.message} <span class="text-gray-400 text-xs block">${msg.createdAt}</span>`;
-                messageBox.appendChild(div);
-            });
-            messageBox.scrollTop = messageBox.scrollHeight;
-        } catch (err) {
-            console.error(err);
-            showToast('Failed to load messages.', 'error');
-        }
+  async function fetchJSON(url, options = {}) {
+    try {
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      showToast("Failed to fetch data.", "error", 5000);
+      return null;
     }
+  }
+  async function pollMessages() {
+    if (!ticketID || !messageBox) return;
 
-   if (replyForm) {
-    replyForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        const message = newMessage.value.trim();
-        if (!message) return;
+    const messages = await fetchJSON(
+      `support.php?ticketID=${ticketID}&fetchMessages=1`,
+      { headers: { "X-Requested-With": "XMLHttpRequest" } }
+    );
+    if (!messages || !Array.isArray(messages)) return;
 
-        try {
-            const res = await fetch('support.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    replyTicketID: ticketID,
-                    replyMessage: message
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                newMessage.value = '';
-                pollMessages();
-                showToast('Message sent successfully!', 'success');
-            } else {
-                showToast(data.error || 'Failed to send message!', 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            showToast('An unexpected error occurred.', 'error');
-        }
+    messageBox.innerHTML = "";
+    messages.forEach((msg) => {
+      const div = document.createElement("div");
+      div.className =
+        msg.senderRole === "admin" ? "text-red-600 mb-2" : "text-blue-600 mb-2";
+      div.innerHTML = `<strong>${msg.senderRole}:</strong> ${msg.message} <span class="text-gray-400 text-xs block">${msg.createdAt}</span>`;
+      messageBox.appendChild(div);
     });
-}
-    if (createTicketForm) {
-        createTicketForm.addEventListener('submit', async e => {
-            e.preventDefault();
-            const formData = new FormData(createTicketForm);
+    messageBox.scrollTop = messageBox.scrollHeight;
+  }
+  async function pollUnread() {
+    if (!supportUnreadBadge) return;
 
-            try {
-                const res = await fetch('support.php', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('Ticket created successfully!', 'success');
-                    window.location.href = `support.php?ticketID=${data.ticketID}`;
-                } else {
-                    console.error(data.error);
-                    showToast('Failed to create ticket!', 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('An unexpected error occurred.', 'error');
-            }
-        });
+    const data = await fetchJSON("support.php?fetchUnreadCount=1", {
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    });
+    if (!data) return;
+
+    const count = data.unreadCount || 0;
+    if (count > 0) {
+      supportUnreadBadge.textContent = count;
+      supportUnreadBadge.classList.remove("hidden");
+    } else {
+      supportUnreadBadge.classList.add("hidden");
     }
+  }
 
-    pollMessages();
-    setInterval(pollMessages, 2000);
+  setInterval(pollMessages, 5000);
+  setInterval(pollUnread, 7000);
+  pollMessages();
+  pollUnread();
+
+  if (replyForm) {
+    replyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const message = newMessage.value.trim();
+      if (!message) return;
+
+      const formData = new FormData();
+      formData.append("replyTicketID", ticketID);
+      formData.append("replyMessage", message);
+
+      try {
+        const data = await fetchJSON("support.php", {
+          method: "POST",
+          body: formData,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        });
+
+        if (data && data.success) {
+          newMessage.value = "";
+          pollMessages();
+          showToast("Message sent successfully!", "success", 3000);
+        } else {
+          showToast(data?.error || "Failed to send message!", "error", 5000);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Unexpected error.", "error", 5000);
+      }
+    });
+  }
+
+  if (createTicketForm) {
+    createTicketForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createTicketForm);
+
+      showToast("Sending your ticket...", "info", 3000);
+
+      try {
+        const data = await fetchJSON("support.php", {
+          method: "POST",
+          body: formData,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        });
+
+        if (data && data.success) {
+          showToast("Ticket created successfully!", "success", 3000);
+          setTimeout(() => {
+            window.location.href = `support.php?ticketID=${data.ticketID}`;
+          }, 1000);
+        } else {
+          showToast(data?.error || "Failed to create ticket!", "error", 5000);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Unexpected error.", "error", 5000);
+      }
+    });
+  }
 });

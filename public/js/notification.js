@@ -1,22 +1,33 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const badge = document.getElementById('supportUnreadBadge');
+const createTicketForm = document.getElementById("createTicketForm");
 
-    async function updateUnreadCount() {
-        try {
-            const res = await fetch('support.php?fetchUnreadCount=1');
-            const data = await res.json();
-            const count = data.unreadCount || 0;
-            if (count > 0) {
-                badge.textContent = count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        } catch (err) {
-            console.error('Failed to fetch unread messages count:', err);
-        }
+if (createTicketForm) {
+  createTicketForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(createTicketForm);
+
+    showToast("Sending your ticket...", "info", 7000);
+
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const res = await fetch("support.php", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Ticket created successfully!", "success", 7000);
+
+        setTimeout(() => {
+          window.location.href = `support.php?ticketID=${data.ticketID}`;
+        }, 5000);
+      } else {
+        console.error(data.error);
+        showToast(data.error || "Failed to create ticket!", "error", 7000);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("An unexpected error occurred.", "error", 7000);
     }
-
-    updateUnreadCount();
-    setInterval(updateUnreadCount, 5000);
-});
+  });
+}

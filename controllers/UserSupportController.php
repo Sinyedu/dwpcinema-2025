@@ -36,8 +36,14 @@ class UserSupportController
         return $this->model->addMessage($ticketID, $userID, 'user', $message) > 0;
     }
 
-    public function createTicket(int $userID, string $subject, string $message, string $priority = 'medium'): int
-    {
+    public function createTicket(
+        int $userID,
+        string $subject,
+        string $message,
+        string $priority = 'medium',
+        ?int $gameID = null,
+        ?int $showingID = null
+    ): int {
         $subject = SecurityController::sanitizeInput($subject);
         $message = SecurityController::sanitizeInput($message);
 
@@ -45,12 +51,18 @@ class UserSupportController
             throw new Exception("Subject and message cannot be empty.");
         }
 
-        $ticketID = $this->model->createTicket($userID, $subject, $priority);
+        $ticketID = $this->model->createTicket(
+            $userID,
+            $subject,
+            $priority,
+            $gameID,
+            $showingID
+        );
+
         $this->model->addMessage($ticketID, $userID, 'user', $message);
 
         return $ticketID;
     }
-
     public function canSendMessage(int $ticketID, int $userID, int $limit = 3): bool
     {
         $consecutive = $this->model->countConsecutiveUserMessages($ticketID, $userID);
