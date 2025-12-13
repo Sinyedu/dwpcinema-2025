@@ -22,10 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
-      `/ajax/supportAction.php?ticketID=${ticketID}&fetchMessages=1`,
-      {
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }
+      `support.php?ticketID=${ticketID}&fetchMessages=1`,
+      { headers: { "X-Requested-With": "XMLHttpRequest" } }
     );
 
     if (!messages || !Array.isArray(messages)) return;
@@ -44,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
-    const data = await fetchJSON("/ajax/supportAction.php?fetchUnreadCount=1", {
+    const data = await fetchJSON("support.php?fetchUnreadCount=1", {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
 
@@ -70,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
 
-      const data = await fetchJSON("/ajax/supportAction.php", {
+      const data = await fetchJSON("support.php", {
         method: "POST",
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
@@ -97,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(createTicketForm);
       showToast("Sending your ticket...", "info", 3000);
 
-      const data = await fetchJSON("/ajax/supportAction.php", {
+      const data = await fetchJSON("support.php", {
         method: "POST",
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
