@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(url, options);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+
+      const data = await res.json();
+      return data;
     } catch (err) {
       console.error("Fetch error:", err);
       showToast("Failed to fetch data.", "error", 5000);
@@ -26,7 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
       { headers: { "X-Requested-With": "XMLHttpRequest" } }
     );
 
-    if (!messages || !Array.isArray(messages)) return;
+    if (!messages || !Array.isArray(messages)) {
+      return;
+    }
 
     messageBox.innerHTML = "";
     messages.forEach((msg) => {

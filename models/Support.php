@@ -18,18 +18,18 @@ class SupportModel
         return (int)$this->pdo->lastInsertId();
     }
 
-    public function addMessage(int $ticketID, int $senderID, string $role, string $message): int
+    public function addMessage(int $ticketID, int $senderID, string $role, string $message): bool
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO SupportMessage (ticketID, senderID, senderRole, message)
-            VALUES (?, ?, ?, ?)
-        ");
-        $stmt->execute([$ticketID, $senderID, $role, $message]);
+        INSERT INTO SupportMessage (ticketID, senderID, senderRole, message)
+        VALUES (?, ?, ?, ?)
+    ");
+        $success = $stmt->execute([$ticketID, $senderID, $role, $message]);
 
         $this->pdo->prepare("UPDATE SupportTicket SET updatedAt = NOW() WHERE ticketID = ?")
             ->execute([$ticketID]);
 
-        return (int)$this->pdo->lastInsertId();
+        return (bool)$success;
     }
 
     public function countUnreadMessages(int $userID): int
