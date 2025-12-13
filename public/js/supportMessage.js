@@ -21,33 +21,37 @@ document.addEventListener("DOMContentLoaded", () => {
       return null;
     }
   }
+
   async function pollMessages() {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
-      `support.php?ticketID=${ticketID}&fetchMessages=1`
+      `support.php?ticketID=${ticketID}&fetchMessages=1`,
+      {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      }
     );
 
     if (!messages || !Array.isArray(messages)) return;
 
     messageBox.innerHTML = "";
-
     messages.forEach((msg) => {
       const div = document.createElement("div");
       div.className =
-        (msg.senderRole === "admin" ? "text-red-600" : "text-blue-600") +
-        " mb-2 fade-in";
+        msg.senderRole === "admin" ? "text-red-600 mb-2" : "text-blue-600 mb-2";
       div.innerHTML = `<strong>${msg.senderRole}:</strong> ${msg.message} <span class="text-gray-400 text-xs block">${msg.createdAt}</span>`;
       messageBox.appendChild(div);
     });
-
     messageBox.scrollTop = messageBox.scrollHeight;
   }
 
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
-    const data = await fetchJSON("support.php?fetchUnreadCount=1");
+    const data = await fetchJSON("support.php?fetchUnreadCount=1", {
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    });
+
     if (!data) return;
 
     const count = data.unreadCount || 0;
