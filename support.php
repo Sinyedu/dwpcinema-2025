@@ -11,10 +11,16 @@ if (
     strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
 ) {
     header('Content-Type: application/json');
+    ob_clean();
 
     try {
         if (isset($_POST['subject'], $_POST['message'])) {
-            $ticketID = $ctrl->createTicket($_SESSION['user_id'], $_POST['subject'], $_POST['message'], $_POST['priority'] ?? 'medium');
+            $ticketID = $ctrl->createTicket(
+                $_SESSION['user_id'],
+                $_POST['subject'],
+                $_POST['message'],
+                $_POST['priority'] ?? 'medium'
+            );
             echo json_encode(['success' => true, 'ticketID' => $ticketID]);
             exit;
         }
@@ -62,7 +68,6 @@ $tickets = $ctrl->getUserTickets($_SESSION['user_id']);
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
