@@ -124,7 +124,6 @@ $games = $gameController->getAllGames();
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <!-- RESERVATIONS PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">Reservations</h3>
