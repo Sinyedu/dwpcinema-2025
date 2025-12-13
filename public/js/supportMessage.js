@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
-      console.log("AJAX reply response:", data);
 
       if (data && data.success) {
         newMessage.value = "";
