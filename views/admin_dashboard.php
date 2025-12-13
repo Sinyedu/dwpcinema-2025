@@ -11,12 +11,12 @@ include __DIR__ . '/../includes/adminSidebar.php';
 $pdo = Database::getInstance();
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../public/admin_login.php");
+    header("Location: admin_login.php");
     exit;
 }
 
 $adminController = new AdminController($pdo);
-$reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY created_at DESC");
+$reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY createdAt DESC");
 $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tournamentController = new TournamentController($pdo);
 $newsController = new NewsController($pdo);
@@ -47,7 +47,7 @@ $games = $gameController->getAllGames();
     <div class="flex-1 ml-64 p-8">
         <header class="flex justify-between items-center mb-8 border-b pb-4">
             <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
-            <a href="../../public/logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
+            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
         </header>
 
         <section class="grid md:grid-cols-3 gap-6 mb-10">

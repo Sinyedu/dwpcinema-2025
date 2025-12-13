@@ -16,9 +16,19 @@ class UserSupportController
         return $this->model->getUserTickets($userID);
     }
 
+    public function getUnreadMessages(int $userID): int
+    {
+        return $this->model->countUnreadMessages($userID);
+    }
+
     public function getMessages(int $ticketID): array
     {
         return $this->model->getMessages($ticketID);
+    }
+
+    public function markMessagesRead(int $ticketID, int $userID): bool
+    {
+        return $this->model->markMessagesRead($ticketID, $userID);
     }
 
     public function sendMessage(int $ticketID, int $userID, string $message): bool

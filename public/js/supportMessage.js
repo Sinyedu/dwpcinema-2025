@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageBox.scrollTop = messageBox.scrollHeight;
         } catch (err) {
             console.error(err);
+            showToast('Failed to load messages.', 'error');
         }
     }
 
@@ -41,11 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     newMessage.value = '';
                     pollMessages();
+                    showToast('Message sent successfully!', 'success');
                 } else {
                     console.error(data.error);
+                    showToast('Failed to send message!', 'error');
                 }
             } catch (err) {
                 console.error(err);
+                showToast('An unexpected error occurred.', 'error');
             }
         });
     }
@@ -63,12 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await res.json();
                 if (data.success) {
+                    showToast('Ticket created successfully!', 'success');
                     window.location.href = `support.php?ticketID=${data.ticketID}`;
                 } else {
                     console.error(data.error);
+                    showToast('Failed to create ticket!', 'error');
                 }
             } catch (err) {
                 console.error(err);
+                showToast('An unexpected error occurred.', 'error');
             }
         });
     }

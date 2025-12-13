@@ -32,6 +32,20 @@ class SupportModel
         return (int)$this->pdo->lastInsertId();
     }
 
+    public function countUnreadMessages(int $userID): int
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT COUNT(*) 
+        FROM SupportMessage m
+        JOIN SupportTicket t ON m.ticketID = t.ticketID
+        WHERE t.userID = :userID
+          AND m.senderRole = 'admin'
+          AND m.isRead = 0
+    ");
+        $stmt->execute(['userID' => $userID]);
+        return (int)$stmt->fetchColumn();
+    }
+
     public function getMessages(int $ticketID): array
     {
         $stmt = $this->pdo->prepare("
@@ -42,6 +56,16 @@ class SupportModel
         ");
         $stmt->execute([$ticketID]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function markMessagesRead(int $ticketID, int $userID): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE SupportMessage
+        SET isRead = 1
+        WHERE ticketID = :ticketID AND senderRole = 'admin'
+    ");
+        return $stmt->execute(['ticketID' => $ticketID]);
     }
 
     public function getUserTickets(int $userID): array

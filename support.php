@@ -14,12 +14,23 @@ $ctrl = new UserSupportController($pdo);
 $tickets = $ctrl->getUserTickets($_SESSION['user_id']);
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 
-if (isset($_GET['fetchMessages']) && isset($_GET['ticketID'])) {
+if (isset($_GET['fetchUnreadCount'])) {
     header('Content-Type: application/json');
-    echo json_encode($ctrl->getMessages((int)$_GET['ticketID']));
+    $unread = $ctrl->getUnreadMessages($_SESSION['user_id']);
+    echo json_encode(['unreadCount' => $unread]);
     exit;
 }
 
+if (isset($_GET['fetchMessages']) && isset($_GET['ticketID'])) {
+    header('Content-Type: application/json');
+
+    $ticketID = (int)$_GET['ticketID'];
+
+    $ctrl->markMessagesRead($ticketID, $_SESSION['user_id']);
+
+    echo json_encode($ctrl->getMessages($ticketID));
+    exit;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
     header('Content-Type: application/json');
     try {
@@ -66,6 +77,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
         window.userID = <?= $_SESSION['user_id'] ?>;
     </script>
     <script src="public/js/supportMessage.js" defer></script>
+    <script src="public/js/toast.js" defer></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen flex flex-col">

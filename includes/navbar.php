@@ -12,7 +12,13 @@ if (session_status() === PHP_SESSION_NONE) {
         <a href="tournaments.php" class="hover:text-blue-600 font-medium text-sm">Tournaments</a>
         <a href="news.php" class="hover:text-blue-600 font-medium text-sm">News</a>
         <a href="users.php" class="hover:text-blue-600 font-medium text-sm">Community</a>
-        <a href="support.php" class="hover:text-blue-600 font-medium text-sm">Support</a>
+        <a href="support.php" class="hover:text-blue-600 font-medium text-sm relative" id="supportLink">
+            Support
+            <span id="supportUnreadBadge"
+                class="absolute -top-2 -right-3 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full hidden">
+                0
+            </span>
+        </a>
     </div>
 
     <div class="flex items-center space-x-4">
@@ -34,5 +40,5 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="register.php" class="hover:text-blue-600 font-medium text-sm">Register</a>
         <?php endif; ?>
     </div>
-
+    <script src="public/js/notification.js" defer></script>
 </nav>
