@@ -39,7 +39,7 @@ if (
             if ($sent) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => true]);
+                echo json_encode(['success' => false, 'error' => 'Message could not be sent.']);
             }
             exit;
         }
