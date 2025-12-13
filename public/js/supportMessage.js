@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
-    const data = await fetchJSON("ajax/support_action.php?fetchUnreadCount=1", {
+    const data = await fetchJSON("ajax/supportAction.php?fetchUnreadCount=1", {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
 
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
-    const data = await fetchJSON("ajax/support_action.php", {
+    const data = await fetchJSON("ajax/supportAction.php", {
       method: "POST",
       body: formData,
       headers: { "X-Requested-With": "XMLHttpRequest" },
