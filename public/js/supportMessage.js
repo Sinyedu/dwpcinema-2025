@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const text = await res.text();
-      console.log("Server response:", text);
 
       return JSON.parse(text);
     } catch (err) {
