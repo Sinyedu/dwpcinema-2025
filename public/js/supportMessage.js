@@ -10,10 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(url, options);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const text = await res.text();
-
-      return JSON.parse(text);
+      return await res.json();
     } catch (err) {
       console.error("Fetch error:", err);
       showToast("Failed to fetch data.", "error", 5000);
@@ -25,15 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
-      `ajax/supportAction.php?ticketID=${ticketID}&fetchMessages=1`,
+      `/ajax/supportAction.php?ticketID=${ticketID}&fetchMessages=1`,
       {
         headers: { "X-Requested-With": "XMLHttpRequest" },
       }
     );
-
-    const data = await fetchJSON("ajax/supportAction.php?fetchUnreadCount=1", {
-      headers: { "X-Requested-With": "XMLHttpRequest" },
-    });
 
     if (!messages || !Array.isArray(messages)) return;
 
@@ -51,21 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
-    const data = await fetchJSON("ajax/supportAction.php", {
-      method: "POST",
-      body: formData,
+    const data = await fetchJSON("/ajax/supportAction.php?fetchUnreadCount=1", {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
 
     if (!data) return;
 
     const count = data.unreadCount || 0;
-    if (count > 0) {
-      supportUnreadBadge.textContent = count;
-      supportUnreadBadge.classList.remove("hidden");
-    } else {
-      supportUnreadBadge.classList.add("hidden");
-    }
+    supportUnreadBadge.textContent = count;
+    supportUnreadBadge.classList.toggle("hidden", count === 0);
   }
 
   pollMessages();
@@ -83,30 +70,23 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
 
-      try {
-        const data = await fetchJSON("support.php", {
-          method: "POST",
-          body: formData,
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        });
+      const data = await fetchJSON("/ajax/supportAction.php", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
 
-        if (data && data.success) {
-          newMessage.value = "";
-
-          const div = document.createElement("div");
-          div.className = "text-blue-600 mb-2";
-          const now = new Date().toLocaleString();
-          div.innerHTML = `<strong>You:</strong> ${message} <span class="text-gray-400 text-xs block">${now}</span>`;
-          messageBox.appendChild(div);
-          messageBox.scrollTop = messageBox.scrollHeight;
-
-          showToast("Message sent successfully!", "success", 3000);
-        } else {
-          showToast(data?.error || "Failed to send message!", "error", 5000);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Unexpected error.", "error", 5000);
+      if (data && data.success) {
+        newMessage.value = "";
+        const div = document.createElement("div");
+        div.className = "text-blue-600 mb-2";
+        const now = new Date().toLocaleString();
+        div.innerHTML = `<strong>You:</strong> ${message} <span class="text-gray-400 text-xs block">${now}</span>`;
+        messageBox.appendChild(div);
+        messageBox.scrollTop = messageBox.scrollHeight;
+        showToast("Message sent successfully!", "success", 3000);
+      } else {
+        showToast(data?.error || "Failed to send message!", "error", 5000);
       }
     });
   }
@@ -115,27 +95,21 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicketForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(createTicketForm);
-
       showToast("Sending your ticket...", "info", 3000);
 
-      try {
-        const data = await fetchJSON("support.php", {
-          method: "POST",
-          body: formData,
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        });
+      const data = await fetchJSON("/ajax/supportAction.php", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
 
-        if (data && data.success) {
-          showToast("Ticket created successfully!", "success", 3000);
-          setTimeout(() => {
-            window.location.href = `support.php?ticketID=${data.ticketID}`;
-          }, 1000);
-        } else {
-          showToast(data?.error || "Failed to create ticket!", "error", 5000);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Unexpected error.", "error", 5000);
+      if (data && data.success) {
+        showToast("Ticket created successfully!", "success", 3000);
+        setTimeout(() => {
+          window.location.href = `support.php?ticketID=${data.ticketID}`;
+        }, 1000);
+      } else {
+        showToast(data?.error || "Failed to create ticket!", "error", 5000);
       }
     });
   }
