@@ -10,14 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(url, options);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+
+      const text = await res.text();
+      console.log("Server response:", text);
+
+      return JSON.parse(text);
     } catch (err) {
       console.error("Fetch error:", err);
       showToast("Failed to fetch data.", "error", 5000);
       return null;
     }
   }
-
   async function pollMessages() {
     if (!ticketID || !messageBox) return;
 
