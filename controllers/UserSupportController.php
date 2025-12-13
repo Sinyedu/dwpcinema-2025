@@ -50,4 +50,10 @@ class UserSupportController
 
         return $ticketID;
     }
+
+    public function canSendMessage(int $ticketID, int $userID, int $limit = 3): bool
+    {
+        $consecutive = $this->model->countConsecutiveUserMessages($ticketID, $userID);
+        return $consecutive < $limit;
+    }
 }

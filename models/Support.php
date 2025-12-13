@@ -96,4 +96,26 @@ class SupportModel
         $stmt = $this->pdo->prepare("UPDATE SupportTicket SET status = ? WHERE ticketID = ?");
         return $stmt->execute([$status, $ticketID]);
     }
+
+    public function countConsecutiveUserMessages(int $ticketID, int $userID): int
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT senderRole
+        FROM SupportMessage
+        WHERE ticketID = :ticketID
+        ORDER BY createdAt DESC
+    ");
+        $stmt->execute(['ticketID' => $ticketID]);
+        $messages = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $count = 0;
+        foreach ($messages as $role) {
+            if ($role === 'user') {
+                $count++;
+            } else {
+                break;
+            }
+        }
+        return $count;
+    }
 }

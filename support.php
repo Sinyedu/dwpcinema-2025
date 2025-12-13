@@ -34,11 +34,19 @@ if (isset($_GET['fetchMessages']) && isset($_GET['ticketID'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['replyTicketID'], $_POST['replyMessage'])) {
     header('Content-Type: application/json');
     try {
-        $success = $ctrl->sendMessage(
-            (int)$_POST['replyTicketID'],
-            (int)$_SESSION['user_id'],
-            trim($_POST['replyMessage'])
-        );
+        $ticketID = (int)$_POST['replyTicketID'];
+        $userID = $_SESSION['user_id'];
+        $message = trim($_POST['replyMessage']);
+
+        if (!$ctrl->canSendMessage($ticketID, $userID)) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'You have reached the message limit. Please wait for an admin reply before sending more messages.'
+            ]);
+            exit;
+        }
+
+        $success = $ctrl->sendMessage($ticketID, $userID, $message);
         echo json_encode(['success' => $success]);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -61,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subject'], $_POST['me
     }
     exit;
 }
+
+
 
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 ?>

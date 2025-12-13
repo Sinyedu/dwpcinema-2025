@@ -24,36 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (replyForm) {
-        replyForm.addEventListener('submit', async e => {
-            e.preventDefault();
-            const message = newMessage.value.trim();
-            if (!message) return;
+   if (replyForm) {
+    replyForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const message = newMessage.value.trim();
+        if (!message) return;
 
-            try {
-                const res = await fetch('support.php', {
-                    method: 'POST',
-                    body: new URLSearchParams({
-                        replyTicketID: ticketID,
-                        replyMessage: message
-                    })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    newMessage.value = '';
-                    pollMessages();
-                    showToast('Message sent successfully!', 'success');
-                } else {
-                    console.error(data.error);
-                    showToast('Failed to send message!', 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('An unexpected error occurred.', 'error');
+        try {
+            const res = await fetch('support.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    replyTicketID: ticketID,
+                    replyMessage: message
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                newMessage.value = '';
+                pollMessages();
+                showToast('Message sent successfully!', 'success');
+            } else {
+                showToast(data.error || 'Failed to send message!', 'error');
             }
-        });
-    }
-
+        } catch (err) {
+            console.error(err);
+            showToast('An unexpected error occurred.', 'error');
+        }
+    });
+}
     if (createTicketForm) {
         createTicketForm.addEventListener('submit', async e => {
             e.preventDefault();
