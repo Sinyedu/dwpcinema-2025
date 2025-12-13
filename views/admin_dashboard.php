@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../controllers/AdminSupportController.php';
 require_once "../controllers/AdminController.php";
 require_once __DIR__ . '/../classes/Database.php';
 require_once "../controllers/TournamentController.php";
@@ -10,16 +11,19 @@ include __DIR__ . '/../includes/adminSidebar.php';
 $pdo = Database::getInstance();
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../public/admin_login.php");
+    header("Location: admin_login.php");
     exit;
 }
 
 $adminController = new AdminController($pdo);
-$reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY created_at DESC");
+$reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY createdAt DESC");
 $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tournamentController = new TournamentController($pdo);
 $newsController = new NewsController($pdo);
 $gameController = new GameController($pdo);
+$adminSupport = new AdminSupportController($pdo);
+$tickets = $adminSupport->getAllTickets();
+
 
 $users = $adminController->getAllUsers();
 $tournaments = $tournamentController->getAllTournaments();
@@ -43,7 +47,7 @@ $games = $gameController->getAllGames();
     <div class="flex-1 ml-64 p-8">
         <header class="flex justify-between items-center mb-8 border-b pb-4">
             <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
-            <a href="../../public/logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
+            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
         </header>
 
         <section class="grid md:grid-cols-3 gap-6 mb-10">
@@ -79,7 +83,6 @@ $games = $gameController->getAllGames();
                 </ul>
             </div>
 
-            <!-- NEWS PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">News</h3>
@@ -92,7 +95,6 @@ $games = $gameController->getAllGames();
                 </ul>
             </div>
 
-            <!-- USERS PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">Users</h3>
@@ -107,7 +109,6 @@ $games = $gameController->getAllGames();
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <!-- GAMES PREVIEW -->
             <div class="bg-white rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold">Games</h3>

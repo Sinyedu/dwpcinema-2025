@@ -148,6 +148,16 @@ CREATE TABLE AboutUs (
     lastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ContactForm (
+    contactID INT PRIMARY KEY AUTO_INCREMENT,
+    userName VARCHAR(100) NOT NULL,
+    userEmail VARCHAR(100) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    submittedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- 1) Fast lookup of bookings by user
 CREATE INDEX idx_booking_user ON Booking(userID);
