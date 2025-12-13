@@ -34,8 +34,13 @@ if (
                 exit;
             }
 
-            $success = $ctrl->sendMessage($ticketID, $_SESSION['user_id'], $message);
-            echo json_encode(['success' => $success]);
+            $sent = $ctrl->sendMessage($ticketID, $_SESSION['user_id'], $message);
+
+            if ($sent) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => true]);
+            }
             exit;
         }
 
