@@ -16,6 +16,11 @@ class UserSupportController
         return $this->model->getUserTickets($userID);
     }
 
+    public function getTicketStatus(int $ticketID): ?string
+    {
+        return $this->model->getTicketStatus($ticketID);
+    }
+
     public function getUnreadMessages(int $userID): int
     {
         return $this->model->countUnreadMessages($userID);

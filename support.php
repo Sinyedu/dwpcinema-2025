@@ -70,6 +70,12 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $tickets = $ctrl->getUserTickets($_SESSION['user_id']);
+
+foreach ($tickets as &$t) {
+    $t['status'] = $ctrl->getTicketStatus($t['ticketID']);
+}
+unset($t);
+
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 ?>

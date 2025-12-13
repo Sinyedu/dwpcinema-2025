@@ -65,12 +65,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (replyForm) {
     replyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const ticketEl = document.querySelector(`[data-ticket-id="${ticketID}"]`);
+      const statusDiv = ticketEl?.querySelector(".text-xs.text-gray-500");
+      const status = statusDiv?.innerText.split("•").pop().trim() || "open";
+
+      if (status === "closed") {
+        showToast(
+          "This ticket is closed. You cannot send a reply.",
+          "error",
+          5000
+        );
+        return;
+      }
+
       const message = newMessage.value.trim();
       if (!message) return;
 
       const formData = new FormData();
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
+
       const data = await fetchJSON("support.php", {
         method: "POST",
         body: formData,
@@ -115,3 +130,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function updateTicketListStatus(ticketID, status) {
+  const ticketEl = document.querySelector(`[data-ticket-id="${ticketID}"]`);
+  if (ticketEl) {
+    const statusDiv = ticketEl.querySelector(".text-xs.text-gray-500");
+    if (statusDiv) {
+      const parts = statusDiv.innerText.split("•");
+      parts[parts.length - 1] = ` ${status}`;
+      statusDiv.innerText = parts.join("•");
+    }
+
+    if (status === "closed") {
+      ticketEl.classList.add("opacity-50", "cursor-not-allowed");
+    } else {
+      ticketEl.classList.remove("opacity-50", "cursor-not-allowed");
+    }
+  }
+}

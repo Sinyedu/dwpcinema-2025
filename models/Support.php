@@ -20,6 +20,14 @@ class SupportModel
 
     public function addMessage(int $ticketID, int $senderID, string $role, string $message): bool
     {
+        $stmt = $this->pdo->prepare("SELECT ticketStatus FROM SupportTicket WHERE ticketID = ?");
+        $stmt->execute([$ticketID]);
+        $status = $stmt->fetchColumn();
+
+        if ($status === 'closed') {
+            return false;
+        }
+
         $stmt = $this->pdo->prepare("
         INSERT INTO SupportMessage (ticketID, senderID, senderRole, message)
         VALUES (?, ?, ?, ?)
@@ -31,7 +39,6 @@ class SupportModel
 
         return (bool)$success;
     }
-
     public function countUnreadMessages(int $userID): int
     {
         $stmt = $this->pdo->prepare("
@@ -56,6 +63,13 @@ class SupportModel
         ");
         $stmt->execute([$ticketID]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTicketStatus(int $ticketID): ?string
+    {
+        $stmt = $this->pdo->prepare("SELECT ticketStatus FROM SupportTicket WHERE ticketID = ?");
+        $stmt->execute([$ticketID]);
+        return $stmt->fetchColumn() ?: null;
     }
 
     public function markMessagesRead(int $ticketID, int $userID): bool
@@ -91,10 +105,10 @@ class SupportModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateTicketStatus(int $ticketID, string $status): bool
+    public function updateTicketStatus(int $ticketID, string $ticketStatus): bool
     {
-        $stmt = $this->pdo->prepare("UPDATE SupportTicket SET status = ? WHERE ticketID = ?");
-        return $stmt->execute([$status, $ticketID]);
+        $stmt = $this->pdo->prepare("UPDATE SupportTicket SET ticketStatus = ? WHERE ticketID = ?");
+        return $stmt->execute([$ticketStatus, $ticketID]);
     }
 
     public function getAllTicketsWithDetails(): array
