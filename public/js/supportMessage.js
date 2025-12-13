@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const newMessage = document.getElementById("newMessage");
   const createTicketForm = document.getElementById("createTicketForm");
   const supportUnreadBadge = document.getElementById("supportUnreadBadge");
-  let lastMessageID = 0;
 
   async function fetchJSON(url, options = {}) {
     try {
@@ -19,35 +18,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function appendMessage(msg) {
-    const div = document.createElement("div");
-
-    div.className =
-      (msg.senderRole === "admin"
-        ? "text-red-600 slide-in-right"
-        : "text-blue-600 slide-in-left") + " mb-2";
-
-    div.innerHTML = `<strong>${msg.senderRole}:</strong> ${msg.message} 
-      <span class="text-gray-400 text-xs block">${msg.createdAt}</span>`;
-
-    messageBox.appendChild(div);
-    messageBox.scrollTop = messageBox.scrollHeight;
-  }
-
   async function pollMessages() {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
       `support.php?ticketID=${ticketID}&fetchMessages=1`
     );
+
     if (!messages || !Array.isArray(messages)) return;
 
+    messageBox.innerHTML = "";
+
     messages.forEach((msg) => {
-      if (msg.messageID > lastMessageID) {
-        appendMessage(msg);
-        lastMessageID = Math.max(lastMessageID, msg.messageID);
-      }
+      const div = document.createElement("div");
+      div.className =
+        (msg.senderRole === "admin" ? "text-red-600" : "text-blue-600") +
+        " mb-2 fade-in";
+      div.innerHTML = `<strong>${msg.senderRole}:</strong> ${msg.message} <span class="text-gray-400 text-xs block">${msg.createdAt}</span>`;
+      messageBox.appendChild(div);
     });
+
+    messageBox.scrollTop = messageBox.scrollHeight;
   }
 
   async function pollUnread() {
@@ -65,6 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  pollMessages();
+  pollUnread();
+  setInterval(pollMessages, 5000);
+  setInterval(pollUnread, 7000);
+
   if (replyForm) {
     replyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -75,18 +71,29 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
 
-      const data = await fetchJSON("support.php", {
-        method: "POST",
-        body: formData,
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      });
+      try {
+        const data = await fetchJSON("support.php", {
+          method: "POST",
+          body: formData,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        });
 
-      if (data && data.success) {
-        newMessage.value = "";
-        pollMessages();
-        showToast("Message sent successfully!", "success", 3000);
-      } else {
-        showToast(data?.error || "Failed to send message!", "error", 5000);
+        if (data && data.success) {
+          const div = document.createElement("div");
+          div.className = "text-blue-600 mb-2 fade-in";
+          const now = new Date().toLocaleString();
+          div.innerHTML = `<strong>You:</strong> ${message} <span class="text-gray-400 text-xs block">${now}</span>`;
+          messageBox.appendChild(div);
+          messageBox.scrollTop = messageBox.scrollHeight;
+
+          newMessage.value = "";
+          showToast("Message sent successfully!", "success", 3000);
+        } else {
+          showToast(data?.error || "Failed to send message!", "error", 5000);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Unexpected error.", "error", 5000);
       }
     });
   }
@@ -95,30 +102,28 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicketForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(createTicketForm);
+
       showToast("Sending your ticket...", "info", 3000);
 
-      const data = await fetchJSON("support.php", {
-        method: "POST",
-        body: formData,
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      });
+      try {
+        const data = await fetchJSON("support.php", {
+          method: "POST",
+          body: formData,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        });
 
-      if (data && data.success) {
-        showToast("Ticket created successfully!", "success", 3000);
-        setTimeout(
-          () =>
-            (window.location.href = `support.php?ticketID=${data.ticketID}`),
-          1000
-        );
-      } else {
-        showToast(data?.error || "Failed to create ticket!", "error", 5000);
+        if (data && data.success) {
+          showToast("Ticket created successfully!", "success", 3000);
+          setTimeout(() => {
+            window.location.href = `support.php?ticketID=${data.ticketID}`;
+          }, 1000);
+        } else {
+          showToast(data?.error || "Failed to create ticket!", "error", 5000);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Unexpected error.", "error", 5000);
       }
     });
   }
-
-  setInterval(pollMessages, 3000);
-  setInterval(pollUnread, 5000);
-
-  pollMessages();
-  pollUnread();
 });
