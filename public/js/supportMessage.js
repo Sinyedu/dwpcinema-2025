@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
-      `ajax/support_action.php?ticketID=${ticketID}&fetchMessages=1`,
+      `ajax/supportAction.php?ticketID=${ticketID}&fetchMessages=1`,
       {
         headers: { "X-Requested-With": "XMLHttpRequest" },
       }
