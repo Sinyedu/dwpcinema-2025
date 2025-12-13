@@ -67,12 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
-
       const data = await fetchJSON("support.php", {
         method: "POST",
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
       });
+      console.log("AJAX reply response:", data);
 
       if (data && data.success) {
         newMessage.value = "";
