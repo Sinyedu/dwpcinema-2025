@@ -55,7 +55,6 @@ class UserSupportController
             $userID,
             $subject,
             $priority,
-            $gameID,
             $showingID
         );
 

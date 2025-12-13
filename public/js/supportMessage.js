@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   setInterval(pollMessages, 5000);
-  setInterval(pollUnread, 7000);
+  setInterval(pollUnread, 5000);
   pollMessages();
   pollUnread();
 

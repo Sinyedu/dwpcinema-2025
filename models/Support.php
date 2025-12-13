@@ -8,13 +8,13 @@ class SupportModel
         $this->pdo = $pdo;
     }
 
-    public function createTicket(int $userID, string $subject, string $priority = 'medium', ?int $gameID = null, ?int $showingID = null): int
+    public function createTicket(int $userID, string $subject, string $priority = 'medium'): int
     {
         $stmt = $this->pdo->prepare("
-        INSERT INTO SupportTicket (userID, subject, priority, gameID, showingID)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO SupportTicket (userID, subject, priority)
+        VALUES (?, ?, ?)
     ");
-        $stmt->execute([$userID, $subject, $priority, $gameID, $showingID]);
+        $stmt->execute([$userID, $subject, $priority]);
         return (int)$this->pdo->lastInsertId();
     }
 
