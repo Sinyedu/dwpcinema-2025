@@ -79,6 +79,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 <head>
     <meta charset="UTF-8">
     <title>Support - DWP Cinema</title>
+    <link rel="stylesheet" href="styles/animations.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.ticketID = <?= $activeTicketID ?? 'null' ?>;
