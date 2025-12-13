@@ -25,11 +25,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ticketID || !messageBox) return;
 
     const messages = await fetchJSON(
-      `support.php?ticketID=${ticketID}&fetchMessages=1`,
+      `ajax/support_action.php?ticketID=${ticketID}&fetchMessages=1`,
       {
         headers: { "X-Requested-With": "XMLHttpRequest" },
       }
     );
+
+    const data = await fetchJSON("ajax/support_action.php?fetchUnreadCount=1", {
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    });
 
     if (!messages || !Array.isArray(messages)) return;
 
@@ -47,7 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
-    const data = await fetchJSON("support.php?fetchUnreadCount=1", {
+    const data = await fetchJSON("ajax/support_action.php", {
+      method: "POST",
+      body: formData,
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
 
