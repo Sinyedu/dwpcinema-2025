@@ -85,14 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (data && data.success) {
+          newMessage.value = "";
+
           const div = document.createElement("div");
-          div.className = "text-blue-600 mb-2 fade-in";
+          div.className = "text-blue-600 mb-2";
           const now = new Date().toLocaleString();
           div.innerHTML = `<strong>You:</strong> ${message} <span class="text-gray-400 text-xs block">${now}</span>`;
           messageBox.appendChild(div);
           messageBox.scrollTop = messageBox.scrollHeight;
 
-          newMessage.value = "";
           showToast("Message sent successfully!", "success", 3000);
         } else {
           showToast(data?.error || "Failed to send message!", "error", 5000);

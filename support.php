@@ -17,6 +17,8 @@ if (
 ) {
     header('Content-Type: application/json');
 
+    error_reporting(E_ERROR | E_PARSE);
+
     try {
         if (isset($_POST['subject'], $_POST['message'])) {
             $ticketID = $ctrl->createTicket(
