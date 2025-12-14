@@ -54,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" class="space-y-4">
             <div>
-                <label class="block text-gray-700 mb-1" for="email">Email</label>
+                <label class="block text-white mb-1" for="email">Email</label>
                 <input id="email" type="email" name="email" placeholder="you@example.com" required
                     class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
             <div>
-                <label class="block text-gray-700 mb-1" for="password">Password</label>
+                <label class="block text-white mb-1" for="password">Password</label>
                 <input id="password" type="password" name="password" placeholder="********" required
                     class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
 
-        <p class="mt-4 text-center text-gray-600">
+        <p class="mt-4 text-center text-gray-400">
             Don't have an account?
             <a href="register.php" class="text-blue-600 hover:underline">Register</a>
         </p>
