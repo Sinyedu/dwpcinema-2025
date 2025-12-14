@@ -18,6 +18,7 @@ $aboutItems = $ctrl->getAll();
 </head>
 
 <body class="bg-white text-gray-900">
+    <?php include __DIR__ . '/includes/navbar.php'; ?>
     <main class="max-w-6xl mx-auto px-6 py-16">
         <h1 class="text-3xl font-bold mb-8 text-center">About Us</h1>
         <?php foreach ($aboutItems as $item): ?>
