@@ -125,25 +125,7 @@ $games = $gameController->getAllGames();
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <div class="bg-white rounded shadow p-6">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-lg font-semibold">Reservations</h3>
-                    <a href="reservations.php" class="text-blue-600 hover:underline text-sm">Manage</a>
-                </div>
-                <?php if (count($reservations) === 0): ?>
-                    <p class="text-gray-500 text-sm">No reservation inquiries yet.</p>
-                <?php else: ?>
-                    <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
-                        <?php foreach ($reservations as $r): ?>
-                            <li>
-                                <span class="font-medium"><?= htmlspecialchars($r['firstName'] . ' ' . $r['lastName']) ?></span>
-                                <span class="text-gray-500">(<?= htmlspecialchars($r['email']) ?>)</span>
-                                <span class="block text-gray-400 text-xs"><?= date('M d, Y H:i', strtotime($r['created_at'])) ?></span>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </div>
+
 
 
         </div>
