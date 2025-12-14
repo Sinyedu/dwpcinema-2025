@@ -10,13 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(url, options);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+
+      const data = await res.json();
+      return data;
     } catch (err) {
       console.error("Fetch error:", err);
       showToast("Failed to fetch data.", "error", 5000);
       return null;
     }
   }
+
   async function pollMessages() {
     if (!ticketID || !messageBox) return;
 
@@ -24,7 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
       `support.php?ticketID=${ticketID}&fetchMessages=1`,
       { headers: { "X-Requested-With": "XMLHttpRequest" } }
     );
-    if (!messages || !Array.isArray(messages)) return;
+
+    if (!messages || !Array.isArray(messages)) {
+      return;
+    }
 
     messageBox.innerHTML = "";
     messages.forEach((msg) => {
@@ -36,31 +42,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     messageBox.scrollTop = messageBox.scrollHeight;
   }
+
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
     const data = await fetchJSON("support.php?fetchUnreadCount=1", {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
+
     if (!data) return;
 
     const count = data.unreadCount || 0;
-    if (count > 0) {
-      supportUnreadBadge.textContent = count;
-      supportUnreadBadge.classList.remove("hidden");
-    } else {
-      supportUnreadBadge.classList.add("hidden");
-    }
+    supportUnreadBadge.textContent = count;
+    supportUnreadBadge.classList.toggle("hidden", count === 0);
   }
 
-  setInterval(pollMessages, 5000);
-  setInterval(pollUnread, 5000);
   pollMessages();
   pollUnread();
+  setInterval(pollMessages, 5000);
+  setInterval(pollUnread, 7000);
 
   if (replyForm) {
     replyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const ticketEl = document.querySelector(`[data-ticket-id="${ticketID}"]`);
+      const statusDiv = ticketEl?.querySelector(".text-xs.text-gray-500");
+      const status = statusDiv?.innerText.split("•").pop().trim() || "open";
+
+      if (status === "closed") {
+        showToast(
+          "This ticket is closed. You cannot send a reply.",
+          "error",
+          5000
+        );
+        return;
+      }
+
       const message = newMessage.value.trim();
       if (!message) return;
 
@@ -68,23 +86,23 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
 
-      try {
-        const data = await fetchJSON("support.php", {
-          method: "POST",
-          body: formData,
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        });
+      const data = await fetchJSON("support.php", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
 
-        if (data && data.success) {
-          newMessage.value = "";
-          pollMessages();
-          showToast("Message sent successfully!", "success", 3000);
-        } else {
-          showToast(data?.error || "Failed to send message!", "error", 5000);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Unexpected error.", "error", 5000);
+      if (data && data.success) {
+        newMessage.value = "";
+        const div = document.createElement("div");
+        div.className = "text-blue-600 mb-2";
+        const now = new Date().toLocaleString();
+        div.innerHTML = `<strong>You:</strong> ${message} <span class="text-gray-400 text-xs block">${now}</span>`;
+        messageBox.appendChild(div);
+        messageBox.scrollTop = messageBox.scrollHeight;
+        showToast("Message sent successfully!", "success", 3000);
+      } else {
+        showToast(data?.error || "Failed to send message!", "error", 5000);
       }
     });
   }
@@ -93,28 +111,40 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicketForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(createTicketForm);
-
       showToast("Sending your ticket...", "info", 3000);
 
-      try {
-        const data = await fetchJSON("support.php", {
-          method: "POST",
-          body: formData,
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        });
+      const data = await fetchJSON("support.php", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
 
-        if (data && data.success) {
-          showToast("Ticket created successfully!", "success", 3000);
-          setTimeout(() => {
-            window.location.href = `support.php?ticketID=${data.ticketID}`;
-          }, 1000);
-        } else {
-          showToast(data?.error || "Failed to create ticket!", "error", 5000);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("Unexpected error.", "error", 5000);
+      if (data && data.success) {
+        showToast("Ticket created successfully!", "success", 3000);
+        setTimeout(() => {
+          window.location.href = `support.php?ticketID=${data.ticketID}`;
+        }, 1000);
+      } else {
+        showToast(data?.error || "Failed to create ticket!", "error", 5000);
       }
     });
   }
 });
+
+function updateTicketListStatus(ticketID, status) {
+  const ticketEl = document.querySelector(`[data-ticket-id="${ticketID}"]`);
+  if (ticketEl) {
+    const statusDiv = ticketEl.querySelector(".text-xs.text-gray-500");
+    if (statusDiv) {
+      const parts = statusDiv.innerText.split("•");
+      parts[parts.length - 1] = ` ${status}`;
+      statusDiv.innerText = parts.join("•");
+    }
+
+    if (status === "closed") {
+      ticketEl.classList.add("opacity-50", "cursor-not-allowed");
+    } else {
+      ticketEl.classList.remove("opacity-50", "cursor-not-allowed");
+    }
+  }
+}

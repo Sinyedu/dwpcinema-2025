@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $controller->login($_POST);
 
         if ($user) {
-            //TODO: refactor my login structure, this is messy
             if (!empty($user['isAdmin']) && (int)$user['isAdmin'] === 1) {
                 $error = "Admins must log in through the admin portal.";
             } elseif (isset($user['isActive']) && (int)$user['isActive'] === 0) {
@@ -21,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_name'] = $user['firstName'] . ' ' . $user['lastName'];
                 $_SESSION['user_avatar'] = $user['avatar'] ?? 'uploads/avatars/default.png';
 
-                header("Location: index.php");
+                $redirect = $_GET['redirect'] ?? 'index.php';
+                header("Location: $redirect");
                 exit;
             }
         } else {

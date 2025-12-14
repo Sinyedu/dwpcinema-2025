@@ -11,29 +11,9 @@ class AdminSupportController
         $this->model = new SupportModel($pdo);
     }
 
-    public function getReservationInfo(int $showingID): array
-    {
-        return $this->model->getReservationInfo($showingID);
-    }
-
     public function getAllTickets(): array
     {
         return $this->model->getAllTickets();
-    }
-
-    public function getTicketMessages(int $ticketID): array
-    {
-        return $this->model->getMessages($ticketID);
-    }
-
-    public function replyToTicket(int $ticketID, int $adminID, string $message): int
-    {
-        return $this->model->addMessage($ticketID, $adminID, 'admin', $message);
-    }
-
-    public function updateTicketStatus(int $ticketID, string $status): bool
-    {
-        return $this->model->updateTicketStatus($ticketID, $status);
     }
 
     public function getAllTicketsDetailed(): array
@@ -41,19 +21,37 @@ class AdminSupportController
         return $this->model->getAllTicketsWithDetails();
     }
 
-    public function getAllTicketsWithReservation(): array
+    public function getTicketMessages(int $ticketID): array
     {
-        $tickets = $this->model->getAllTickets();
+        return $this->model->getMessages($ticketID);
+    }
 
-        foreach ($tickets as &$t) {
-            if ($t['subject'] === 'Reservation' && !empty($t['showingID'])) {
-                $res = $this->model->getReservationInfo($t['showingID']);
-                $t['gameName'] = $res['gameName'] ?? '-';
-                $t['showingDate'] = $res['showingDate'] ?? '-';
-                $t['showingTime'] = $res['showingTime'] ?? '-';
-            }
+    public function getTicketStatus(int $ticketID): ?string
+    {
+        return $this->model->getTicketStatus($ticketID);
+    }
+
+    public function replyToTicket(int $ticketID, int $adminID, string $message): bool
+    {
+        $status = $this->model->getTicketStatus($ticketID);
+        if ($status === 'closed') {
+            return false;
         }
 
-        return $tickets;
+        return $this->model->addMessage($ticketID, $adminID, 'admin', $message);
+    }
+
+    public function closeTicket(int $ticketID): bool
+    {
+        return $this->model->updateTicketStatus($ticketID, 'closed');
+    }
+    public function reopenTicket(int $ticketID): bool
+    {
+        return $this->model->updateTicketStatus($ticketID, 'open');
+    }
+
+    public function updateTicketStatus(int $ticketID, string $status): bool
+    {
+        return $this->model->updateTicketStatus($ticketID, $status);
     }
 }

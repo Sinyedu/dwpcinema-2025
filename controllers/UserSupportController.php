@@ -16,6 +16,11 @@ class UserSupportController
         return $this->model->getUserTickets($userID);
     }
 
+    public function getTicketStatus(int $ticketID): ?string
+    {
+        return $this->model->getTicketStatus($ticketID);
+    }
+
     public function getUnreadMessages(int $userID): int
     {
         return $this->model->countUnreadMessages($userID);
@@ -30,12 +35,10 @@ class UserSupportController
     {
         return $this->model->markMessagesRead($ticketID, $userID);
     }
-
     public function sendMessage(int $ticketID, int $userID, string $message): bool
     {
-        return $this->model->addMessage($ticketID, $userID, 'user', $message) > 0;
+        return $this->model->addMessage($ticketID, $userID, 'user', $message);
     }
-
     public function createTicket(
         int $userID,
         string $subject,

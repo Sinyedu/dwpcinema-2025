@@ -10,7 +10,7 @@ $reservations = $pdo->query("
     FROM ContactForm cf
     LEFT JOIN Tournament t ON cf.tournamentID = t.tournamentID
     WHERE cf.category='Reservation'
-    ORDER BY cf.created_at DESC
+    ORDER BY cf.createdAt DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate DESC")->fetchAll(PDO::FETCH_ASSOC);
@@ -49,7 +49,7 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                     <?php foreach ($reservations as $r): ?>
                         <tr>
                             <form action="process_reservations.php" method="POST" class="w-full">
-                                <td class="border p-2"><?= $r['contactFormid'] ?></td>
+                                <td class="border p-2"><?= $r['contactFormID'] ?></td>
                                 <td class="border p-2"><?= htmlspecialchars($r['firstName'] . ' ' . $r['lastName']) ?></td>
                                 <td class="border p-2"><?= htmlspecialchars($r['email']) ?></td>
                                 <td class="border p-2"><?= nl2br(htmlspecialchars($r['message'])) ?></td>
@@ -71,7 +71,7 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                                 </td>
 
                                 <td class="border p-2">
-                                    <input type="hidden" name="contactFormid" value="<?= $r['contactFormid'] ?>">
+                                    <input type="hidden" name="contactFormid" value="<?= $r['contactFormID'] ?>">
                                     <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">Save</button>
                                 </td>
                             </form>

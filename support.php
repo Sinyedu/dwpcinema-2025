@@ -3,11 +3,6 @@ session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/UserSupportController.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
-}
-
 $pdo = Database::getInstance();
 $ctrl = new UserSupportController($pdo);
 
@@ -16,6 +11,7 @@ if (
     strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
 ) {
     header('Content-Type: application/json');
+    ob_clean();
 
     try {
         if (isset($_POST['subject'], $_POST['message'])) {
@@ -34,15 +30,17 @@ if (
             $message  = trim($_POST['replyMessage']);
 
             if (!$ctrl->canSendMessage($ticketID, $_SESSION['user_id'])) {
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Please wait for admin reply.'
-                ]);
+                echo json_encode(['success' => false, 'error' => 'Please wait for admin reply.']);
                 exit;
             }
 
-            $success = $ctrl->sendMessage($ticketID, $_SESSION['user_id'], $message);
-            echo json_encode(['success' => $success]);
+            $sent = $ctrl->sendMessage($ticketID, $_SESSION['user_id'], $message);
+
+            if ($sent) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Message could not be sent.']);
+            }
             exit;
         }
 
@@ -54,9 +52,7 @@ if (
         }
 
         if (isset($_GET['fetchUnreadCount'])) {
-            echo json_encode([
-                'unreadCount' => $ctrl->getUnreadMessages($_SESSION['user_id'])
-            ]);
+            echo json_encode(['unreadCount' => $ctrl->getUnreadMessages($_SESSION['user_id'])]);
             exit;
         }
 
@@ -68,17 +64,28 @@ if (
     }
 }
 
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
 $tickets = $ctrl->getUserTickets($_SESSION['user_id']);
+
+foreach ($tickets as &$t) {
+    $t['status'] = $ctrl->getTicketStatus($t['ticketID']);
+}
+unset($t);
+
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Support - DWP Cinema</title>
+    <link rel="stylesheet" href="styles/animations.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.ticketID = <?= $activeTicketID ?? 'null' ?>;
