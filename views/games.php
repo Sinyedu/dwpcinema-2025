@@ -52,65 +52,67 @@ if (isset($_GET['edit'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Admin Games - DWP Esports Cinema</title>
-<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>Admin Games - DWP Esports Cinema</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
 
-<div class="max-w-6xl mx-auto px-6 py-10">
+<body class="bg-neutral-900 min-h-screen">
 
-    <h1 class="text-2xl font-semibold mb-6">Manage Games</h1>
+    <div class="max-w-6xl mx-auto px-6 py-10">
 
-    <?php if ($editGame): ?>
-    <h2 class="text-xl font-semibold mb-2">Edit Game</h2>
-    <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
-        <input type="hidden" name="gameID" value="<?= $editGame['gameID'] ?>">
-        <input type="text" name="gameName" placeholder="Game Name" value="<?= htmlspecialchars($editGame['gameName']) ?>" class="w-full border rounded px-3 py-2" required>
-        <input type="text" name="gameGenre" placeholder="Genre" value="<?= htmlspecialchars($editGame['gameGenre']) ?>" class="w-full border rounded px-3 py-2">
-        <div class="flex space-x-2">
-            <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update Game</button>
-            <a href="games.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
-        </div>
-    </form>
-    <?php endif; ?>
+        <h1 class="text-2xl text-white font-semibold mb-6">Manage Games</h1>
+        <?php if ($editGame): ?>
+            <h2 class="text-xl text-white font-semibold mb-2">Edit Game</h2>
+            <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
+                <input type="hidden" name="gameID" value="<?= $editGame['gameID'] ?>">
+                <input type="text" name="gameName" placeholder="Game Name" value="<?= htmlspecialchars($editGame['gameName']) ?>" class="w-full border rounded px-3 py-2" required>
+                <input type="text" name="gameGenre" placeholder="Genre" value="<?= htmlspecialchars($editGame['gameGenre']) ?>" class="w-full border rounded px-3 py-2">
+                <div class="flex space-x-2">
+                    <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update Game</button>
+                    <a href="games.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
+                </div>
+            </form>
+        <?php endif; ?>
 
-    <h2 class="text-xl font-semibold mb-2">Add Game</h2>
-    <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
-        <input type="text" name="gameName" placeholder="Game Name" class="w-full border rounded px-3 py-2" required>
-        <input type="text" name="gameGenre" placeholder="Genre (optional)" class="w-full border rounded px-3 py-2">
-        <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Game</button>
-    </form>
+        <h2 class="text-xl font-semibold mb-2">Add Game</h2>
+        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
+            <input type="text" name="gameName" placeholder="Game Name" class="w-full border rounded px-3 py-2" required>
+            <input type="text" name="gameGenre" placeholder="Genre (optional)" class="w-full border rounded px-3 py-2">
+            <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Game</button>
+        </form>
 
-    <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="px-4 py-2">ID</th>
-                <th class="px-4 py-2">Game Name</th>
-                <th class="px-4 py-2">Genre</th>
-                <th class="px-4 py-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($games as $g): ?>
-            <tr class="border-b">
-                <td class="px-4 py-2"><?= $g['gameID'] ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($g['gameName']) ?></td>
-                <td class="px-4 py-2"><?= htmlspecialchars($g['gameGenre']) ?></td>
-                <td class="px-4 py-2 space-x-2">
-                    <a href="games.php?edit=<?= $g['gameID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
-                    <form method="POST" class="inline">
-                        <input type="hidden" name="gameID" value="<?= $g['gameID'] ?>">
-                        <button type="submit" name="delete" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-500">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+            <thead>
+                <tr class="bg-neutral-800 text-white">
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Game Name</th>
+                    <th class="px-4 py-2">Genre</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($games as $g): ?>
+                    <tr class="border-b">
+                        <td class="px-4 py-2"><?= $g['gameID'] ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($g['gameName']) ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($g['gameGenre']) ?></td>
+                        <td class="px-4 py-2 space-x-2">
+                            <a href="games.php?edit=<?= $g['gameID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
+                            <form method="POST" class="inline">
+                                <input type="hidden" name="gameID" value="<?= $g['gameID'] ?>">
+                                <button type="submit" name="delete" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-500">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-</div>
+    </div>
 
 </body>
+
 </html>

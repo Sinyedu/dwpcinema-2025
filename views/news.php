@@ -64,15 +64,14 @@ if (isset($_GET['edit'])) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-neutral-900 min-h-screen">
 
     <div class="max-w-6xl mx-auto px-6 py-10">
 
-        <h1 class="text-2xl font-semibold mb-6">Manage News</h1>
-
+        <h1 class="text-2xl text-white font-semibold mb-6">Manage News</h1>
         <?php if ($editNews): ?>
-            <h2 class="text-xl font-semibold mb-2">Edit News</h2>
-            <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl text-white font-semibold mb-2">Edit News</h2>
+            <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-6">
                 <input type="hidden" name="newsID" value="<?= $editNews['newsID'] ?>">
                 <input type="text" name="newsTitle" placeholder="Title" value="<?= htmlspecialchars($editNews['newsTitle']) ?>" class="w-full border rounded px-3 py-2">
                 <input type="text" name="newsAuthor" placeholder="Author" value="<?= htmlspecialchars($editNews['newsAuthor']) ?>" class="w-full border rounded px-3 py-2">
