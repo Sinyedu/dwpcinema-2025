@@ -146,8 +146,8 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 
         <?php if ($activeTicketID): ?>
             <section>
-                <h2 class="text-xl font-semibold mb-3">Messages</h2>
-                <div id="messageBox" class="bg-white p-4 rounded shadow h-64 overflow-y-auto mb-4">
+                <h2 class="text-xl text-white font-semibold mb-3">Messages</h2>
+                <div id="messageBox" class="bg-neutral-800 p-4 rounded shadow h-64 overflow-y-auto mb-4">
                     <?php foreach ($messages as $msg): ?>
                         <div class="<?= $msg['senderRole'] === 'admin' ? 'text-red-600' : 'text-blue-600' ?> mb-2">
                             <strong><?= htmlspecialchars($msg['senderRole']) ?>:</strong> <?= htmlspecialchars($msg['message']) ?>
@@ -157,7 +157,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
                 </div>
 
                 <form id="replyForm">
-                    <textarea id="newMessage" rows="3" class="w-full p-2 border rounded mb-2" placeholder="Type your message..." required></textarea>
+                    <textarea id="newMessage" rows="3" class="w-full bg-neutral-800 p-2 rounded mb-2 text-white" placeholder="Type your message..." required></textarea>
                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Send</button>
                 </form>
             </section>
