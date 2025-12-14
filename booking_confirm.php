@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['showingID'], $_POST['
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body class="bg-neutral-900 text-white min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-10">
         <?php if ($success): ?>
             <p class="mb-4 p-2 bg-green-100 text-green-800 rounded"><?= htmlspecialchars($success) ?></p>

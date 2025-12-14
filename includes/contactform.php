@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <label class="block font-medium mb-1">Subject *</label>
                     <input type="text" name="subject" placeholder="e.g., Box Reservation" required
-                        class="w-full p-2 border rounded">
+                        class="w-full p-2 border rounded text-black" />
                 </div>
                 <label class="block font-medium text-white mb-1">Tournament *</label>
                 <select name="tournament" class="w-full p-2 text-black border rounded" required>
