@@ -81,7 +81,7 @@ usort($tickets, function ($a, $b) {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-neutral-900 flex min-h-screen">
+<body class="bg-neutral-800 flex min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">

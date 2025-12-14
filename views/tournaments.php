@@ -127,11 +127,11 @@ include __DIR__ . '/../includes/adminSidebar.php';
 
         <h2 class="text-xl text-white font-semibold mb-2">Add Tournament</h2>
         <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
-            <input type="text" name="tournamentName" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
-            <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required></textarea>
+            <input type="text" name="tournamentName" placeholder="Tournament Name" class="w-full border rounded px-3 py-2 bg-neutral-900 text-white" required>
+            <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2 bg-neutral-900 text-white" required></textarea>
             <div class="flex space-x-2">
-                <input type="date" name="startDate" class="w-1/2 border rounded px-3 py-2" required>
-                <input type="date" name="endDate" class="w-1/2 border rounded px-3 py-2" required>
+                <input type="date" name="startDate" class="w-1/2 border rounded px-3 py-2 bg-neutral-900 text-white" required>
+                <input type="date" name="endDate" class="w-1/2 border rounded px-3 py-2 bg-neutral-900 text-white" required>
             </div>
             <select name="gameID" class="w-full border rounded px-3 py-2" required>
                 <option value="">Select Game</option>
