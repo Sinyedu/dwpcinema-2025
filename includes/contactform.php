@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once __DIR__ . '/classes/Database.php';
-require_once __DIR__ . '/controllers/ContactController.php';
+require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../controllers/ContactController.php';
 
 if (!isset($_SESSION['user_id'])) {
     $redirect = urlencode($_SERVER['REQUEST_URI']);
