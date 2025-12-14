@@ -22,7 +22,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a href="tournaments.php" class="block px-4 py-2 rounded hover:bg-gray-700 <?= $current_page === 'tournaments.php' ? 'bg-gray-800' : '' ?>">Manage Tournaments</a>
         <a href="games.php" class="block px-4 py-2 rounded hover:bg-gray-700 <?= $current_page === 'games.php' ? 'bg-gray-800' : '' ?>">Manage Games</a>
         <a href="users.php" class="block px-4 py-2 rounded hover:bg-gray-700 <?= $current_page === 'users.php' ? 'bg-gray-800' : '' ?>">Manage Users</a>
-        <a href="reservations.php" class="block px-4 py-2 rounded hover:bg-gray-700 <?= $current_page === 'reservations.php' ? 'bg-gray-800' : '' ?>">Manage Reservations</a>
         <a href="support.php" class="block px-4 py-2 rounded hover:bg-gray-700 <?= $current_page === 'support.php' ? 'bg-gray-800' : '' ?>">Manage Support Tickets</a>
 
         <div class="p-4 border-t border-gray-700">
