@@ -132,7 +132,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
             <div id="ticketsContainer" class="space-y-3">
                 <?php foreach ($tickets as $t): ?>
                     <a href="?ticketID=<?= $t['ticketID'] ?>"
-                        class="block bg-white p-4 rounded shadow hover:bg-gray-50 flex justify-between items-center <?= ($activeTicketID === $t['ticketID']) ? 'border-l-4 border-blue-600' : '' ?>"
+                        class="block bg-neutral-800 p-4 rounded shadow hover:bg-gray-700 flex justify-between items-center <?= ($activeTicketID === $t['ticketID']) ? 'border-l-4 border-blue-600' : '' ?>"
                         data-ticket-id="<?= $t['ticketID'] ?>">
                         <div>
                             <div class="font-semibold"><?= htmlspecialchars($t['subject']) ?></div>
