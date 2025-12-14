@@ -61,7 +61,7 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen text-gray-900">
+<body class="bg-neutral-900 min-h-screen text-white">
 
     <div class="max-w-6xl mx-auto px-6 py-10">
         <h1 class="text-2xl font-bold mb-6">Showings</h1>
@@ -84,9 +84,9 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($showings as $s):
                     $availableSeats = $s['totalSeats'] - $s['bookedSeats'];
                 ?>
-                    <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+                    <div class="bg-neutral-800 p-4 rounded shadow hover:shadow-lg transition">
                         <h2 class="font-semibold text-lg"><?= htmlspecialchars($s['matchName']) ?></h2>
-                        <p class="text-sm text-gray-500"><?= htmlspecialchars($s['tournamentName']) ?></p>
+                        <p class="text-sm text-gray-400"><?= htmlspecialchars($s['tournamentName']) ?></p>
                         <p class="text-sm text-gray-600"><?= date('F j, Y', strtotime($s['showingDate'])) ?> at <?= date('H:i', strtotime($s['showingTime'])) ?></p>
                         <p class="text-sm text-gray-600">Hall: <?= htmlspecialchars($s['hallName']) ?></p>
                         <p class="text-sm text-gray-600">Seats: <?= $availableSeats ?> available / <?= $s['totalSeats'] ?> total</p>

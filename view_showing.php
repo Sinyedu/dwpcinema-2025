@@ -57,13 +57,13 @@ foreach ($tiers as $tier) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body class="bg-neutral-900 text-white min-h-screen">
 
     <div class="max-w-5xl mx-auto px-6 py-10">
         <h1 class="text-3xl font-bold mb-2"><?= htmlspecialchars($showing['matchName']) ?></h1>
-        <p class="text-gray-700 mb-4"><?= htmlspecialchars($showing['tournamentName']) ?> | <?= htmlspecialchars($showing['hallName']) ?></p>
-        <p class="text-gray-600 mb-6">Date: <?= date('F j, Y', strtotime($showing['showingDate'])) ?> | Time: <?= date('H:i', strtotime($showing['showingTime'])) ?></p>
-        <p class="text-gray-700 mb-6">
+        <p class="text-white mb-4"><?= htmlspecialchars($showing['tournamentName']) ?> | <?= htmlspecialchars($showing['hallName']) ?></p>
+        <p class="text-white mb-6">Date: <?= date('F j, Y', strtotime($showing['showingDate'])) ?> | Time: <?= date('H:i', strtotime($showing['showingTime'])) ?></p>
+        <p class="text-white mb-6">
             This hall contains 500 standard seats and VIP. Premium or BOX seating is available only on request via the admin, use the Contact form to inquire about special seating arrangements.
         </p>
 
