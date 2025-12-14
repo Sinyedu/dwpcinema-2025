@@ -104,7 +104,7 @@ $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                     <div class="p-4">
                         <h4 class="font-semibold text-lg"><?= ($t['tournamentName']) ?></h4>
                         <p class="text-sm text-gray-600 mt-1">
-                            <?= $t['gameName'] ?> — <?= ($t['startDate']) ?>
+                            <?= $t['gameName'] ?> - <?= ($t['startDate']) ?>
                         </p>
                         <p class="text-gray-700 text-sm mt-2">
                             <?= htmlspecialchars(substr($t['tournamentDescription'], 0, 120)) ?>...
