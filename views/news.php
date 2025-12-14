@@ -1,6 +1,5 @@
 <?php
 session_start();
-include __DIR__ . '/../includes/adminSidebar.php';
 require_once __DIR__ . '/../classes/Database.php';
 require_once "../controllers/NewsController.php";
 
@@ -10,6 +9,10 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
+
+include __DIR__ . '/../includes/adminSidebar.php';
+
+$pdo = Database::getInstance();
 $newsController = new NewsController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
