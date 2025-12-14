@@ -87,11 +87,11 @@ if (isset($_GET['edit'])) {
 
         <h2 class="text-xl font-semibold mb-2">Add News</h2>
         <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
-            <input type="text" name="newsTitle" placeholder="Title" class="w-full border rounded px-3 py-2" required>
-            <input type="text" name="newsAuthor" placeholder="Author" class="w-full border rounded px-3 py-2" required>
-            <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2"><?= $editNews['newsContent'] ?? '' ?></textarea>
-            <input type="text" name="newsImage" placeholder="Image URL (optional)" class="w-full border rounded px-3 py-2">
-            <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add News</button>
+            <input type="text" name="newsTitle" required>
+            <input type="text" name="newsAuthor" required>
+            <textarea name="newsContent" required></textarea>
+            <input type="text" name="newsImage">
+            <button type="submit" name="add">Add News</button>
         </form>
 
         <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
