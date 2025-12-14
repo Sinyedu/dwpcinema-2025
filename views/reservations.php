@@ -6,14 +6,14 @@ require_once __DIR__ . '/../classes/Database.php';
 $pdo = Database::getInstance();
 
 $reservations = $pdo->query("
-    SELECT cf.*, t.tournamentName
+    SELECT cf.contactFormID, cf.firstName, cf.lastName, cf.userEmail, cf.subject, cf.message, cf.status, cf.created_at, t.tournamentName
     FROM ContactForm cf
     LEFT JOIN Tournament t ON cf.tournamentID = t.tournamentID
     WHERE cf.category='Reservation'
-    ORDER BY cf.createdAt DESC
+    ORDER BY cf.created_at DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-$tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate DESC")->fetchAll(PDO::FETCH_ASSOC);
+$statuses = ['Pending', 'In Review', 'Sent Message', 'Confirmed', 'Cancelled'];
 ?>
 
 <!DOCTYPE html>
@@ -39,8 +39,9 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                         <th class="border p-2">#</th>
                         <th class="border p-2">Name</th>
                         <th class="border p-2">Email</th>
-                        <th class="border p-2">Message</th>
+                        <th class="border p-2">Subject</th>
                         <th class="border p-2">Tournament</th>
+                        <th class="border p-2">Message</th>
                         <th class="border p-2">Status</th>
                         <th class="border p-2">Action</th>
                     </tr>
@@ -51,28 +52,25 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                             <form action="process_reservations.php" method="POST" class="w-full">
                                 <td class="border p-2"><?= $r['contactFormID'] ?></td>
                                 <td class="border p-2"><?= htmlspecialchars($r['firstName'] . ' ' . $r['lastName']) ?></td>
-                                <td class="border p-2"><?= htmlspecialchars($r['email']) ?></td>
+                                <td class="border p-2"><?= htmlspecialchars($r['userEmail']) ?></td>
+                                <td class="border p-2"><?= htmlspecialchars($r['subject'] ?? '-') ?></td>
+                                <td class="border p-2"><?= htmlspecialchars($r['tournamentName'] ?? 'No tournament') ?></td>
                                 <td class="border p-2"><?= nl2br(htmlspecialchars($r['message'])) ?></td>
                                 <td class="border p-2">
-                                    <?= !empty($r['tournamentID'])
-                                        ? htmlspecialchars($tournaments[array_search($r['tournamentID'], array_column($tournaments, 'tournamentID'))]['tournamentName'])
-                                        : 'User did not select a tournament';
-                                    ?>
-                                </td>
-
-                                <td class="border p-2">
                                     <select name="status" class="border rounded p-1 w-full">
-                                        <?php
-                                        $statuses = ['Pending', 'In Review', 'Sent Message', 'Confirmed', 'Cancelled'];
-                                        foreach ($statuses as $s): ?>
+                                        <?php foreach ($statuses as $s): ?>
                                             <option value="<?= $s ?>" <?= (($r['status'] ?? 'Pending') === $s) ? 'selected' : '' ?>><?= $s ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-
-                                <td class="border p-2">
-                                    <input type="hidden" name="contactFormid" value="<?= $r['contactFormID'] ?>">
-                                    <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">Save</button>
+                                <td class="border p-2 flex flex-col gap-1">
+                                    <input type="hidden" name="contactFormID" value="<?= $r['contactFormID'] ?>">
+                                    <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">
+                                        Save Status
+                                    </button>
+                                    <button type="submit" name="sendEmail" value="1" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-500">
+                                        Send Email
+                                    </button>
                                 </td>
                             </form>
                         </tr>
