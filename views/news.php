@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'newsImage' => $_POST['newsImage'] ?? null
         ];
         $newsController->updateNews($_POST['newsID'], $data);
-        header("Location: news.php");
         exit;
     }
 
