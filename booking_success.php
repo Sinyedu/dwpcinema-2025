@@ -63,20 +63,20 @@ $total = $booking['totalAmount'];
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body class="bg-neutral-900 text-white min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-10">
         <h1 class="text-2xl font-bold mb-4 text-green-600">Booking Confirmed!</h1>
 
-        <div class="bg-white rounded shadow p-6 mb-6">
+        <div class="bg-neutral-800 rounded shadow p-6 mb-6">
             <h2 class="text-xl font-semibold mb-2"><?= htmlspecialchars($booking['tournamentName']) ?></h2>
-            <p class="text-gray-700 mb-1"><?= htmlspecialchars($booking['gameName']) ?></p>
-            <p class="text-gray-700 mb-1">Hall: <?= htmlspecialchars($booking['hallName']) ?></p>
-            <p class="text-gray-700 mb-1">Date: <?= htmlspecialchars($booking['showingDate']) ?> | Time: <?= htmlspecialchars($booking['showingTime']) ?></p>
-            <p class="text-gray-700 mb-1">Booking Made: <?= htmlspecialchars($booking['bookingDate']) ?></p>
+            <p class="text-gray-300 mb-1"><?= htmlspecialchars($booking['gameName']) ?></p>
+            <p class="text-gray-300 mb-1">Hall: <?= htmlspecialchars($booking['hallName']) ?></p>
+            <p class="text-gray-300 mb-1">Date: <?= htmlspecialchars($booking['showingDate']) ?> | Time: <?= htmlspecialchars($booking['showingTime']) ?></p>
+            <p class="text-gray-300 mb-1">Booking Made: <?= htmlspecialchars($booking['bookingDate']) ?></p>
         </div>
 
-        <div class="bg-white rounded shadow p-6 mb-6">
-            <h3 class="text-lg font-semibold mb-2">Seats Booked</h3>
+        <div class="bg-neutral-800 rounded shadow p-6 mb-6">
+            <h3 class="text-lg font-semibold mb-2 text-white">Seats Booked</h3>
             <div class="flex flex-wrap gap-2 mb-2">
                 <?php foreach ($seats as $s):
                     $color = $tierColors[$s['tierName']] ?? 'bg-gray-300';
@@ -86,7 +86,7 @@ $total = $booking['totalAmount'];
                     </span>
                 <?php endforeach; ?>
             </div>
-            <p class="font-semibold text-lg">Total Price: $<?= number_format($total, 2) ?></p>
+            <p class="font-semibold text-lg text-white">Total Price: $<?= number_format($total, 2) ?></p>
 
         </div>
 
