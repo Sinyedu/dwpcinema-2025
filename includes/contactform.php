@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user_id'])) {
     $redirect = urlencode($_SERVER['REQUEST_URI']);
     header("Location: login.php?redirect=$redirect");
     exit;
@@ -13,12 +13,16 @@ if (!isset($_SESSION['user'])) {
 
 $pdo = Database::getInstance();
 
+$stmt = $pdo->prepare("SELECT firstName, lastName, userEmail FROM User WHERE userID = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$firstName = $user['firstName'];
+$lastName  = $user['lastName'];
+$email     = $user['userEmail'];
+
 $success = '';
 $error   = '';
-
-$firstName = $_SESSION['user']['firstName'];
-$lastName  = $_SESSION['user']['lastName'];
-$email     = $_SESSION['user']['email'];
 
 $tournamentStatement = $pdo->query("
     SELECT tournamentID, tournamentName 
@@ -28,7 +32,6 @@ $tournamentStatement = $pdo->query("
 $tournaments = $tournamentStatement->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $message      = strip_tags(trim($_POST['message'] ?? ''));
     $tournamentID = !empty($_POST['tournament']) ? (int)$_POST['tournament'] : null;
 
@@ -42,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         if ($stmt->execute([$firstName, $lastName, $email, $message, $tournamentID])) {
-
             $to = "reservations@simonnyblom.com";
             $subject = "New Reservation from $firstName $lastName";
             $body = "Name: $firstName $lastName\nEmail: $email\nTournament ID: $tournamentID\n\nMessage:\n$message";
@@ -69,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body class="bg-gray-50 text-gray-900">
 
-    <?php include __DIR__ . '/includes/navbar.php'; ?>
 
     <section class="max-w-3xl mx-auto p-6 mt-16 bg-white rounded shadow">
         <h2 class="text-3xl font-semibold mb-6 text-center">Reservation Form</h2>
