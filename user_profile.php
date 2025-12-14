@@ -125,6 +125,7 @@ $tierColors = [
                                     ?>
                                     <div class="flex flex-wrap gap-2 mt-2 mb-2">
                                         <?php foreach ($seats as $s): ?>
+                                            <?php $color = $tierColors[$s['tierName']] ?? 'bg-gray-300'; ?>
                                             <span class="px-2 py-1 bg-gray-200 rounded text-sm"><?= htmlspecialchars($s['seatLabel'] ?? '', ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($s['tierName'] ?? '', ENT_QUOTES, 'UTF-8') ?>)</span>
                                         <?php endforeach; ?>
                                     </div>
