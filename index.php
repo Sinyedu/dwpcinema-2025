@@ -6,24 +6,21 @@ require_once __DIR__ . '/classes/Database.php';
 $pdo = Database::getInstance();
 
 $stmt = $pdo->query("
-    SELECT t.tournamentID, 
-           t.tournamentName, 
-           t.tournamentDescription, 
-           t.startDate, 
-           g.gameName,
-           g.gameGenre,
-           (SELECT COUNT(*) FROM `Match` m 
-            JOIN Showing s ON m.matchID = s.matchID
-            WHERE m.tournamentID = t.tournamentID
-            AND s.showingDate >= CURDATE()) AS upcomingShowings,
-           (SELECT MIN(s.showingDate) FROM `Match` m 
-            JOIN Showing s ON m.matchID = s.matchID
-            WHERE m.tournamentID = t.tournamentID
-            AND s.showingDate >= CURDATE()) AS nextShowing
-    FROM Tournament t
-    JOIN Game g ON t.gameID = g.gameID
-    ORDER BY t.startDate DESC
-    LIMIT 3
+SELECT t.tournamentID, 
+       t.tournamentName, 
+       t.tournamentDescription, 
+       t.startDate, 
+       g.gameName,
+       g.gameGenre,
+       COUNT(s.showingID) AS upcomingShowings,
+       MIN(s.showingDate) AS nextShowing
+FROM Tournament t
+JOIN Game g ON t.gameID = g.gameID
+LEFT JOIN `Match` m ON m.tournamentID = t.tournamentID
+LEFT JOIN Showing s ON s.matchID = m.matchID AND s.showingDate >= CURDATE()
+GROUP BY t.tournamentID
+ORDER BY t.startDate DESC
+LIMIT 3;
 ");
 $featured = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
