@@ -109,12 +109,12 @@ foreach ($tiers as $tier) {
 
     <div class="mt-6 grid grid-cols-4 gap-4">
         <?php foreach ($tiers as $tier): ?>
-            <p class="flex items-center text-gray-700">
+            <p class="flex items-center text-white">
                 <span class="inline-block w-5 h-5 <?= $tierColors[$tier['tierID']] ?? 'bg-gray-200' ?> mr-2"></span>
                 <?= htmlspecialchars($tier['tierName']) ?> ($<?= number_format($tier['basePrice'], 2) ?>)
             </p>
         <?php endforeach; ?>
-        <p class="flex items-center text-gray-700"><span class="inline-block w-5 h-5 bg-gray-400 mr-2"></span>Booked</p>
+        <p class="flex items-center text-white"><span class="inline-block w-5 h-5 bg-gray-400 mr-2"></span>Booked</p>
     </div>
     </div>
     <script>
