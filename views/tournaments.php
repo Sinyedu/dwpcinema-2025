@@ -60,8 +60,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['deleteTournament'])) {
-        $stmt = $pdo->prepare("DELETE FROM Tournament WHERE tournamentID = ?");
-        $stmt->execute([$_POST['tournamentID']]);
+        $pdo->prepare("
+        DELETE s FROM Showing s
+        JOIN `Match` m ON s.matchID = m.matchID
+        WHERE m.tournamentID = ?
+    ")->execute([$_POST['tournamentID']]);
+
+        $pdo->prepare("DELETE FROM `Match` WHERE tournamentID = ?")->execute([$_POST['tournamentID']]);
+
+        $pdo->prepare("DELETE FROM Tournament WHERE tournamentID = ?")->execute([$_POST['tournamentID']]);
+
         header("Location: tournaments.php");
         exit;
     }
