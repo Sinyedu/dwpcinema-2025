@@ -25,7 +25,7 @@
         <div class="md:w-1/3">
             <h4 class="text-white font-semibold text-lg mb-4">Connect with Us</h4>
             <p class="text-gray-400 text-sm mb-4">
-                Email: <a href="mailto:info@dwpesports.com" class="hover:text-white">info@dwpesports.com</a>
+                Email: <a href="mailto:info@dwpesports.com" class="hover:text-white">reservations@simonnyblom.com</a>
             </p>
             <div class="flex space-x-4">
                 <a href="#" class="hover:text-white transition" aria-label="Facebook">
