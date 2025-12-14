@@ -94,8 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "From: DWP Esports Cinema <no-reply@dwpesportscinema.dk>\r\nContent-Type: text/plain; charset=UTF-8"
             );
 
-            header("Location: contactform.php?sent=1");
-            exit;
+            $success = "Your message has been sent successfully!";
         } else {
             $error = "Something went wrong. Please try again later.";
         }
