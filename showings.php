@@ -14,13 +14,15 @@ $pdo = Database::getInstance();
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate ASC")
     ->fetchAll(PDO::FETCH_ASSOC);
 
-$selectedTournamentID = $_GET['tournamentID'] ?? null;
+$selectedTournamentID = isset($_GET['tournamentID']) ? (int)$_GET['tournamentID'] : null;
 
 $where = "";
 $params = [];
 if (!empty($selectedTournamentID)) {
-    $where = "WHERE m.tournamentID = ?";
+    $where = "WHERE m.tournamentID = ? AND CONCAT(s.showingDate, ' ', s.showingTime) >= NOW()";
     $params[] = $selectedTournamentID;
+} else {
+    $where = "WHERE CONCAT(s.showingDate, ' ', s.showingTime) >= NOW()";
 }
 
 $stmt = $pdo->prepare("
@@ -47,7 +49,6 @@ $stmt = $pdo->prepare("
     ORDER BY s.showingDate ASC, s.showingTime ASC
 ");
 
-
 $stmt->execute($params);
 $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -64,12 +65,12 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-neutral-900 min-h-screen text-white">
 
     <div class="max-w-6xl mx-auto px-6 py-10">
-        <h1 class="text-2xl font-bold mb-6">Showings</h1>
+        <h1 class="text-2xl font-bold mb-6">Upcoming Showings</h1>
 
         <form method="GET" class="mb-8">
             <label for="tournamentID" class="block mb-2 font-semibold">Filter by Tournament:</label>
-            <select name="tournamentID" id="tournamentID" class="w-full border px-3 py-2 rounded mb-2">
-                <option value="" class="bg-neutral-800 text-white">-- All Tournaments --</option>
+            <select name="tournamentID" id="tournamentID" class="w-full border px-3 py-2 rounded mb-2 bg-neutral-800 text-white">
+                <option value="">-- All Tournaments --</option>
                 <?php foreach ($tournaments as $t): ?>
                     <option value="<?= (int)$t['tournamentID'] ?>" <?= ($t['tournamentID'] == $selectedTournamentID) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($t['tournamentName']) ?>
@@ -103,7 +104,7 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <p class="text-gray-700 mt-4">No showings available for this tournament.</p>
+            <p class="text-gray-400 mt-4">No upcoming showings available<?= $selectedTournamentID ? " for this tournament" : "" ?>.</p>
         <?php endif; ?>
     </div>
 
