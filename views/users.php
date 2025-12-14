@@ -69,7 +69,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                         <tr class="hover:bg-neutral-600 transition">
                             <td class="px-4 py-2 text-white"><?= $u['userID'] ?></td>
                             <td class="px-4 py-2">
-                                <img src="<?= htmlspecialchars($u['avatar'] ?: 'uploads/avatars/default.png') ?>" alt="Avatar" class="rounded-full w-12 h-12">
+                                <img src="/public/<?= htmlspecialchars($u['avatar'] ?: 'uploads/avatars/default.png') ?>" alt="Avatar" class="rounded-full w-12 h-12">
 
                             </td>
                             <td class="px-4 py-2 font-medium text-white"><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?></td>
