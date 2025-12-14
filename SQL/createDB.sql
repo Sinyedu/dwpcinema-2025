@@ -150,12 +150,15 @@ CREATE TABLE AboutUs (
 
 CREATE TABLE ContactForm (
     contactID INT PRIMARY KEY AUTO_INCREMENT,
-    userName VARCHAR(100) NOT NULL,
-    userEmail VARCHAR(100) NOT NULL,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     category VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    submittedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    submittedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tournamentID INT,
+    FOREIGN KEY (tournamentID) REFERENCES Tournament(tournamentID)
 );
 
 
