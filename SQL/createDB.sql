@@ -62,7 +62,8 @@ CREATE TABLE `User` (
     role ENUM('user', 'admin') DEFAULT 'user',
     dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
     isActive BOOLEAN DEFAULT TRUE,
-    lastActive DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    lastActive DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    lastReservationAt DATETIME DEFAULT NULL
 );
 
 
@@ -428,7 +429,7 @@ INSERT INTO Showing (matchID, hallID, showingDate, showingTime) VALUES
 
 
 INSERT INTO News (newsTitle, newsContent, newsAuthor, newsImage) VALUES
-('Esports Cinema Expands!', 'We are proud to announce the opening of two new halls designed for esports tournaments and screenings.', 'Admin', 'https://via.placeholder.com/600x400'),
+('Esports Cinema Expands with Two New Dedicated Halls for Tournaments and Screenings', 'We are proud to announce the opening of two new halls designed for esports tournaments and screenings.', 'Admin', 'https://via.placeholder.com/600x400'),
 ('Partnership with Riot Games', 'Our cinema will officially host the 2026 League of Legends Worlds screening events!', 'Admin', 'https://via.placeholder.com/600x400'),
 ('New VIP Lounges', 'Experience tournaments like never before with luxury seating, in-seat service, and exclusive viewing angles.', 'Admin', 'https://via.placeholder.com/600x400'),
 ('Community Event: Meet the Pros', 'Fans can meet professional players and streamers during special Q&A sessions.', 'Admin', 'https://via.placeholder.com/600x400'),
