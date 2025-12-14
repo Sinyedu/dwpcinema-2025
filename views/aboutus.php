@@ -87,12 +87,12 @@ include __DIR__ . '/../includes/adminSidebar.php';
             </thead>
             <tbody>
                 <?php foreach ($aboutItems as $item): ?>
-                    <tr class="border-b">
-                        <td class="px-4 py-2"><?= $item['aboutID'] ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($item['aboutTitle']) ?></td>
-                        <td class="px-4 py-2"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($item['aboutFooter']) ?></td>
-                        <td class="px-4 py-2"><?= $item['lastUpdated'] ?></td>
+                    <tr class="border-b border-gray-700">
+                        <td class="px-4 py-2 text-white"><?= $item['aboutID'] ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($item['aboutTitle']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($item['aboutFooter']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= $item['lastUpdated'] ?></td>
                         <td class="px-4 py-2 space-x-2">
                             <a href="aboutus.php?edit=<?= $item['aboutID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
                             <form method="POST" class="inline">

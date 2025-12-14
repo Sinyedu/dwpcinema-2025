@@ -109,7 +109,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                     <input type="date" name="endDate" value="<?= $editTournament['endDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
                 </div>
 
-                <select name="gameID" class="w-full border rounded px-3 py-2" required>
+                <select name="gameID" class="w-full border rounded px-3 py-2 bg-neutral-900 text-white" required>
                     <option value="">Select Game</option>
                     <?php foreach ($games as $g): ?>
                         <option value="<?= $g['gameID'] ?>" <?= $g['gameID'] == $editTournament['gameID'] ? 'selected' : '' ?>>
