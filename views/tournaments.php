@@ -68,9 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['addMatch'])) {
         $stmt = $pdo->prepare("
-            INSERT INTO `Match` (tournamentID, gameID, matchName, matchDate, matchTime, hallID)
-            VALUES (:tournamentID, :gameID, :matchName, :matchDate, :matchTime, :hallID)
-        ");
+        INSERT INTO `Match` (tournamentID, gameID, matchName, matchDate, matchTime, hallID)
+        VALUES (:tournamentID, :gameID, :matchName, :matchDate, :matchTime, :hallID)
+    ");
         $stmt->execute([
             ':tournamentID' => $_POST['tournamentID'],
             ':gameID' => $_POST['gameID'],
@@ -79,6 +79,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':matchTime' => $_POST['matchTime'],
             ':hallID' => $_POST['hallID']
         ]);
+
+        $matchID = $pdo->lastInsertId();
+
+        $stmt2 = $pdo->prepare("
+        INSERT INTO Showing (matchID, hallID, showingDate, showingTime)
+        VALUES (:matchID, :hallID, :date, :time)
+    ");
+        $stmt2->execute([
+            ':matchID' => $matchID,
+            ':hallID' => $_POST['hallID'],
+            ':date' => $_POST['matchDate'],
+            ':time' => $_POST['matchTime']
+        ]);
+
         header("Location: tournaments.php");
         exit;
     }
