@@ -1,5 +1,4 @@
 <?php
-// TODO: Refactor this, it looks massive. Although it is robust and secure for image uploading
 class ImageUploader
 {
     private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];

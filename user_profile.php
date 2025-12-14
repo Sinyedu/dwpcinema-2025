@@ -79,7 +79,7 @@ $seatStmt = $pdo->prepare("
                             <img src="/public/<?= htmlspecialchars($user['avatar'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-md">
                         </div>
                         <label class="mt-3 text-sm text-white font-medium">Change Avatar</label>
-                        <input type="file" name="avatar" accept="image/*" class="mt-1 w-full md:w-64 text-sm text-gray-700 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="file" name="avatar" accept="image/*" class="mt-1 w-full md:w-64 text-sm text-white border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>

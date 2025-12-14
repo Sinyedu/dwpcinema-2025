@@ -34,14 +34,14 @@ if (!$newsItem) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-white text-gray-900 font-sans">
+<body class="bg-neutral-900 text-white font-sans">
 
     <main class="max-w-4xl mx-auto px-6 py-16">
-        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-white">
             <?= htmlspecialchars($newsItem['newsTitle'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
         </h1>
 
-        <p class="text-gray-500 text-sm mb-6">
+        <p class="text-gray-400 text-sm mb-6">
             By <?= htmlspecialchars($newsItem['newsAuthor'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> | <?= date('F j, Y', strtotime($newsItem['newsCreatedAt'])) ?>
         </p>
 
@@ -51,11 +51,11 @@ if (!$newsItem) {
                 class="w-full h-64 md:h-80 object-cover mb-8 rounded-lg shadow-md">
         <?php endif; ?>
 
-        <div class="prose max-w-full text-gray-800 leading-relaxed">
+        <div class="prose max-w-full text-gray-300 leading-relaxed">
             <?= nl2br(htmlspecialchars($newsItem['newsContent'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) ?>
         </div>
 
-        <a href="news.php" class="inline-block mt-12 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        <a href="news.php" class="inline-block mt-12 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-300 transition">
             &larr; Back to News
         </a>
     </main>
