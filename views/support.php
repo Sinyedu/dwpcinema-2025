@@ -86,12 +86,12 @@ usort($tickets, function ($a, $b) {
 
     <div class="flex-1 ml-64 p-8">
         <div id="toastContainer" class="fixed top-5 right-5 space-y-2 z-50"></div>
-        <header class="flex justify-between items-center mb-8 border-b pb-4">
+        <header class="flex justify-between items-center mb-8 pb-4">
             <h1 class="text-2xl text-white font-semibold">Support Tickets</h1>
             <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
         </header>
 
-        <div class="grid md:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-3 gap-6 bg-neutral-700 p-6 rounded shadow">
             <div class="bg-neutral-800 rounded shadow p-6 h-[600px] overflow-y-auto">
                 <h2 class="font-semibold text-lg mb-3 text-white">Tickets</h2>
                 <?php if (count($tickets) === 0): ?>
@@ -146,7 +146,7 @@ usort($tickets, function ($a, $b) {
                     <div class="mb-3">
                         <form id="replyForm">
                             <input type="hidden" name="ticketID" value="<?= $activeTicketID ?>">
-                            <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2" placeholder="Type your message..." required></textarea>
+                            <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2 bg-neutral-800 text-white" placeholder="Type your message..." required></textarea>
                             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                                 Send Reply
                             </button>
