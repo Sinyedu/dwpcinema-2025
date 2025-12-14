@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email,
                 $userSubject,
                 $userMessage,
-                "From: DWP Esports Cinema <no-reply@dwpesportscinema.dk>\r\nContent-Type: text/plain; charset=UTF-8"
+                "From: DWP Esports Cinema <simnyb01@easv365.dk>\r\nContent-Type: text/plain; charset=UTF-8"
             );
 
             $success = "Your message has been sent successfully!";
