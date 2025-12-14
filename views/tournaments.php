@@ -189,7 +189,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                     </div>
                 </div>
                 <p class="text-white mb-4"><?= htmlspecialchars($t['tournamentDescription']) ?></p>
-                <p class="text-white mb-4">Dates: <?= $t['startDate'] ?> → <?= $t['endDate'] ?></p>
+                <p class="text-white mb-4">Dates: <?= $t['startDate'] ?> - <?= $t['endDate'] ?></p>
 
                 <?php
                 $matchesStmt = $pdo->prepare("
