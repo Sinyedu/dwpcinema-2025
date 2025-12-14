@@ -2,7 +2,6 @@
 session_start();
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../controllers/AboutUsController.php';
-include __DIR__ . '/../includes/adminSidebar.php';
 
 $pdo = Database::getInstance();
 
@@ -35,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $aboutItems = $ctrl->getAll();
 $editItem = isset($_GET['edit']) ? $ctrl->getById((int)$_GET['edit']) : null;
+
+include __DIR__ . '/../includes/adminSidebar.php';
 ?>
 
 <!DOCTYPE html>
