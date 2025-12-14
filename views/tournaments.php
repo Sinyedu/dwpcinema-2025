@@ -105,12 +105,12 @@ include __DIR__ . '/../includes/adminSidebar.php';
                 <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required><?= htmlspecialchars($editTournament['tournamentDescription']) ?></textarea>
 
                 <div class="flex space-x-2">
-                    <input type="date" name="startDate" value="<?= $editTournament['startDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
-                    <input type="date" name="endDate" value="<?= $editTournament['endDate'] ?>" class="w-1/2 border rounded px-3 py-2" required>
+                    <input type="date" name="startDate" value="<?= $editTournament['startDate'] ?>" class="w-1/2 border rounded px-3 py-2 bg-neutral-900 text-white" required>
+                    <input type="date" name="endDate" value="<?= $editTournament['endDate'] ?>" class="w-1/2 border rounded px-3 py-2 bg-neutral-900 text-white" required>
                 </div>
 
                 <select name="gameID" class="w-full border rounded px-3 py-2 bg-neutral-900 text-white" required>
-                    <option value="">Select Game</option>
+                    <option value="" class="text-white">Select Game</option>
                     <?php foreach ($games as $g): ?>
                         <option value="<?= $g['gameID'] ?>" <?= $g['gameID'] == $editTournament['gameID'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($g['gameName']) ?>
