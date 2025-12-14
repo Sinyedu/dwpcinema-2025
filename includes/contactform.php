@@ -1,13 +1,7 @@
 <?php
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+require_once __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/controllers/ContactController.php';
 
 if (!isset($_SESSION['user_id'])) {
     $redirect = urlencode($_SERVER['REQUEST_URI']);
@@ -15,63 +9,16 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$config = require __DIR__ . '../../config/config.php';
-$emailConfig = $config['email'];
+$config = require __DIR__ . '/config/config.php';
+$controller = new ContactController($config['email']);
 
-$pdo = Database::getInstance();
-
-$stmt = $pdo->prepare("SELECT firstName, lastName, userEmail FROM `User` WHERE userID = ?");
-$stmt->execute([$_SESSION['user_id']]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-$firstName = $user['firstName'];
-$lastName  = $user['lastName'];
-$email     = $user['userEmail'];
-$tournamentStatement = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY tournamentName ASC");
-$tournaments = $tournamentStatement->fetchAll(PDO::FETCH_ASSOC);
-
-$success = '';
-$error = '';
+$success = $error = '';
+$tournaments = $controller->getTournaments();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = strip_tags(trim($_POST['message'] ?? ''));
-    $tournamentID = !empty($_POST['tournament']) ? (int)$_POST['tournament'] : null;
-
-    if (!$tournamentID || !$message) {
-        $error = "Please select a tournament and write a message.";
-    } else {
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->isSMTP();
-            $mail->Host       = $emailConfig['smtp_host'];
-            $mail->SMTPAuth   = true;
-            $mail->Username   = $emailConfig['username'];
-            $mail->Password   = $emailConfig['password'];
-            $mail->SMTPSecure = $emailConfig['smtp_secure'];
-            $mail->Port       = $emailConfig['smtp_port'];
-
-            $mail->setFrom($emailConfig['from_email'], $emailConfig['from_name']);
-            $mail->addAddress($emailConfig['to_email']);
-            $mail->addReplyTo($email, "$firstName $lastName");
-
-            $mail->Subject = "New Reservation from $firstName $lastName";
-            $mail->Body    = "Name: $firstName $lastName\nEmail: $email\nTournament ID: $tournamentID\n\nMessage:\n$message";
-
-            $mail->send();
-
-            $stmt = $pdo->prepare("
-                INSERT INTO ContactForm 
-                (firstName, lastName, email, category, message, tournamentID)
-                VALUES (?, ?, ?, 'Reservation', ?, ?)
-            ");
-            $stmt->execute([$firstName, $lastName, $email, $message, $tournamentID]);
-
-            $success = "Your reservation has been sent successfully!";
-        } catch (Exception $e) {
-            $error = "Reservation could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        }
-    }
+    $result = $controller->submitReservation($_POST, $_SESSION['user_id']);
+    $success = $result['success'] ?? '';
+    $error = $result['error'] ?? '';
 }
 ?>
 
@@ -85,19 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="bg-gray-50 text-gray-900">
+
     <section class="max-w-3xl mx-auto p-6 mt-16 bg-white rounded shadow">
         <h2 class="text-3xl font-semibold mb-6 text-center">Reservation Form</h2>
 
         <?php if ($success): ?>
-            <div class="bg-green-100 text-green-800 p-4 mb-4 rounded">
-                <?= htmlspecialchars($success) ?>
-            </div>
+            <div class="bg-green-100 text-green-800 p-4 mb-4 rounded"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
 
         <?php if ($error): ?>
-            <div class="bg-red-100 text-red-800 p-4 mb-4 rounded">
-                <?= htmlspecialchars($error) ?>
-            </div>
+            <div class="bg-red-100 text-red-800 p-4 mb-4 rounded"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
         <form method="post" class="space-y-4">
@@ -106,9 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <select name="tournament" class="w-full p-2 border rounded" required>
                     <option value="">-- Select a tournament --</option>
                     <?php foreach ($tournaments as $t): ?>
-                        <option value="<?= $t['tournamentID'] ?>">
-                            <?= htmlspecialchars($t['tournamentName']) ?>
-                        </option>
+                        <option value="<?= $t['tournamentID'] ?>"><?= htmlspecialchars($t['tournamentName']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
