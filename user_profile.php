@@ -48,6 +48,12 @@ $seatStmt = $pdo->prepare("
     WHERE bs.bookingID = ?
     ORDER BY s.seatRow, s.seatNumber
 ");
+
+$tierColors = [
+    'VIP' => 'bg-blue-400',
+    'Premium' => 'bg-green-400',
+    'Standard' => 'bg-gray-400'
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
