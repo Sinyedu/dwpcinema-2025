@@ -1,47 +1,109 @@
 <?php
 require_once __DIR__ . '/../classes/Database.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 $pdo = Database::getInstance();
+
 $success = '';
-$error = '';
+$error   = '';
 
-$loggedIn = isset($_SESSION['user']);
+$loggedIn  = isset($_SESSION['user']);
 $autoFirst = $loggedIn ? $_SESSION['user']['firstName'] : '';
-$autoLast = $loggedIn ? $_SESSION['user']['lastName'] : '';
-$autoEmail = $loggedIn ? $_SESSION['user']['email'] : '';
+$autoLast  = $loggedIn ? $_SESSION['user']['lastName']  : '';
+$autoEmail = $loggedIn ? $_SESSION['user']['email']     : '';
 
-$tournamentStatement = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY tournamentName ASC");
+$tournamentStatement = $pdo->query("
+    SELECT tournamentID, tournamentName 
+    FROM Tournament 
+    ORDER BY tournamentName ASC
+");
 $tournaments = $tournamentStatement->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $firstName = trim($_POST['firstName']);
-    $lastName = trim($_POST['lastName']);
-    $email = trim($_POST['email']);
-    $category = $_POST['category'];
-    $message = trim($_POST['message']);
-    $tournamentID = !empty($_POST['tournament']) ? intval($_POST['tournament']) : null;
+
+    $firstName    = strip_tags(trim($_POST['firstName'] ?? ''));
+    $lastName     = strip_tags(trim($_POST['lastName'] ?? ''));
+    $email        = trim($_POST['email'] ?? '');
+    $category     = $_POST['category'] ?? '';
+    $message      = strip_tags(trim($_POST['message'] ?? ''));
+    $tournamentID = !empty($_POST['tournament']) ? (int)$_POST['tournament'] : null;
 
     if (!$firstName || !$lastName || !$email || !$category || !$message) {
-        $error = "Please fill in all fields.";
+        $error = "Please fill in all required fields.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } elseif ($category === 'Reservation' && !$tournamentID) {
         $error = "Please select a tournament for your reservation.";
     } else {
+
         $stmt = $pdo->prepare("
-            INSERT INTO ContactForm (firstName, lastName, email, category, message, tournamentID)
+            INSERT INTO ContactForm 
+            (firstName, lastName, email, category, message, tournamentID)
             VALUES (?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$firstName, $lastName, $email, $category, $message, $tournamentID])) {
-            $success = "Your message has been sent successfully!";
+        if ($stmt->execute([
+            $firstName,
+            $lastName,
+            $email,
+            $category,
+            $message,
+            $tournamentID
+        ])) {
+
+            $adminEmail = "simnyb01@easv365.dk";
+            $subject    = "New Contact Form Message – $category";
+
+            $emailBody = "
+            New contact form submission
+
+            Name: $firstName $lastName
+            Email: $email
+            Category: $category
+            Tournament ID: " . ($tournamentID ?? 'N/A') . "
+
+            Message:
+            $message
+                ";
+
+            $headers = implode("\r\n", [
+                "From: DWP Esports Cinema <simnyb01@easv365.dk>",
+                "Reply-To: $email",
+                "Content-Type: text/plain; charset=UTF-8"
+            ]);
+
+            mail($adminEmail, $subject, $emailBody, $headers);
+
+
+            $userSubject = "We received your message";
+            $userMessage = "Hi $firstName,
+
+            Thanks for contacting DWP Esports Cinema.
+            We have received your message and will get back to you shortly.
+
+            Best regards,
+            DWP Esports Cinema";
+
+            mail(
+                $email,
+                $userSubject,
+                $userMessage,
+                "From: DWP Esports Cinema <no-reply@dwpesportscinema.dk>\r\nContent-Type: text/plain; charset=UTF-8"
+            );
+
+            header("Location: contactform.php?sent=1");
+            exit;
         } else {
             $error = "Something went wrong. Please try again later.";
         }
     }
+}
+
+if (isset($_GET['sent'])) {
+    $success = "Your message has been sent successfully!";
 }
 ?>
 
@@ -60,17 +122,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2 class="text-3xl font-semibold mb-6 text-center">Contact Us</h2>
 
         <?php if ($success): ?>
-            <div class="bg-green-100 text-green-800 p-4 mb-4 rounded"><?= htmlspecialchars($success) ?></div>
+            <div class="bg-green-100 text-green-800 p-4 mb-4 rounded">
+                <?= htmlspecialchars($success) ?>
+            </div>
         <?php endif; ?>
 
         <?php if ($error): ?>
-            <div class="bg-red-100 text-red-800 p-4 mb-4 rounded"><?= htmlspecialchars($error) ?></div>
+            <div class="bg-red-100 text-red-800 p-4 mb-4 rounded">
+                <?= htmlspecialchars($error) ?>
+            </div>
         <?php endif; ?>
 
-        <form action="" method="post" class="space-y-4">
+        <form method="post" class="space-y-4">
 
             <div>
-                <label for="category" class="block font-medium mb-1">Category *</label>
+                <label class="block font-medium mb-1">Category *</label>
                 <select name="category" id="category" class="w-full p-2 border rounded" required>
                     <option value="">-- Select a category --</option>
                     <option value="Support">Support</option>
@@ -82,54 +148,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div id="tournamentWrapper" class="hidden">
-                <label for="tournament" class="block font-medium mb-1">Tournament *</label>
-                <select name="tournament" id="tournament" class="w-full p-2 border rounded">
+                <label class="block font-medium mb-1">Tournament *</label>
+                <select name="tournament" class="w-full p-2 border rounded">
                     <option value="">-- Select a tournament --</option>
                     <?php foreach ($tournaments as $t): ?>
-                        <option value="<?= $t['tournamentID'] ?>"><?= htmlspecialchars($t['tournamentName']) ?></option>
+                        <option value="<?= $t['tournamentID'] ?>">
+                            <?= htmlspecialchars($t['tournamentName']) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label for="firstName" class="block font-medium mb-1">First Name *</label>
-                    <input type="text" name="firstName" id="firstName"
-                        value="<?= htmlspecialchars($autoFirst) ?>"
-                        class="w-full p-2 border rounded"
-                        <?= $loggedIn ? 'readonly' : '' ?>
-                        required>
-                </div>
-
-                <div>
-                    <label for="lastName" class="block font-medium mb-1">Last Name *</label>
-                    <input type="text" name="lastName" id="lastName"
-                        value="<?= htmlspecialchars($autoLast) ?>"
-                        class="w-full p-2 border rounded"
-                        <?= $loggedIn ? 'readonly' : '' ?>
-                        required>
-                </div>
-            </div>
-
-            <div>
-                <label for="email" class="block font-medium mb-1">Email *</label>
-                <input type="email" name="email" id="email"
-                    value="<?= htmlspecialchars($autoEmail) ?>"
+                <input type="text" name="firstName" placeholder="First name *"
+                    value="<?= htmlspecialchars($autoFirst) ?>"
                     class="w-full p-2 border rounded"
-                    <?= $loggedIn ? 'readonly' : '' ?>
-                    required>
+                    <?= $loggedIn ? 'readonly' : '' ?> required>
+
+                <input type="text" name="lastName" placeholder="Last name *"
+                    value="<?= htmlspecialchars($autoLast) ?>"
+                    class="w-full p-2 border rounded"
+                    <?= $loggedIn ? 'readonly' : '' ?> required>
             </div>
 
-            <div>
-                <label for="message" class="block font-medium mb-1">Message *</label>
-                <textarea name="message" id="message" rows="5" class="w-full p-2 border rounded" required></textarea>
-            </div>
+            <input type="email" name="email" placeholder="Email *"
+                value="<?= htmlspecialchars($autoEmail) ?>"
+                class="w-full p-2 border rounded"
+                <?= $loggedIn ? 'readonly' : '' ?> required>
+
+            <textarea name="message" rows="5" placeholder="Message *"
+                class="w-full p-2 border rounded" required></textarea>
 
             <div class="text-center">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-500 transition font-medium">
+                <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-500 transition">
                     Send Message
                 </button>
             </div>
+
         </form>
     </section>
 
