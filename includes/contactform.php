@@ -15,19 +15,18 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$config = require __DIR__ . '/../config.php';
+$config = require __DIR__ . '../../config/config.php';
 $emailConfig = $config['email'];
 
 $pdo = Database::getInstance();
 
-$stmt = $pdo->prepare("SELECT firstName, lastName, email FROM User WHERE userID = ?");
+$stmt = $pdo->prepare("SELECT firstName, lastName, userEmail FROM `User` WHERE userID = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $firstName = $user['firstName'];
 $lastName  = $user['lastName'];
-$email     = $user['email'];
-
+$email     = $user['userEmail'];
 $tournamentStatement = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY tournamentName ASC");
 $tournaments = $tournamentStatement->fetchAll(PDO::FETCH_ASSOC);
 
