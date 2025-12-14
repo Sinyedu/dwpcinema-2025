@@ -9,15 +9,11 @@ class Database
             $config = require __DIR__ . '/../config/config.php';
             $db = $config['db'];
 
-            $charset = $db['charset'] ?? 'utf8mb4';
-            $dsn = "mysql:host={$db['host']};dbname={$db['name']};charset={$charset}";
+            $dsn = "mysql:host={$db['host']};dbname={$db['name']};charset={$db['charset']}";
 
             try {
-                self::$instance = new PDO($dsn, $db['user'], $db['password'], [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$charset}"
-                ]);
+                self::$instance = new PDO($dsn, $db['user'], $db['password']);
+                self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 die("Database connection failed: " . $e->getMessage());
             }
