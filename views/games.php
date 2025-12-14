@@ -77,8 +77,8 @@ if (isset($_GET['edit'])) {
             </form>
         <?php endif; ?>
 
-        <h2 class="text-xl font-semibold mb-2">Add Game</h2>
-        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
+        <h2 class="text-xl text-white font-semibold mb-2">Add Game</h2>
+        <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
             <input type="text" name="gameName" placeholder="Game Name" class="w-full border rounded px-3 py-2" required>
             <input type="text" name="gameGenre" placeholder="Genre (optional)" class="w-full border rounded px-3 py-2">
             <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Game</button>

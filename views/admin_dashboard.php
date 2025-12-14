@@ -76,7 +76,7 @@ $games = $gameController->getAllGames();
                 <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
                     <?php foreach ($tournaments as $t): ?>
                         <li>
-                            <span class="font-medium"><?= htmlspecialchars($t['tournamentName']) ?></span>
+                            <span class="font-medium text-white"><?= htmlspecialchars($t['tournamentName']) ?></span>
                             <span class="text-gray-500">(<?= htmlspecialchars($t['startDate']) ?>)</span>
                         </li>
                     <?php endforeach; ?>
@@ -90,7 +90,7 @@ $games = $gameController->getAllGames();
                 </div>
                 <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
                     <?php foreach ($news as $n): ?>
-                        <li><?= htmlspecialchars($n['newsTitle']) ?></li>
+                        <li class="text-white"><?= htmlspecialchars($n['newsTitle']) ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -102,16 +102,16 @@ $games = $gameController->getAllGames();
                 </div>
                 <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
                     <?php foreach ($users as $u): ?>
-                        <li>
+                        <li class="text-white">
                             <?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?>
                             <span class="text-gray-400">(<?= htmlspecialchars($u['userEmail']) ?>)</span>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <div class="bg-white rounded shadow p-6">
+            <div class="bg-neutral-800 rounded shadow p-6">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-lg font-semibold">Games</h3>
+                    <h3 class="text-lg text-white font-semibold">Games</h3>
                     <a href="games.php" class="text-blue-600 hover:underline text-sm">Manage</a>
                 </div>
                 <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">

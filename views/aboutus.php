@@ -47,18 +47,18 @@ include __DIR__ . '/../includes/adminSidebar.php';
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-neutral-900 min-h-screen">
     <div class="max-w-6xl mx-auto px-6 py-10">
 
-        <h1 class="text-2xl font-semibold mb-6">Manage About Us</h1>
+        <h1 class="text-2xl text-white font-semibold mb-6">Manage About Us</h1>
 
         <?php if ($editItem): ?>
-            <h2 class="text-xl font-semibold mb-2">Edit Section</h2>
-            <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl text-white font-semibold mb-2">Edit Section</h2>
+            <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-6">
                 <input type="hidden" name="aboutID" value="<?= $editItem['aboutID'] ?>">
-                <input type="text" name="aboutTitle" value="<?= htmlspecialchars($editItem['aboutTitle']) ?>" class="w-full border rounded px-3 py-2" placeholder="Title" required>
-                <textarea name="aboutContent" class="w-full border rounded px-3 py-2" placeholder="Content" required><?= htmlspecialchars($editItem['aboutContent']) ?></textarea>
-                <input type="text" name="aboutFooter" value="<?= htmlspecialchars($editItem['aboutFooter']) ?>" class="w-full border rounded px-3 py-2" placeholder="Footer (optional)">
+                <input type="text" name="aboutTitle" value="<?= htmlspecialchars($editItem['aboutTitle']) ?>" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" placeholder="Title" required>
+                <textarea name="aboutContent" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" placeholder="Content" required><?= htmlspecialchars($editItem['aboutContent']) ?></textarea>
+                <input type="text" name="aboutFooter" value="<?= htmlspecialchars($editItem['aboutFooter']) ?>" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" placeholder="Footer (optional)">
                 <div class="flex space-x-2">
                     <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update</button>
                     <a href="aboutus.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
@@ -66,17 +66,17 @@ include __DIR__ . '/../includes/adminSidebar.php';
             </form>
         <?php endif; ?>
 
-        <h2 class="text-xl font-semibold mb-2">Add Section</h2>
-        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
-            <input type="text" name="aboutTitle" placeholder="Title" class="w-full border rounded px-3 py-2" required>
-            <textarea name="aboutContent" placeholder="Content" class="w-full border rounded px-3 py-2" required></textarea>
-            <input type="text" name="aboutFooter" placeholder="Footer (optional)" class="w-full border rounded px-3 py-2">
+        <h2 class="text-xl text-white font-semibold mb-2">Add Section</h2>
+        <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
+            <input type="text" name="aboutTitle" placeholder="Title" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" required>
+            <textarea name="aboutContent" placeholder="Content" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" required></textarea>
+            <input type="text" name="aboutFooter" placeholder="Footer (optional)" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white">
             <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Section</button>
         </form>
 
-        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+        <table class="w-full table-auto bg-neutral-800 rounded shadow overflow-hidden">
             <thead>
-                <tr class="bg-gray-200">
+                <tr class="bg-gray-700 text-white">
                     <th class="px-4 py-2">ID</th>
                     <th class="px-4 py-2">Title</th>
                     <th class="px-4 py-2">Content</th>

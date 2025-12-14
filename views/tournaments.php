@@ -91,7 +91,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen ml-64">
+<body class="bg-neutral-900 min-h-screen ml-64">
     <div class="max-w-6xl mx-auto px-6 py-10">
         <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
 

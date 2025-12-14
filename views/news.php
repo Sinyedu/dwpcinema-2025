@@ -84,30 +84,30 @@ if (isset($_GET['edit'])) {
             </form>
         <?php endif; ?>
 
-        <h2 class="text-xl font-semibold mb-2">Add News</h2>
-        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
+        <h2 class="text-xl text-white font-semibold mb-2">Add News</h2>
+        <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
             <div>
-                <label for="newsTitle" class="block text-gray-700 font-medium mb-1">Title</label>
+                <label for="newsTitle" class="block text-gray-300 font-medium mb-1">Title</label>
                 <input type="text" id="newsTitle" name="newsTitle" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full border border-gray-600 rounded px-3 py-2 bg-neutral-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <div>
-                <label for="newsAuthor" class="block text-gray-700 font-medium mb-1">Author</label>
+                <label for="newsAuthor" class="block text-gray-300 font-medium mb-1">Author</label>
                 <input type="text" id="newsAuthor" name="newsAuthor" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full border border-gray-600 rounded px-3 py-2 bg-neutral-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <div>
-                <label for="newsContent" class="block text-gray-700 font-medium mb-1">Content</label>
+                <label for="newsContent" class="block text-gray-300 font-medium mb-1">Content</label>
                 <textarea id="newsContent" name="newsContent" required rows="8"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
+                    class="w-full border border-gray-600 rounded px-3 py-2 bg-neutral-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
             </div>
 
             <div>
-                <label for="newsImage" class="block text-gray-700 font-medium mb-1">Image URL (optional)</label>
+                <label for="newsImage" class="block text-gray-300 font-medium mb-1">Image URL (optional)</label>
                 <input type="text" id="newsImage" name="newsImage"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full border border-gray-600 rounded px-3 py-2 bg-neutral-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <button type="submit" name="add"
@@ -116,23 +116,23 @@ if (isset($_GET['edit'])) {
             </button>
         </form>
 
-        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+        <table class="w-full table-auto bg-neutral-800 rounded shadow overflow-hidden">
             <thead>
-                <tr class="bg-gray-200">
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Title</th>
-                    <th class="px-4 py-2">Author</th>
-                    <th class="px-4 py-2">Created</th>
-                    <th class="px-4 py-2">Actions</th>
+                <tr class="bg-gray-700">
+                    <th class="px-4 py-2 text-white">ID</th>
+                    <th class="px-4 py-2 text-white">Title</th>
+                    <th class="px-4 py-2 text-white">Author</th>
+                    <th class="px-4 py-2 text-white">Created</th>
+                    <th class="px-4 py-2 text-white">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($news as $n): ?>
                     <tr class="border-b">
-                        <td class="px-4 py-2"><?= $n['newsID'] ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($n['newsTitle']) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($n['newsAuthor']) ?></td>
-                        <td class="px-4 py-2"><?= $n['newsCreatedAt'] ?></td>
+                        <td class="px-4 py-2 text-white"><?= $n['newsID'] ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($n['newsTitle']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($n['newsAuthor']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= $n['newsCreatedAt'] ?></td>
                         <td class="px-4 py-2 space-x-2">
                             <a href="news.php?edit=<?= $n['newsID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
                             <form method="POST" class="inline">

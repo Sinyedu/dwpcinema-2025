@@ -81,21 +81,21 @@ usort($tickets, function ($a, $b) {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 flex min-h-screen">
+<body class="bg-neutral-900 flex min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">
         <div id="toastContainer" class="fixed top-5 right-5 space-y-2 z-50"></div>
         <header class="flex justify-between items-center mb-8 border-b pb-4">
-            <h1 class="text-2xl font-semibold">Support Tickets</h1>
+            <h1 class="text-2xl text-white font-semibold">Support Tickets</h1>
             <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
         </header>
 
         <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded shadow p-6 h-[600px] overflow-y-auto">
-                <h2 class="font-semibold text-lg mb-3">Tickets</h2>
+            <div class="bg-neutral-800 rounded shadow p-6 h-[600px] overflow-y-auto">
+                <h2 class="font-semibold text-lg mb-3 text-white">Tickets</h2>
                 <?php if (count($tickets) === 0): ?>
-                    <p class="text-gray-500 text-sm">No tickets found.</p>
+                    <p class="text-gray-400 text-sm">No tickets found.</p>
                 <?php else: ?>
                     <ul class="space-y-2">
                         <?php foreach ($tickets as $t):

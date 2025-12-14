@@ -46,35 +46,35 @@ include __DIR__ . '/../includes/adminSidebar.php';
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen ml-64">
+<body class="bg-neutral-900 min-h-screen ml-64">
 
     <div class="max-w-7xl mx-auto px-6 py-10">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Manage Users</h1>
+        <h1 class="text-3xl font-bold mb-6 text-white">Manage Users</h1>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-lg shadow divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <table class="min-w-full bg-neutral-800 rounded-lg shadow divide-y divide-gray-200">
+                <thead class="bg-neutral-700">
                     <tr>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">ID</th>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">Avatar</th>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">Name</th>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">Email</th>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">Last Active</th>
-                        <th class="px-4 py-3 text-left text-gray-600 uppercase text-sm">Status</th>
-                        <th class="px-4 py-3 text-center text-gray-600 uppercase text-sm">Actions</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">ID</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Avatar</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Name</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Email</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Last Active</th>
+                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Status</th>
+                        <th class="px-4 py-3 text-center text-gray-400 uppercase text-sm">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <?php foreach ($users as $u): ?>
-                        <tr class="hover:bg-gray-50 transition">
+                        <tr class="hover:bg-neutral-600 transition">
                             <td class="px-4 py-2"><?= $u['userID'] ?></td>
                             <td class="px-4 py-2">
                                 <img src="/<?= htmlspecialchars($u['avatar'] ?? 'public/uploads/avatars/default.png') ?>"
                                     alt="Avatar" class="w-12 h-12 rounded-full object-cover border">
                             </td>
-                            <td class="px-4 py-2 font-medium text-gray-700"><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?></td>
-                            <td class="px-4 py-2 text-gray-600"><?= htmlspecialchars($u['userEmail']) ?></td>
-                            <td class="px-4 py-2 text-gray-600">
+                            <td class="px-4 py-2 font-medium text-white"><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?></td>
+                            <td class="px-4 py-2 text-gray-300"><?= htmlspecialchars($u['userEmail']) ?></td>
+                            <td class="px-4 py-2 text-gray-300">
                                 <?= $u['lastActive'] ? date('d M Y H:i', strtotime($u['lastActive'])) : '<span class="text-gray-400 italic">Never</span>' ?>
                             </td>
                             <td class="px-4 py-2 text-center">
