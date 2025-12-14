@@ -69,7 +69,7 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <form method="GET" class="mb-8">
             <label for="tournamentID" class="block mb-2 font-semibold">Filter by Tournament:</label>
             <select name="tournamentID" id="tournamentID" class="w-full border px-3 py-2 rounded mb-2">
-                <option value="">-- All Tournaments --</option>
+                <option value="" class="bg-neutral-800 text-white">-- All Tournaments --</option>
                 <?php foreach ($tournaments as $t): ?>
                     <option value="<?= (int)$t['tournamentID'] ?>" <?= ($t['tournamentID'] == $selectedTournamentID) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($t['tournamentName']) ?>
