@@ -79,6 +79,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                 <tr class="bg-gray-200">
                     <th class="px-4 py-2">ID</th>
                     <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Content</th>
                     <th class="px-4 py-2">Footer</th>
                     <th class="px-4 py-2">Last Updated</th>
                     <th class="px-4 py-2">Actions</th>
@@ -89,6 +90,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                     <tr class="border-b">
                         <td class="px-4 py-2"><?= $item['aboutID'] ?></td>
                         <td class="px-4 py-2"><?= htmlspecialchars($item['aboutTitle']) ?></td>
+                        <td class="px-4 py-2"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></td>
                         <td class="px-4 py-2"><?= htmlspecialchars($item['aboutFooter']) ?></td>
                         <td class="px-4 py-2"><?= $item['lastUpdated'] ?></td>
                         <td class="px-4 py-2 space-x-2">
