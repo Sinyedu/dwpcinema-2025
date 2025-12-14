@@ -24,9 +24,9 @@ $aboutItems = $ctrl->getAll();
         <?php foreach ($aboutItems as $item): ?>
             <section class="bg-neutral-800 p-6 rounded shadow mb-6">
                 <h2 class="text-xl font-semibold mb-2"><?= htmlspecialchars($item['aboutTitle']) ?></h2>
-                <p class="text-gray-700 mb-2"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></p>
+                <p class="text-white mb-2"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></p>
                 <?php if ($item['aboutFooter']): ?>
-                    <p class="text-gray-500 text-sm"><?= htmlspecialchars($item['aboutFooter']) ?></p>
+                    <p class="text-gray-200 text-sm"><?= htmlspecialchars($item['aboutFooter']) ?></p>
                 <?php endif; ?>
             </section>
         <?php endforeach; ?>
