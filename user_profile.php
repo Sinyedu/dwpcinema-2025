@@ -84,16 +84,16 @@ $seatStmt = $pdo->prepare("
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-white mb-1">First Name</label>
-                            <input type="text" name="firstName" value="<?= htmlspecialchars($user['firstName'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <input type="text" name="firstName" value="<?= htmlspecialchars($user['firstName'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-white mb-1">Last Name</label>
-                            <input type="text" name="lastName" value="<?= htmlspecialchars($user['lastName'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <input type="text" name="lastName" value="<?= htmlspecialchars($user['lastName'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-white mb-1">Email</label>
-                        <input type="email" name="email" value="<?= htmlspecialchars($user['userEmail'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <input type="email" name="email" value="<?= htmlspecialchars($user['userEmail'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="w-full border rounded px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                     </div>
                     <div class="flex justify-end">
                         <button type="submit" class="bg-blue-600 hover:bg-blue-300 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">Save Changes</button>
@@ -111,8 +111,8 @@ $seatStmt = $pdo->prepare("
                                         <h3 class="font-semibold text-white text-lg"><?= htmlspecialchars($b['tournamentName'] ?? '', ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($b['gameName'] ?? '', ENT_QUOTES, 'UTF-8') ?></h3>
                                         <span class="text-white text-sm"><?= date('F j, Y H:i', strtotime($b['bookingDate'])) ?></span>
                                     </div>
-                                    <p class="text-gray-700 mb-1">Hall: <?= htmlspecialchars($b['hallName'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
-                                    <p class="text-gray-700 mb-1">Showing: <?= date('F j, Y', strtotime($b['showingDate'])) ?> | <?= date('H:i', strtotime($b['showingTime'])) ?></p>
+                                    <p class="text-white mb-1">Hall: <?= htmlspecialchars($b['hallName'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+                                    <p class="text-white mb-1">Showing: <?= date('F j, Y', strtotime($b['showingDate'])) ?> | <?= date('H:i', strtotime($b['showingTime'])) ?></p>
                                     <?php
                                     $seatStmt->execute([$b['bookingID']]);
                                     $seats = $seatStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -122,14 +122,14 @@ $seatStmt = $pdo->prepare("
                                             <span class="px-2 py-1 bg-gray-200 rounded text-sm"><?= htmlspecialchars($s['seatLabel'] ?? '', ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($s['tierName'] ?? '', ENT_QUOTES, 'UTF-8') ?>)</span>
                                         <?php endforeach; ?>
                                     </div>
-                                    <p class="font-semibold text-gray-800">Total Paid: $<?= number_format($b['totalAmount'], 2) ?></p>
+                                    <p class="font-semibold text-white">Total Paid: $<?= number_format($b['totalAmount'], 2) ?></p>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 </div>
                 <div class="text-center mt-6">
-                    <a href="index.php" class="text-gray-500 hover:text-blue-600 text-sm">← Back to Home</a>
+                    <a href="index.php" class="text-white hover:text-blue-600 text-sm">← Back to Home</a>
                 </div>
             </div>
         </div>
