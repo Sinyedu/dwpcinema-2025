@@ -71,7 +71,7 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                                 </td>
 
                                 <td class="border p-2">
-                                    <input type="hidden" name="contactFormid" value="<?= $r['contactFormid'] ?>">
+                                    <input type="hidden" name="contactFormid" value="<?= $r['contactFormID'] ?>">
                                     <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">Save</button>
                                 </td>
                             </form>
