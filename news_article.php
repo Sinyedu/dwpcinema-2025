@@ -30,25 +30,34 @@ if (!$newsItem) {
 
 <head>
     <meta charset="UTF-8">
-    <title><?= htmlspecialchars($newsItem['newsTitle']) ?> - DWP Esports Cinema</title>
+    <title><?= htmlspecialchars($newsItem['newsTitle'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> - DWP Esports Cinema</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-white text-gray-900">
+<body class="bg-white text-gray-900 font-sans">
 
     <main class="max-w-4xl mx-auto px-6 py-16">
-        <h1 class="text-3xl font-bold mb-4"><?= htmlspecialchars($newsItem['newsTitle']) ?></h1>
-        <p class="text-gray-500 text-sm mb-6">By <?= htmlspecialchars($newsItem['newsAuthor']) ?> | <?= htmlspecialchars($newsItem['newsCreatedAt']) ?></p>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <?= htmlspecialchars($newsItem['newsTitle'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
+        </h1>
+
+        <p class="text-gray-500 text-sm mb-6">
+            By <?= htmlspecialchars($newsItem['newsAuthor'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> | <?= date('F j, Y', strtotime($newsItem['newsCreatedAt'])) ?>
+        </p>
 
         <?php if ($newsItem['newsImage']): ?>
-            <img src="<?= htmlspecialchars($newsItem['newsImage']) ?>" alt="<?= htmlspecialchars($newsItem['newsTitle']) ?>" class="w-full h-64 object-cover mb-6 rounded">
+            <img src="<?= htmlspecialchars($newsItem['newsImage'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+                alt="<?= htmlspecialchars($newsItem['newsTitle'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+                class="w-full h-64 md:h-80 object-cover mb-8 rounded-lg shadow-md">
         <?php endif; ?>
 
-        <div class="prose max-w-full">
-            <?= nl2br(htmlspecialchars($newsItem['newsContent'])) ?>
+        <div class="prose max-w-full text-gray-800 leading-relaxed">
+            <?= nl2br(htmlspecialchars($newsItem['newsContent'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) ?>
         </div>
 
-        <a href="news.php" class="inline-block mt-8 text-blue-600 hover:underline">&larr; Back to News</a>
+        <a href="news.php" class="inline-block mt-12 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            &larr; Back to News
+        </a>
     </main>
 
 </body>
