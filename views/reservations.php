@@ -10,7 +10,7 @@ $reservations = $pdo->query("
     FROM ContactForm cf
     LEFT JOIN Tournament t ON cf.tournamentID = t.tournamentID
     WHERE cf.category='Reservation'
-    ORDER BY cf.created_at DESC
+    ORDER BY cf.createdAt DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate DESC")->fetchAll(PDO::FETCH_ASSOC);
