@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'newsImage' => $_POST['newsImage'] ?? null
         ];
         $newsController->updateNews($_POST['newsID'], $data);
+        header("Location: news.php");
         exit;
     }
 
@@ -75,7 +76,7 @@ if (isset($_GET['edit'])) {
                 <input type="hidden" name="newsID" value="<?= $editNews['newsID'] ?>">
                 <input type="text" name="newsTitle" placeholder="Title" value="<?= htmlspecialchars($editNews['newsTitle']) ?>" class="w-full border rounded px-3 py-2">
                 <input type="text" name="newsAuthor" placeholder="Author" value="<?= htmlspecialchars($editNews['newsAuthor']) ?>" class="w-full border rounded px-3 py-2">
-                <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2"><?= htmlspecialchars($editNews['newsContent']) ?></textarea>
+                <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2"><?= ($editNews['newsContent']) ?></textarea>
                 <input type="text" name="newsImage" placeholder="Image URL (optional)" value="<?= htmlspecialchars($editNews['newsImage']) ?>" class="w-full border rounded px-3 py-2">
                 <div class="flex space-x-2">
                     <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update News</button>
