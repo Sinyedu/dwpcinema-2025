@@ -52,6 +52,14 @@ class ContactController
             return $result;
         }
 
+        $tournamentName = "Unknown Tournament";
+        $tStmt = $this->pdo->prepare("SELECT tournamentName FROM Tournament WHERE tournamentID = ?");
+        $tStmt->execute([$tournamentID]);
+        $fetchedName = $tStmt->fetchColumn();
+        if ($fetchedName) {
+            $tournamentName = $fetchedName;
+        }
+
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -67,7 +75,7 @@ class ContactController
             $mail->addReplyTo($email, "$firstName $lastName");
 
             $mail->Subject = "New Reservation from $firstName $lastName";
-            $mail->Body = "Name: $firstName $lastName\nEmail: $email\nTournament ID: $tournamentID\n\nMessage:\n$message";
+            $mail->Body = "Name: $firstName $lastName\nEmail: $email\nTournament: $tournamentName\n\nMessage:\n$message";
 
             $mail->send();
         } catch (Exception $e) {
@@ -90,7 +98,6 @@ class ContactController
         $result['success'] = "Your reservation has been sent successfully!";
         return $result;
     }
-
     public function getTournaments(): array
     {
         $stmt = $this->pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY tournamentName ASC");
