@@ -41,10 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-neutral-900 flex items-center justify-center min-h-screen">
 
-    <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 class="text-2xl font-semibold text-gray-900 mb-6 text-center">Login</h1>
+    <div class="bg-neutral-800 rounded-xl shadow-lg p-8 w-full max-w-md">
+        <h1 class="text-2xl font-semibold text-white mb-6 text-center">Login</h1>
 
         <?php if (!empty($error)): ?>
             <div class="bg-red-100 border border-red-400 text-red-800 px-4 py-2 rounded mb-4 text-center">
