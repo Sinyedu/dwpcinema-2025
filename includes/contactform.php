@@ -85,9 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="bg-gray-50 text-gray-900">
-
-    <?php include __DIR__ . '/includes/navbar.php'; ?>
-
     <section class="max-w-3xl mx-auto p-6 mt-16 bg-white rounded shadow">
         <h2 class="text-3xl font-semibold mb-6 text-center">Reservation Form</h2>
 
