@@ -73,10 +73,10 @@ if (isset($_GET['edit'])) {
             <h2 class="text-xl text-white font-semibold mb-2">Edit News</h2>
             <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-6">
                 <input type="hidden" name="newsID" value="<?= $editNews['newsID'] ?>">
-                <input type="text" name="newsTitle" placeholder="Title" value="<?= htmlspecialchars($editNews['newsTitle']) ?>" class="w-full border rounded px-3 py-2">
-                <input type="text" name="newsAuthor" placeholder="Author" value="<?= htmlspecialchars($editNews['newsAuthor']) ?>" class="w-full border rounded px-3 py-2">
-                <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2"><?= ($editNews['newsContent']) ?></textarea>
-                <input type="text" name="newsImage" placeholder="Image URL (optional)" value="<?= htmlspecialchars($editNews['newsImage']) ?>" class="w-full border rounded px-3 py-2">
+                <input type="text" name="newsTitle" placeholder="Title" value="<?= htmlspecialchars($editNews['newsTitle']) ?>" class="w-full bg-neutral-900 border rounded px-3 py-2 text-white">
+                <input type="text" name="newsAuthor" placeholder="Author" value="<?= htmlspecialchars($editNews['newsAuthor']) ?>" class="w-full bg-neutral-900 border rounded px-3 py-2 text-white">
+                <textarea name="newsContent" placeholder="Content" class="w-full bg-neutral-900 border rounded px-3 py-2 text-white"><?= ($editNews['newsContent']) ?></textarea>
+                <input type="text" name="newsImage" placeholder="Image URL (optional)" value="<?= htmlspecialchars($editNews['newsImage']) ?>" class="w-full bg-neutral-900 border rounded px-3 py-2 text-white">
                 <div class="flex space-x-2">
                     <button type="submit" name="update" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-400">Update News</button>
                     <a href="news.php" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-400">Cancel</a>

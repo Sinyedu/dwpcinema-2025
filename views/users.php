@@ -55,19 +55,19 @@ include __DIR__ . '/../includes/adminSidebar.php';
             <table class="min-w-full bg-neutral-800 rounded-lg shadow divide-y divide-gray-200">
                 <thead class="bg-neutral-700">
                     <tr>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">ID</th>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Avatar</th>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Name</th>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Email</th>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Last Active</th>
-                        <th class="px-4 py-3 text-left text-gray-400 uppercase text-sm">Status</th>
-                        <th class="px-4 py-3 text-center text-gray-400 uppercase text-sm">Actions</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">ID</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">Avatar</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">Name</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">Email</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">Last Active</th>
+                        <th class="px-4 py-3 text-left text-white uppercase text-sm">Status</th>
+                        <th class="px-4 py-3 text-center text-white uppercase text-sm">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <?php foreach ($users as $u): ?>
                         <tr class="hover:bg-neutral-600 transition">
-                            <td class="px-4 py-2"><?= $u['userID'] ?></td>
+                            <td class="px-4 py-2 text-white"><?= $u['userID'] ?></td>
                             <td class="px-4 py-2">
                                 <img src="/<?= htmlspecialchars($u['avatar'] ?? 'public/uploads/avatars/default.png') ?>"
                                     alt="Avatar" class="w-12 h-12 rounded-full object-cover border">
@@ -79,9 +79,9 @@ include __DIR__ . '/../includes/adminSidebar.php';
                             </td>
                             <td class="px-4 py-2 text-center">
                                 <?php if ($u['isActive']): ?>
-                                    <span class="inline-block px-2 py-1 text-green-700 bg-green-100 rounded-full text-xs font-semibold">Active</span>
+                                    <span class="inline-block px-2 py-1 text-white bg-green-100 rounded-full text-xs font-semibold">Active</span>
                                 <?php else: ?>
-                                    <span class="inline-block px-2 py-1 text-red-700 bg-red-100 rounded-full text-xs font-semibold">Deactivated</span>
+                                    <span class="inline-block px-2 py-1 text-white bg-red-100 rounded-full text-xs font-semibold">Deactivated</span>
                                 <?php endif; ?>
                             </td>
                             <td class="px-4 py-2 flex flex-col sm:flex-row items-center justify-center gap-2">

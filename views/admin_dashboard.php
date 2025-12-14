@@ -117,7 +117,7 @@ $games = $gameController->getAllGames();
                 <ul class="space-y-2 text-sm text-gray-700 max-h-72 overflow-y-auto">
                     <?php foreach ($games as $g): ?>
                         <li>
-                            <span class="font-medium"><?= htmlspecialchars($g['gameName']) ?></span>
+                            <span class="font-medium text-white"><?= htmlspecialchars($g['gameName']) ?></span>
                             <?php if (!empty($g['genre'])): ?>
                                 <span class="text-gray-500">(<?= htmlspecialchars($g['genre']) ?>)</span>
                             <?php endif; ?>

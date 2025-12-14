@@ -93,11 +93,11 @@ include __DIR__ . '/../includes/adminSidebar.php';
 
 <body class="bg-neutral-900 min-h-screen ml-64">
     <div class="max-w-6xl mx-auto px-6 py-10">
-        <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
+        <h1 class="text-2xl text-white font-semibold mb-6">Manage Tournaments</h1>
 
         <?php if ($editTournament): ?>
-            <h2 class="text-xl font-semibold mb-2">Edit Tournament</h2>
-            <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-6">
+            <h2 class="text-xl text-white font-semibold mb-2">Edit Tournament</h2>
+            <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-6">
                 <input type="hidden" name="tournamentID" value="<?= $editTournament['tournamentID'] ?>">
 
                 <input type="text" name="tournamentName" value="<?= htmlspecialchars($editTournament['tournamentName']) ?>" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
@@ -125,8 +125,8 @@ include __DIR__ . '/../includes/adminSidebar.php';
             </form>
         <?php endif; ?>
 
-        <h2 class="text-xl font-semibold mb-2">Add Tournament</h2>
-        <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
+        <h2 class="text-xl text-white font-semibold mb-2">Add Tournament</h2>
+        <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
             <input type="text" name="tournamentName" placeholder="Tournament Name" class="w-full border rounded px-3 py-2" required>
             <textarea name="tournamentDescription" placeholder="Description" class="w-full border rounded px-3 py-2" required></textarea>
             <div class="flex space-x-2">
@@ -142,9 +142,9 @@ include __DIR__ . '/../includes/adminSidebar.php';
             <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Tournament</button>
         </form>
 
-        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+        <table class="w-full table-auto bg-neutral-800 rounded shadow overflow-hidden">
             <thead>
-                <tr class="bg-gray-200">
+                <tr class="bg-neutral-700 text-white">
                     <th class="px-4 py-2">ID</th>
                     <th class="px-4 py-2">Name</th>
                     <th class="px-4 py-2">Game</th>
@@ -155,12 +155,12 @@ include __DIR__ . '/../includes/adminSidebar.php';
             </thead>
             <tbody>
                 <?php foreach ($tournaments as $t): ?>
-                    <tr class="border-b">
-                        <td class="px-4 py-2"><?= $t['tournamentID'] ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($t['tournamentName']) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($t['gameName']) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($t['startDate']) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($t['endDate']) ?></td>
+                    <tr class="border-b border-neutral-700">
+                        <td class="px-4 py-2 text-white"><?= $t['tournamentID'] ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($t['tournamentName']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($t['gameName']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($t['startDate']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($t['endDate']) ?></td>
                         <td class="px-4 py-2 space-x-2">
                             <a href="tournaments.php?edit=<?= $t['tournamentID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
                             <form method="POST" class="inline">

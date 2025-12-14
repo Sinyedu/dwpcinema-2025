@@ -84,7 +84,7 @@ if (isset($_GET['edit'])) {
             <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add Game</button>
         </form>
 
-        <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+        <table class="w-full table-auto bg-neutral-800 rounded shadow overflow-hidden">
             <thead>
                 <tr class="bg-neutral-800 text-white">
                     <th class="px-4 py-2">ID</th>
@@ -96,9 +96,9 @@ if (isset($_GET['edit'])) {
             <tbody>
                 <?php foreach ($games as $g): ?>
                     <tr class="border-b">
-                        <td class="px-4 py-2"><?= $g['gameID'] ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($g['gameName']) ?></td>
-                        <td class="px-4 py-2"><?= htmlspecialchars($g['gameGenre']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= $g['gameID'] ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($g['gameName']) ?></td>
+                        <td class="px-4 py-2 text-white"><?= htmlspecialchars($g['gameGenre']) ?></td>
                         <td class="px-4 py-2 space-x-2">
                             <a href="games.php?edit=<?= $g['gameID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
                             <form method="POST" class="inline">
