@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -11,50 +15,62 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$config = require __DIR__ . '/../config.php';
+$emailConfig = $config['email'];
+
 $pdo = Database::getInstance();
 
-$stmt = $pdo->prepare("SELECT firstName, lastName, userEmail FROM User WHERE userID = ?");
+$stmt = $pdo->prepare("SELECT firstName, lastName, email FROM User WHERE userID = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $firstName = $user['firstName'];
 $lastName  = $user['lastName'];
-$email     = $user['userEmail'];
+$email     = $user['email'];
 
-$success = '';
-$error   = '';
-
-$tournamentStatement = $pdo->query("
-    SELECT tournamentID, tournamentName 
-    FROM Tournament 
-    ORDER BY tournamentName ASC
-");
+$tournamentStatement = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY tournamentName ASC");
 $tournaments = $tournamentStatement->fetchAll(PDO::FETCH_ASSOC);
 
+$success = '';
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message      = strip_tags(trim($_POST['message'] ?? ''));
+    $message = strip_tags(trim($_POST['message'] ?? ''));
     $tournamentID = !empty($_POST['tournament']) ? (int)$_POST['tournament'] : null;
 
     if (!$tournamentID || !$message) {
         $error = "Please select a tournament and write a message.";
     } else {
-        $stmt = $pdo->prepare("
-            INSERT INTO ContactForm 
-            (firstName, lastName, email, category, message, tournamentID)
-            VALUES (?, ?, ?, 'Reservation', ?, ?)
-        ");
+        $mail = new PHPMailer(true);
 
-        if ($stmt->execute([$firstName, $lastName, $email, $message, $tournamentID])) {
-            $to = "reservations@simonnyblom.com";
-            $subject = "New Reservation from $firstName $lastName";
-            $body = "Name: $firstName $lastName\nEmail: $email\nTournament ID: $tournamentID\n\nMessage:\n$message";
-            $headers = "From: reservations@simonnyblom.com\r\nReply-To: $email\r\nContent-Type: text/plain; charset=UTF-8";
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $emailConfig['smtp_host'];
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $emailConfig['username'];
+            $mail->Password   = $emailConfig['password'];
+            $mail->SMTPSecure = $emailConfig['smtp_secure'];
+            $mail->Port       = $emailConfig['smtp_port'];
 
-            mail($to, $subject, $body, $headers);
+            $mail->setFrom($emailConfig['from_email'], $emailConfig['from_name']);
+            $mail->addAddress($emailConfig['to_email']);
+            $mail->addReplyTo($email, "$firstName $lastName");
+
+            $mail->Subject = "New Reservation from $firstName $lastName";
+            $mail->Body    = "Name: $firstName $lastName\nEmail: $email\nTournament ID: $tournamentID\n\nMessage:\n$message";
+
+            $mail->send();
+
+            $stmt = $pdo->prepare("
+                INSERT INTO ContactForm 
+                (firstName, lastName, email, category, message, tournamentID)
+                VALUES (?, ?, ?, 'Reservation', ?, ?)
+            ");
+            $stmt->execute([$firstName, $lastName, $email, $message, $tournamentID]);
 
             $success = "Your reservation has been sent successfully!";
-        } else {
-            $error = "Something went wrong. Please try again later.";
+        } catch (Exception $e) {
+            $error = "Reservation could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
 }
@@ -71,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body class="bg-gray-50 text-gray-900">
 
+    <?php include __DIR__ . '/includes/navbar.php'; ?>
 
     <section class="max-w-3xl mx-auto p-6 mt-16 bg-white rounded shadow">
         <h2 class="text-3xl font-semibold mb-6 text-center">Reservation Form</h2>
@@ -88,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="post" class="space-y-4">
-
             <div>
                 <label class="block font-medium mb-1">Tournament *</label>
                 <select name="tournament" class="w-full p-2 border rounded" required>
@@ -111,7 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     Send Reservation
                 </button>
             </div>
-
         </form>
     </section>
 
