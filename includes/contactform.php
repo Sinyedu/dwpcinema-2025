@@ -31,10 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-neutral-900 text-white">
 
-    <section class="max-w-3xl mx-auto p-6 mt-16 bg-white rounded shadow">
-        <h2 class="text-3xl font-semibold mb-6 text-center">Reservation Form</h2>
+    <section class="max-w-3xl mx-auto p-6 mt-16 bg-neutral-800 rounded shadow">
+        <h2 class="text-3xl text-white font-semibold mb-6 text-center">Reservation Form</h2>
 
         <?php if ($success): ?>
             <div class="bg-green-100 text-green-800 p-4 mb-4 rounded"><?= htmlspecialchars($success) ?></div>
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" name="subject" placeholder="e.g., Box Reservation" required
                         class="w-full p-2 border rounded">
                 </div>
-                <label class="block font-medium mb-1">Tournament *</label>
-                <select name="tournament" class="w-full p-2 border rounded" required>
-                    <option value="">-- Select a tournament --</option>
+                <label class="block font-medium text-white mb-1">Tournament *</label>
+                <select name="tournament" class="w-full p-2 text-black border rounded" required>
+                    <option value="" class="text-gray-400">-- Select a tournament --</option>
                     <?php foreach ($tournaments as $t): ?>
                         <option value="<?= $t['tournamentID'] ?>"><?= htmlspecialchars($t['tournamentName']) ?></option>
                     <?php endforeach; ?>
@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div>
-                <label class="block font-medium mb-1">Message *</label>
-                <textarea name="message" rows="5" class="w-full p-2 border rounded" placeholder="Write your message" required></textarea>
+                <label class="block font-medium text-white mb-1">Message *</label>
+                <textarea name="message" rows="5" class="w-full p-2 border rounded text-black" placeholder="Write your message" required></textarea>
             </div>
 
             <div class="text-center">

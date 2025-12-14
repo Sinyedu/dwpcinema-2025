@@ -38,14 +38,14 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-neutral-900 text-white">
 
     <main class="max-w-6xl mx-auto px-6 py-16">
         <h2 class="text-3xl font-bold mb-10 text-center">Upcoming Tournaments</h2>
 
         <div class="grid md:grid-cols-3 gap-8">
             <?php foreach ($tournaments as $t): ?>
-                <div class="bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
+                <div class="bg-neutral-900 rounded-lg shadow hover:shadow-xl transition overflow-hidden">
 
                     <?php
                     $extensions = ['jpg', 'jpeg', 'png', 'webp'];
@@ -71,7 +71,7 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         }
                     }
                     ?>
-                    <div class="h-40 bg-gray-200 overflow-hidden">
+                    <div class="h-40 bg-neutral-800 overflow-hidden">
                         <?php if ($imagePath): ?>
                             <img src="<?= $imagePath ?>"
                                 alt="<?= htmlspecialchars($t['tournamentName']) ?>"
@@ -85,12 +85,12 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="p-4">
                         <h3 class="text-xl font-semibold mb-1"><?= htmlspecialchars($t['tournamentName']) ?></h3>
-                        <p class="text-gray-600 text-sm mb-2">
+                        <p class="text-white text-sm mb-2">
                             <?= htmlspecialchars($t['gameGenre']) ?> |
                             <?= htmlspecialchars($t['startDate']) ?> -
                             <?= htmlspecialchars($t['endDate']) ?>
                         </p>
-                        <p class="text-gray-700 text-sm mb-2">
+                        <p class="text-white text-sm mb-2">
                             <?= substr($t['tournamentDescription'], 0, 120) ?>...
                         </p>
 

@@ -16,7 +16,7 @@ if (!isset($_SESSION['user_id'])) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-neutral-900 text-white">
 
     <?php include __DIR__ . '/includes/navbar.php'; ?>
     <?php include __DIR__ . '/includes/contactform.php'; ?>

@@ -1,8 +1,8 @@
-<footer class="bg-gray-900 text-gray-300 border-t border-gray-700 mt-16">
+<footer class="bg-neutral-900 text-white mt-16">
     <div class="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row md:justify-evenly md:items-start gap-12">
         <div class="md:w-1/3">
             <h4 class="text-white font-semibold text-2xl mb-4">About Us</h4>
-            <p class="text-gray-400 text-sm md:text-base">
+            <p class="text-white text-sm md:text-base">
                 DWP Esports Cinema brings the excitement of competitive gaming to the big screen.
                 Our mission is to unite esports fans in a communal experience, offering live screenings
                 of the biggest tournaments, exclusive events, and the latest esports news. Whether you're
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="border-t border-gray-700 mt-8 pt-4 pb-2 text-center text-gray-500 text-xs">
+    <div class="mt-8 pt-4 pb-2 text-center text-gray-400 text-xs">
         &copy; <?= date('Y') ?> DWP Esports Cinema. All rights reserved.
     </div>
 </footer>

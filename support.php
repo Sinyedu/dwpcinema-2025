@@ -95,17 +95,17 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
     <script src="public/js/toast.js" defer></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-neutral-900 text-white min-h-screen flex flex-col">
     <?php include __DIR__ . '/includes/navbar.php'; ?>
 
     <main class="flex-1 max-w-6xl mx-auto w-full p-6 mt-24">
         <h1 class="text-3xl font-bold mb-6">Support Center</h1>
 
         <section class="mb-8">
-            <form id="createTicketForm" class="bg-white p-6 rounded shadow space-y-4">
-                <h2 class="text-xl font-semibold">Create New Ticket</h2>
-                <select name="subject" id="subjectSelect" class="w-full p-2 border rounded" required>
-                    <option value="" disabled selected>Select a subject</option>
+            <form id="createTicketForm" class="bg-neutral-800 p-6 rounded shadow space-y-4">
+                <h2 class="text-xl font-semibold text-white">Create New Ticket</h2>
+                <select name="subject" id="subjectSelect" class="w-full p-2 border rounded text-black" required>
+                    <option value="" disabled selected class="text-gray-400">Select a subject</option>
                     <option value="General Inquiry">General Inquiry</option>
                     <option value="Technical Issue">Technical Issue</option>
                     <option value="Reservation">Reservation</option>
@@ -113,9 +113,9 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
                     <option value="Feedback">Feedback</option>
                 </select>
 
-                <textarea name="message" rows="4" placeholder="Message" class="w-full p-2 border rounded" required></textarea>
+                <textarea name="message" rows="4" placeholder="Message" class="w-full p-2 border rounded text-black" required></textarea>
 
-                <select name="priority" class="w-full p-2 border rounded">
+                <select name="priority" class="w-full p-2 border rounded text-black">
                     <option value="medium">Medium</option>
                     <option value="low">Low</option>
                     <option value="high">High</option>
