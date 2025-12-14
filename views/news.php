@@ -87,11 +87,34 @@ if (isset($_GET['edit'])) {
 
         <h2 class="text-xl font-semibold mb-2">Add News</h2>
         <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
-            <input type="text" name="newsTitle" required>
-            <input type="text" name="newsAuthor" required>
-            <textarea name="newsContent" required></textarea>
-            <input type="text" name="newsImage">
-            <button type="submit" name="add">Add News</button>
+            <div>
+                <label for="newsTitle" class="block text-gray-700 font-medium mb-1">Title</label>
+                <input type="text" id="newsTitle" name="newsTitle" required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="newsAuthor" class="block text-gray-700 font-medium mb-1">Author</label>
+                <input type="text" id="newsAuthor" name="newsAuthor" required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="newsContent" class="block text-gray-700 font-medium mb-1">Content</label>
+                <textarea id="newsContent" name="newsContent" required rows="8"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
+            </div>
+
+            <div>
+                <label for="newsImage" class="block text-gray-700 font-medium mb-1">Image URL (optional)</label>
+                <input type="text" id="newsImage" name="newsImage"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <button type="submit" name="add"
+                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-500 transition font-medium">
+                Add News
+            </button>
         </form>
 
         <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
