@@ -60,6 +60,7 @@ class ContactController
         $tournamentName = $tournament['tournamentName'] ?? 'Unknown Tournament';
 
         $mail = new PHPMailer(true);
+        $mail->CharSet = 'UTF-8';
         try {
             $mail->isSMTP();
             $mail->Host       = $this->emailConfig['smtp_host'];
