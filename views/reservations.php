@@ -6,11 +6,11 @@ require_once __DIR__ . '/../classes/Database.php';
 $pdo = Database::getInstance();
 
 $reservations = $pdo->query("
-    SELECT cf.contactFormID, cf.firstName, cf.lastName, cf.userEmail, cf.subject, cf.message, cf.status, cf.created_at, t.tournamentName
+    SELECT cf.contactFormID, cf.firstName, cf.lastName, cf.email, cf.subject, cf.message, cf.status, cf.createdAt, t.tournamentName
     FROM ContactForm cf
     LEFT JOIN Tournament t ON cf.tournamentID = t.tournamentID
     WHERE cf.category='Reservation'
-    ORDER BY cf.created_at DESC
+    ORDER BY cf.createdAt DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 $statuses = ['Pending', 'In Review', 'Sent Message', 'Confirmed', 'Cancelled'];
