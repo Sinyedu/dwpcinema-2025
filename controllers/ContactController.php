@@ -42,40 +42,39 @@ class ContactController
         }
 
         $firstName = $user['firstName'];
-        $lastName = $user['lastName'];
-        $email = $user['userEmail'];
-        $message = strip_tags(trim($postData['message'] ?? ''));
+        $lastName  = $user['lastName'];
+        $email     = $user['userEmail'];
+
+        $subject      = strip_tags(trim($postData['subject'] ?? ''));
+        $message      = strip_tags(trim($postData['message'] ?? ''));
         $tournamentID = !empty($postData['tournament']) ? (int)$postData['tournament'] : null;
 
-        if (!$tournamentID || !$message) {
-            $result['error'] = "Please select a tournament and write a message.";
+        if (!$subject || !$message || !$tournamentID) {
+            $result['error'] = "Please enter a subject, select a tournament, and write a message.";
             return $result;
         }
 
-        $tournamentName = "Unknown Tournament";
-        $tStmt = $this->pdo->prepare("SELECT tournamentName FROM Tournament WHERE tournamentID = ?");
-        $tStmt->execute([$tournamentID]);
-        $fetchedName = $tStmt->fetchColumn();
-        if ($fetchedName) {
-            $tournamentName = $fetchedName;
-        }
+        $tournamentStmt = $this->pdo->prepare("SELECT tournamentName FROM Tournament WHERE tournamentID = ?");
+        $tournamentStmt->execute([$tournamentID]);
+        $tournament = $tournamentStmt->fetch(PDO::FETCH_ASSOC);
+        $tournamentName = $tournament['tournamentName'] ?? 'Unknown Tournament';
 
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host = $this->emailConfig['smtp_host'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $this->emailConfig['username'];
-            $mail->Password = $this->emailConfig['password'];
+            $mail->Host       = $this->emailConfig['smtp_host'];
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $this->emailConfig['username'];
+            $mail->Password   = $this->emailConfig['password'];
             $mail->SMTPSecure = $this->emailConfig['smtp_secure'];
-            $mail->Port = $this->emailConfig['smtp_port'];
+            $mail->Port       = $this->emailConfig['smtp_port'];
 
             $mail->setFrom($this->emailConfig['from_email'], $this->emailConfig['from_name']);
             $mail->addAddress($this->emailConfig['to_email']);
             $mail->addReplyTo($email, "$firstName $lastName");
 
-            $mail->Subject = "New Reservation from $firstName $lastName";
-            $mail->Body = "Name: $firstName $lastName\nEmail: $email\nTournament: $tournamentName\n\nMessage:\n$message";
+            $mail->Subject = $subject;
+            $mail->Body    = "Name: $firstName $lastName\nEmail: $email\nTournament: $tournamentName\n\nMessage:\n$message";
 
             $mail->send();
         } catch (Exception $e) {
@@ -85,10 +84,11 @@ class ContactController
 
         $this->model->createSubmission([
             'firstName' => $firstName,
-            'lastName' => $lastName,
+            'lastName'  => $lastName,
             'userEmail' => $email,
-            'category' => 'Reservation',
-            'message' => $message,
+            'category'  => 'Reservation',
+            'subject'   => $subject,
+            'message'   => $message,
             'tournament' => $tournamentID
         ]);
 

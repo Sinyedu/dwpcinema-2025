@@ -46,6 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="post" class="space-y-4">
             <div>
+                <div>
+                    <label class="block font-medium mb-1">Subject *</label>
+                    <input type="text" name="subject" placeholder="e.g., Box Reservation" required
+                        class="w-full p-2 border rounded">
+                </div>
                 <label class="block font-medium mb-1">Tournament *</label>
                 <select name="tournament" class="w-full p-2 border rounded" required>
                     <option value="">-- Select a tournament --</option>
