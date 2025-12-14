@@ -12,7 +12,6 @@ $pdo = Database::getInstance();
 $adminSupport = new AdminSupportController($pdo);
 $tickets = $adminSupport->getAllTickets();
 
-// Ensure ticket status is up-to-date from DB
 foreach ($tickets as &$t) {
     $t['status'] = $adminSupport->getTicketStatus($t['ticketID']);
 }
@@ -78,22 +77,23 @@ usort($tickets, function ($a, $b) {
 <head>
     <meta charset="UTF-8">
     <title>Admin Support - DWP Cinema</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-neutral-800 flex min-h-screen">
+<body class="bg-neutral-900 text-white flex min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">
         <div id="toastContainer" class="fixed top-5 right-5 space-y-2 z-50"></div>
-        <header class="flex justify-between items-center mb-8 pb-4">
-            <h1 class="text-2xl text-white font-semibold">Support Tickets</h1>
-            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
+
+        <header class="flex justify-between items-center mb-8 pb-4 border-b border-neutral-700">
+            <h1 class="text-2xl font-semibold">Support Tickets</h1>
+            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 hover:bg-red-500 text-white text-sm">Logout</a>
         </header>
 
-        <div class="grid md:grid-cols-3 gap-6 bg-neutral-700 p-6 rounded shadow">
+        <div class="grid md:grid-cols-3 gap-6">
             <div class="bg-neutral-800 rounded shadow p-6 h-[600px] overflow-y-auto">
-                <h2 class="font-semibold text-lg mb-3 text-white">Tickets</h2>
+                <h2 class="font-semibold text-lg mb-3">Tickets</h2>
                 <?php if (count($tickets) === 0): ?>
                     <p class="text-gray-400 text-sm">No tickets found.</p>
                 <?php else: ?>
@@ -103,15 +103,15 @@ usort($tickets, function ($a, $b) {
                                 'high' => 'bg-red-500',
                                 'medium' => 'bg-yellow-500',
                                 'low' => 'bg-green-500',
-                                default => 'bg-gray-300'
+                                default => 'bg-gray-400'
                             };
                         ?>
                             <li>
                                 <a href="?ticketID=<?= $t['ticketID'] ?>"
-                                    class="flex justify-between items-center p-2 rounded hover:bg-gray-100 <?= $t['ticketID'] === $activeTicketID ? 'bg-gray-200' : '' ?>">
+                                    class="flex justify-between items-center p-2 rounded hover:bg-neutral-700 <?= $t['ticketID'] === $activeTicketID ? 'bg-neutral-700' : '' ?>">
                                     <div>
                                         <div class="font-medium"><?= htmlspecialchars($t['subject']) ?></div>
-                                        <div class="text-xs text-gray-500">
+                                        <div class="text-xs text-gray-400">
                                             <?= htmlspecialchars($t['firstName'] . ' ' . $t['lastName']) ?> • <?= htmlspecialchars($t['status']) ?>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@ usort($tickets, function ($a, $b) {
                                         <span class="px-2 py-1 text-xs text-white rounded <?= $priorityColor ?>">
                                             <?= ucfirst($t['priority']) ?>
                                         </span>
-                                        <span class="text-sm text-gray-500"><?= htmlspecialchars($t['updatedAt']) ?></span>
+                                        <span class="text-xs text-gray-400"><?= htmlspecialchars($t['updatedAt']) ?></span>
                                     </div>
                                 </a>
                             </li>
@@ -128,38 +128,35 @@ usort($tickets, function ($a, $b) {
                 <?php endif; ?>
             </div>
 
-            <div class="col-span-2 bg-white rounded shadow p-6 flex flex-col h-[600px]">
+            <div class="col-span-2 bg-neutral-800 rounded shadow p-6 flex flex-col h-[600px]">
                 <h2 class="font-semibold text-lg mb-3">Messages</h2>
-                <div id="messageBox"
-                    class="flex-1 overflow-y-auto mb-3"
+                <div id="messageBox" class="flex-1 overflow-y-auto mb-3 px-3 py-2 bg-neutral-900 rounded border border-neutral-700"
                     data-ticket-status="<?= htmlspecialchars($activeTicket['status'] ?? 'open') ?>">
                     <?php foreach ($messages as $msg): ?>
-                        <div class="mb-2 <?= $msg['senderRole'] === 'admin' ? 'text-red-600' : 'text-blue-600' ?>">
-                            <strong><?= htmlspecialchars($msg['senderRole']) ?>:</strong>
+                        <div class="mb-2 <?= $msg['senderRole'] === 'admin' ? 'text-red-400' : 'text-blue-400' ?>">
+                            <strong><?= htmlspecialchars(ucfirst($msg['senderRole'])) ?>:</strong>
                             <?= htmlspecialchars($msg['message']) ?>
-                            <span class="text-gray-400 text-xs block"><?= $msg['createdAt'] ?></span>
+                            <span class="text-gray-500 text-xs block"><?= $msg['createdAt'] ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
                 <?php if ($activeTicketID): ?>
-                    <div class="mb-3">
-                        <form id="replyForm">
-                            <input type="hidden" name="ticketID" value="<?= $activeTicketID ?>">
-                            <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2 bg-neutral-800 text-white" placeholder="Type your message..." required></textarea>
-                            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                                Send Reply
-                            </button>
-                        </form>
+                    <form id="replyForm" class="mb-3">
+                        <input type="hidden" name="ticketID" value="<?= $activeTicketID ?>">
+                        <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2 bg-neutral-900 text-white border-neutral-700" placeholder="Type your message..." required></textarea>
+                        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            Send Reply
+                        </button>
+                    </form>
 
-                        <div class="flex space-x-2 mt-2">
-                            <button type="button" id="closeTicketBtn" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                                Close Ticket
-                            </button>
-                            <button type="button" id="reopenTicketBtn" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-                                Reopen Ticket
-                            </button>
-                        </div>
+                    <div class="flex space-x-2">
+                        <button type="button" id="closeTicketBtn" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                            Close Ticket
+                        </button>
+                        <button type="button" id="reopenTicketBtn" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+                            Reopen Ticket
+                        </button>
                     </div>
                 <?php endif; ?>
             </div>
