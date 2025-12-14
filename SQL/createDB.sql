@@ -22,6 +22,7 @@ CREATE TABLE Tournament (
     tournamentName VARCHAR(100) NOT NULL,
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
+    isHidden tinyint(1) DEFAULT 0,
     tournamentDescription VARCHAR(255),
     FOREIGN KEY (gameID) REFERENCES Game(gameID)
 );

@@ -11,18 +11,21 @@ require_once __DIR__ . '/classes/Database.php';
 
 $pdo = Database::getInstance();
 
-$tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament ORDER BY startDate ASC")
-    ->fetchAll(PDO::FETCH_ASSOC);
+$tournaments = $pdo->query("
+    SELECT tournamentID, tournamentName 
+    FROM Tournament 
+    WHERE isHidden = 0
+    ORDER BY startDate ASC
+")->fetchAll(PDO::FETCH_ASSOC);
 
 $selectedTournamentID = isset($_GET['tournamentID']) ? (int)$_GET['tournamentID'] : null;
 
-$where = "";
+$where = "WHERE CONCAT(s.showingDate, ' ', s.showingTime) >= NOW() AND t.isHidden = 0";
 $params = [];
-if (!empty($selectedTournamentID)) {
-    $where = "WHERE m.tournamentID = ? AND CONCAT(s.showingDate, ' ', s.showingTime) >= NOW()";
+
+if ($selectedTournamentID) {
+    $where .= " AND m.tournamentID = ?";
     $params[] = $selectedTournamentID;
-} else {
-    $where = "WHERE CONCAT(s.showingDate, ' ', s.showingTime) >= NOW()";
 }
 
 $stmt = $pdo->prepare("
@@ -63,7 +66,6 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body class="bg-neutral-900 min-h-screen text-white">
-
     <div class="max-w-6xl mx-auto px-6 py-10">
         <h1 class="text-2xl font-bold mb-6">Upcoming Showings</h1>
 
@@ -80,7 +82,7 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Filter</button>
         </form>
 
-        <?php if (!empty($showings)): ?>
+        <?php if ($showings): ?>
             <div class="grid md:grid-cols-3 gap-6">
                 <?php foreach ($showings as $s):
                     $availableSeats = $s['totalSeats'] - $s['bookedSeats'];
@@ -107,7 +109,6 @@ $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <p class="text-gray-400 mt-4">No upcoming showings available<?= $selectedTournamentID ? " for this tournament" : "" ?>.</p>
         <?php endif; ?>
     </div>
-
 </body>
 
 </html>
