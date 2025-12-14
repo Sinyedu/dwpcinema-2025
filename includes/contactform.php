@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Please select a tournament for your reservation.";
     } else {
         $stmt = $pdo->prepare("
-            INSERT INTO contactform (firstName, lastName, email, category, message, tournamentID)
+            INSERT INTO ContactForm (firstName, lastName, email, category, message, tournamentID)
             VALUES (?, ?, ?, ?, ?, ?)
         ");
 
