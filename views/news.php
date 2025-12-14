@@ -86,7 +86,7 @@ if (isset($_GET['edit'])) {
         <form method="POST" class="space-y-4 bg-white p-6 rounded shadow mb-10">
             <input type="text" name="newsTitle" placeholder="Title" class="w-full border rounded px-3 py-2" required>
             <input type="text" name="newsAuthor" placeholder="Author" class="w-full border rounded px-3 py-2" required>
-            <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2" required></textarea>
+            <textarea name="newsContent" placeholder="Content" class="w-full border rounded px-3 py-2"><?= $editNews['newsContent'] ?></textarea>
             <input type="text" name="newsImage" placeholder="Image URL (optional)" class="w-full border rounded px-3 py-2">
             <button type="submit" name="add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Add News</button>
         </form>
