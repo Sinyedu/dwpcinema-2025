@@ -52,7 +52,7 @@ if (!$newsItem) {
         <?php endif; ?>
 
         <div class="prose max-w-full text-gray-800 leading-relaxed">
-            <?= nl2br(htmlspecialchars($newsItem['newsContent'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) ?>
+            <?= $newsItem['newsContent'] ?>
         </div>
 
         <a href="news.php" class="inline-block mt-12 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
