@@ -20,6 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 0
             </span>
         </a>
+        <a href="aboutus.php" class="hover:text-blue-600 font-medium text-sm">About Us</a>
     </div>
 
     <div class="flex items-center space-x-4">
