@@ -11,7 +11,6 @@ if (session_status() === PHP_SESSION_NONE) {
         </a>
         <a href="tournaments.php" class="hover:text-blue-600 font-medium text-sm">Tournaments</a>
         <a href="news.php" class="hover:text-blue-600 font-medium text-sm">News</a>
-        <a href="users.php" class="hover:text-blue-600 font-medium text-sm">Community</a>
         <a href="contactform.php" class="hover:text-blue-600 font-medium text-sm">Contact & Reservations</a>
         <a href="support.php" class="hover:text-blue-600 font-medium text-sm relative" id="supportLink">
             Support
