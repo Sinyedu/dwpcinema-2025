@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$config = require __DIR__ . '/config/config.php';
+$config = require __DIR__ . '/../config/config.php';
 $controller = new ContactController($config['email']);
 
 $success = $error = '';
