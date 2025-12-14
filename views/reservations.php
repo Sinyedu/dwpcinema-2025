@@ -49,7 +49,7 @@ $tournaments = $pdo->query("SELECT tournamentID, tournamentName FROM Tournament 
                     <?php foreach ($reservations as $r): ?>
                         <tr>
                             <form action="process_reservations.php" method="POST" class="w-full">
-                                <td class="border p-2"><?= $r['contactFormid'] ?></td>
+                                <td class="border p-2"><?= $r['contactFormID'] ?></td>
                                 <td class="border p-2"><?= htmlspecialchars($r['firstName'] . ' ' . $r['lastName']) ?></td>
                                 <td class="border p-2"><?= htmlspecialchars($r['email']) ?></td>
                                 <td class="border p-2"><?= nl2br(htmlspecialchars($r['message'])) ?></td>
