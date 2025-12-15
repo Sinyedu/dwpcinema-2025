@@ -1,4 +1,39 @@
-const createTicketForm = document.getElementById("createTicketForm");
+document.addEventListener("DOMContentLoaded", () => {
+  const supportUnreadBadge = document.getElementById("supportUnreadBadge");
+  const csrfToken = window.csrfToken; // global CSRF token
+  const createTicketForm = document.getElementById("createTicketForm");
+
+  async function fetchJSON(url, options = {}) {
+    try {
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      return null;
+    }
+  }
+
+  async function pollUnread() {
+    if (!supportUnreadBadge) return;
+
+    const data = await fetchJSON("support.php?fetchUnreadCount=1", {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRF-Token": csrfToken,
+      },
+    });
+
+    if (!data) return;
+
+    const count = data.unreadCount || 0;
+    supportUnreadBadge.textContent = count;
+    supportUnreadBadge.classList.toggle("hidden", count === 0);
+  }
+
+  pollUnread();
+  setInterval(pollUnread, 7000);
+});
 
 if (createTicketForm) {
   createTicketForm.addEventListener("submit", async (e) => {
