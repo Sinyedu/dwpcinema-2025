@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   pollMessages();
   pollUnread();
   setInterval(pollMessages, 5000);
-  setInterval(pollUnread, 7000);
+  setInterval(pollUnread, 5000);
 
   if (replyForm) {
     replyForm.addEventListener("submit", async (e) => {

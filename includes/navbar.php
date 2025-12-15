@@ -41,5 +41,8 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="register.php" class="text-white hover:text-blue-600 font-medium text-sm">Register</a>
         <?php endif; ?>
     </div>
+    <script>
+        window.csrfToken = '<?= $_SESSION['csrf_token'] ?>';
+    </script>
     <script src="public/js/notification.js" defer></script>
 </nav>
