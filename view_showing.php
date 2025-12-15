@@ -64,7 +64,7 @@ foreach ($tiers as $tier) {
         <p class="text-white mb-4"><?= htmlspecialchars($showing['tournamentName']) ?> | <?= htmlspecialchars($showing['hallName']) ?></p>
         <p class="text-white mb-6">Date: <?= date('F j, Y', strtotime($showing['showingDate'])) ?> | Time: <?= date('H:i', strtotime($showing['showingTime'])) ?></p>
         <p class="text-white mb-6">
-            This hall contains 500 standard seats and VIP. Premium or BOX seating is available only on request via the admin, use the Contact form to inquire about special seating arrangements.
+            This hall contains 500 Premium seats and VIP. BOX seating is available only on request via the admin, use the Contact form to inquire about special seating arrangements.
         </p>
 
         <form method="POST" action="booking_confirm.php" id="seatForm">
