@@ -259,11 +259,9 @@ INSERT INTO Hall (hallName, totalSeats) VALUES
 
 
 INSERT INTO SeatTier (tierName, basePrice, description) VALUES
--- BOX/ENTERPRISE tier will be a part of my contact form so the 500$ price is just a placeholder --
 ('BOX/Enterprise', 500.00, 'A top view within a box where service and customer experience is top level.'),
 ('VIP', 120.00, 'Front-row leather recliners with table service.'),
-('Premium', 80.00, 'Center view, extra legroom.'),
-('Standard', 50.00, 'Regular seating, great for general audience.');
+('Standard', 80.00, 'Regular seating, great for general audience.'),
 
 -- Hall 1
 INSERT INTO Seat (hallID, seatRow, seatNumber, tierID)
