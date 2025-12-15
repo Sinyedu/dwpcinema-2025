@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/session.php';
 require_once "classes/Database.php";
 require_once "controllers/UserController.php";
 
@@ -16,6 +16,11 @@ try {
     $user = $userController->getProfile($userID);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        if (!$session->validateCsrfToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
         $userController->updateProfile($userID, $_POST, $_FILES);
         header("Location: user_profile.php?success=1");
         exit;
@@ -80,6 +85,7 @@ $tierColors = [
                     </div>
                 <?php endif; ?>
                 <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="<?= $session->getCsrfToken() ?>">
                     <div class="flex flex-col items-center">
                         <div class="relative">
                             <img src="/public/<?= htmlspecialchars($user['avatar'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-md">

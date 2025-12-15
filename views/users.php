@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '../../controllers/UserController.php';
 
@@ -8,9 +13,16 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
-$userController = new UserController();
+
+$pdo = Database::getInstance();
+$userController = new UserController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token');
+    }
+
     $userID = (int)$_POST['userID'];
 
     if (isset($_POST['deactivate'])) {
@@ -87,6 +99,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                             <td class="px-4 py-2 flex flex-col sm:flex-row items-center justify-center gap-2">
                                 <?php if ($u['isActive']): ?>
                                     <form method="POST" class="inline">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                         <input type="hidden" name="userID" value="<?= $u['userID'] ?>">
                                         <button type="submit" name="deactivate"
                                             class="bg-yellow-500 hover:bg-yellow-400 text-white px-3 py-1 rounded transition text-sm">
@@ -95,6 +108,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                                     </form>
                                 <?php else: ?>
                                     <form method="POST" class="inline">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                         <input type="hidden" name="userID" value="<?= $u['userID'] ?>">
                                         <button type="submit" name="activate"
                                             class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded transition text-sm">
@@ -103,6 +117,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                                     </form>
                                 <?php endif; ?>
                                 <form method="POST" class="inline">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                     <input type="hidden" name="userID" value="<?= $u['userID'] ?>">
                                     <button type="submit" name="delete"
                                         class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded transition text-sm">

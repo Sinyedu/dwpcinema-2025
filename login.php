@@ -3,6 +3,10 @@ session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/UserController.php';
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $controller = new UserController();
 $error = '';
 
@@ -53,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div>
                 <label class="block text-white mb-1" for="email">Email</label>
                 <input id="email" type="email" name="email" placeholder="you@example.com" required

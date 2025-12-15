@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../controllers/AboutUsController.php';
 
@@ -8,6 +11,10 @@ $pdo = Database::getInstance();
 if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_login.php");
     exit;
+}
+
+if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die("Invalid CSRF token!");
 }
 
 $ctrl = new AboutUsController($pdo);
@@ -55,6 +62,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
         <?php if ($editItem): ?>
             <h2 class="text-xl text-white font-semibold mb-2">Edit Section</h2>
             <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-6">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <input type="hidden" name="aboutID" value="<?= $editItem['aboutID'] ?>">
                 <input type="text" name="aboutTitle" value="<?= htmlspecialchars($editItem['aboutTitle']) ?>" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" placeholder="Title" required>
                 <textarea name="aboutContent" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" placeholder="Content" required><?= htmlspecialchars($editItem['aboutContent']) ?></textarea>
@@ -68,6 +76,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
 
         <h2 class="text-xl text-white font-semibold mb-2">Add Section</h2>
         <form method="POST" class="space-y-4 bg-neutral-800 p-6 rounded shadow mb-10">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <input type="text" name="aboutTitle" placeholder="Title" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" required>
             <textarea name="aboutContent" placeholder="Content" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white" required></textarea>
             <input type="text" name="aboutFooter" placeholder="Footer (optional)" class="w-full border rounded px-3 py-2 bg-neutral-700 text-white">
@@ -96,6 +105,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                         <td class="px-4 py-2 space-x-2">
                             <a href="aboutus.php?edit=<?= $item['aboutID'] ?>" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400">Edit</a>
                             <form method="POST" class="inline">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                 <input type="hidden" name="aboutID" value="<?= $item['aboutID'] ?>">
                                 <button type="submit" name="delete" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-500">Delete</button>
                             </form>

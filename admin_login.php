@@ -7,15 +7,24 @@ $pdo = Database::getInstance();
 $controller = new AdminController($pdo);
 $error = '';
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $admin = $controller->login($_POST['email'], $_POST['password']);
-    if ($admin) {
-        $_SESSION['admin_id'] = $admin['userID'];
-        $_SESSION['admin_name'] = $admin['firstName'];
-        header("Location: views/admin_dashboard.php");
-        exit;
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = "Invalid CSRF token!";
     } else {
-        $error = "Invalid admin credentials!";
+        $admin = $controller->login($_POST['email'], $_POST['password']);
+        if ($admin) {
+            session_regenerate_id(true);
+            $_SESSION['admin_id'] = $admin['userID'];
+            $_SESSION['admin_name'] = $admin['firstName'];
+            header("Location: views/admin_dashboard.php");
+            exit;
+        } else {
+            $error = "Invalid admin credentials!";
+        }
     }
 }
 ?>
@@ -39,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div>
                 <label class="block text-white mb-1" for="email">Email</label>
                 <input id="email" type="email" name="email" placeholder="admin@example.com" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">

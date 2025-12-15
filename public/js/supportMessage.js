@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const newMessage = document.getElementById("newMessage");
   const createTicketForm = document.getElementById("createTicketForm");
   const supportUnreadBadge = document.getElementById("supportUnreadBadge");
+  const csrfToken = document.querySelector('input[name="csrf_token"]')?.value;
 
   async function fetchJSON(url, options = {}) {
     try {
@@ -85,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("replyTicketID", ticketID);
       formData.append("replyMessage", message);
+      formData.append("csrf_token", csrfToken);
 
       const data = await fetchJSON("support.php", {
         method: "POST",

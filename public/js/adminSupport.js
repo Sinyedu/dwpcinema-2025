@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("ticketID", ticketID);
       formData.append("message", message);
+      formData.append("csrf_token", window.csrfToken);
 
       const data = await sendRequest("support.php", {
         method: "POST",
@@ -86,7 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
     closeBtn.addEventListener("click", async () => {
       const data = await sendRequest("support.php", {
         method: "POST",
-        body: new URLSearchParams({ ticketID, action: "close" }),
+        body: new URLSearchParams({
+          ticketID,
+          action: "close",
+          csrf_token: window.csrfToken,
+        }),
       });
 
       if (data?.success) {
@@ -105,7 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
     reopenBtn.addEventListener("click", async () => {
       const data = await sendRequest("support.php", {
         method: "POST",
-        body: new URLSearchParams({ ticketID, action: "reopen" }),
+        body: new URLSearchParams({
+          ticketID,
+          action: "reopen",
+          csrf_token: window.csrfToken,
+        }),
       });
 
       if (data?.success) {

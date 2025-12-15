@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['user_id'])) {
     $redirect = urlencode($_SERVER['REQUEST_URI']);
     header("Location: login.php?redirect=$redirect");

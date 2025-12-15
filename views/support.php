@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../controllers/AdminSupportController.php';
 
@@ -22,6 +27,11 @@ if (
     strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
 ) {
     header('Content-Type: application/json');
+
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        echo json_encode(['success' => false, 'error' => 'Invalid CSRF token']);
+        exit;
+    }
 
     $ticketID = (int)($_POST['ticketID'] ?? 0);
     $action = $_POST['action'] ?? null;
@@ -53,6 +63,7 @@ if (
         exit;
     }
 }
+
 
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $activeTicket = null;
@@ -143,6 +154,7 @@ usort($tickets, function ($a, $b) {
 
                 <?php if ($activeTicketID): ?>
                     <form id="replyForm" class="mb-3">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                         <input type="hidden" name="ticketID" value="<?= $activeTicketID ?>">
                         <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2 bg-neutral-900 text-white border-neutral-700" placeholder="Type your message..." required></textarea>
                         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
@@ -162,7 +174,9 @@ usort($tickets, function ($a, $b) {
             </div>
         </div>
     </div>
-
+    <script>
+        window.csrfToken = "<?= $_SESSION['csrf_token'] ?>";
+    </script>
     <script src="../public/js/adminSupport.js" defer></script>
 </body>
 

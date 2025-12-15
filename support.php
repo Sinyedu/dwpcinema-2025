@@ -2,6 +2,14 @@
 session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/UserSupportController.php';
+require_once __DIR__ . '/includes/csrf.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_validate($_POST['csrf_token'] ?? null)) {
+        echo json_encode(['success' => false, 'error' => 'Invalid CSRF token']);
+        exit;
+    }
+}
 
 $pdo = Database::getInstance();
 $ctrl = new UserSupportController($pdo);
@@ -103,6 +111,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
 
         <section class="mb-8">
             <form id="createTicketForm" class="bg-neutral-800 p-6 rounded shadow space-y-4">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                 <h2 class="text-xl font-semibold text-white">Create New Ticket</h2>
                 <select name="subject" id="subjectSelect" class="w-full p-2 border rounded text-black" required>
                     <option value="" disabled selected class="text-gray-400">Select a subject</option>
@@ -157,6 +166,7 @@ $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
                 </div>
 
                 <form id="replyForm">
+                    <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                     <textarea id="newMessage" rows="3" class="w-full bg-neutral-800 p-2 rounded mb-2 text-white" placeholder="Type your message..." required></textarea>
                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Send</button>
                 </form>

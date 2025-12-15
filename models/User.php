@@ -113,6 +113,11 @@ class User
         return $stmt->execute([$firstName, $lastName, $email, $avatar, $userID]);
     }
 
+    public function deleteUser(int $userID): bool
+    {
+        return $this->deactivateUser($userID);
+    }
+
     public function deactivateUser(int $userID): bool
     {
         $stmt = $this->pdo->prepare("
@@ -128,15 +133,6 @@ class User
         $stmt = $this->pdo->prepare("
             UPDATE {$this->table} 
             SET isActive = 1 
-            WHERE userID = ?
-        ");
-        return $stmt->execute([$userID]);
-    }
-
-    public function deleteUser($userID)
-    {
-        $stmt = $this->pdo->prepare("
-            DELETE FROM {$this->table} 
             WHERE userID = ?
         ");
         return $stmt->execute([$userID]);

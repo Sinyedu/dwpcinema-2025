@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once __DIR__ . '/includes/csrf.php';
 require_once __DIR__ . '/classes/Database.php';
 require_once "controllers/UserController.php";
 $pdo = Database::getInstance();
@@ -7,12 +9,16 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($controller->register($_POST)) {
-        $success = "Registration successful! You can now log in.";
-        header("Location: login.php");
-        exit;
+
+    if (!csrf_validate($_POST['csrf_token'] ?? null)) {
+        $error = "Invalid CSRF token.";
     } else {
-        $error = "Registration failed. Maybe the email is already used.";
+        if ($controller->register($_POST)) {
+            header("Location: login.php");
+            exit;
+        } else {
+            $error = "Registration failed. Maybe the email is already used.";
+        }
     }
 }
 ?>
@@ -39,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
             <div>
                 <label class="block text-white mb-1" for="firstName">First Name</label>
                 <input id="firstName" type="text" name="firstName" placeholder="John" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
