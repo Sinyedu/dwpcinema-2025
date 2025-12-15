@@ -26,7 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const messages = await fetchJSON(
       `support.php?ticketID=${ticketID}&fetchMessages=1`,
-      { headers: { "X-Requested-With": "XMLHttpRequest" } }
+      {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRF-Token": csrfToken,
+        },
+      }
     );
 
     if (!messages || !Array.isArray(messages)) {
@@ -43,12 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     messageBox.scrollTop = messageBox.scrollHeight;
   }
-
   async function pollUnread() {
     if (!supportUnreadBadge) return;
 
     const data = await fetchJSON("support.php?fetchUnreadCount=1", {
-      headers: { "X-Requested-With": "XMLHttpRequest" },
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRF-Token": csrfToken,
+      },
     });
 
     if (!data) return;
