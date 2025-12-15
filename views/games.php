@@ -10,7 +10,7 @@ require_once "../controllers/GameController.php";
 require_once __DIR__ . '/../classes/Database.php';
 
 $pdo = Database::getInstance();
-
+$gameController = new GameController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
