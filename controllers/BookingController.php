@@ -25,6 +25,11 @@ class BookingController
         return $this->bookingModel->getAll();
     }
 
+    public function getLatestBookings(int $limit = 10): array
+    {
+        return $this->bookingModel->getLatest($limit);
+    }
+
     public function getBookingById(int $bookingID): ?array
     {
         return $this->bookingModel->getById($bookingID);

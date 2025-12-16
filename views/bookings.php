@@ -37,7 +37,7 @@ $bookings = $bookingController->getAllBookings();
             <h1 class="text-2xl text-white font-semibold">Bookings</h1>
             <a href="admin_dashboard.php"
                 class="text-sm text-blue-500 hover:underline">
-                ← Back to dashboard
+                Back to dashboard
             </a>
         </header>
 
