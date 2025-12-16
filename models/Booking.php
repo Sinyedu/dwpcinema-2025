@@ -68,11 +68,11 @@ class Booking
     public function getLatest(int $limit = 10): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT *
-            FROM vw_user_bookings
-            ORDER BY bookingDate DESC
-            LIMIT ?
-        ");
+        SELECT *
+        FROM vw_user_bookings
+        ORDER BY bookingDate DESC
+        LIMIT :limit
+    ");
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
