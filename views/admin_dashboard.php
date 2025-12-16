@@ -102,25 +102,24 @@ $openingHours = $openingHoursController->getAll();
                 <h2 class="text-gray-400 text-sm uppercase mb-2">Total Bookings</h2>
                 <p class="text-3xl font-bold text-white"><?= $totalBookings ?></p>
             </div>
-
-            <form method="POST">
-                <?php foreach ($openingHours as $h): ?>
-                    <div class="mb-4">
-                        <h4 class="text-white font-semibold"><?= htmlspecialchars($h['dayOfWeek']) ?></h4>
-                        <label>
-                            <input type="time" name="days[<?= $h['dayOfWeek'] ?>][open]" value="<?= htmlspecialchars($h['openTime']) ?>">
-                        </label>
-                        <label>
-                            <input type="time" name="days[<?= $h['dayOfWeek'] ?>][close]" value="<?= htmlspecialchars($h['closeTime']) ?>">
-                        </label>
-                        <label>
-                            Closed:
-                            <input type="checkbox" name="days[<?= $h['dayOfWeek'] ?>][closed]" value="1" <?= $h['isClosed'] ? 'checked' : '' ?>>
-                        </label>
-                    </div>
-                <?php endforeach; ?>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Update Opening Hours</button>
-            </form>
+            <div class="bg-neutral-800 p-6 rounded-lg shadow mb-6">
+                <h2 class="text-white text-lg font-semibold mb-4">Opening Hours</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <?php foreach ($openingHours as $h): ?>
+                        <div class="bg-neutral-700 rounded p-3 text-center">
+                            <span class="block font-medium text-white"><?= htmlspecialchars($h['dayOfWeek']) ?></span>
+                            <?php if ($h['isClosed']): ?>
+                                <span class="text-red-400 font-semibold">Closed</span>
+                            <?php else: ?>
+                                <span class="text-gray-300"><?= htmlspecialchars($h['openTime']) ?> - <?= htmlspecialchars($h['closeTime']) ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="opening_hours.php" class="text-blue-500 hover:underline">Manage Opening Hours</a>
+                </div>
+            </div>
         </section>
 
         <h2 class="text-xl text-white font-semibold mb-6">Manage Content</h2>
