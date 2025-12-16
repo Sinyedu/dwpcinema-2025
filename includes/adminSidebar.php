@@ -16,7 +16,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a href="users.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'users.php' ? 'bg-neutral-500' : '' ?>">Manage Users</a>
         <a href="support.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'support.php' ? 'bg-neutral-500' : '' ?>">Manage Support Tickets</a>
         <a href="aboutus.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'aboutus.php' ? 'bg-neutral-500' : '' ?>">Manage About Us</a>
-        <a href="bookings.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'bookings.php' ? 'bg-neutral-500' : '' ?>">Bookings overview</a>
+        <a href="bookings.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'bookings.php' ? 'bg-neutral-500' : '' ?>">Bookings Overview</a>
 
         <div class="p-4 border-t border-gray-700">
             <a href="logout.php" class="block bg-red-600 hover:bg-red-500 text-center py-2 rounded">Logout</a>
