@@ -8,6 +8,7 @@ require_once "../controllers/NewsController.php";
 require_once "../controllers/BookingController.php";
 require_once "../models/Booking.php";
 require_once "../controllers/GameController.php";
+require_once __DIR__ . '/../controllers/LocationController.php';
 require_once __DIR__ . '/../controllers/OpeningHoursController.php';
 include __DIR__ . '/../includes/adminSidebar.php';
 
@@ -17,6 +18,7 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_login.php");
     exit;
 }
+$locationController = new LocationController($pdo);
 $bookingModel = new Booking($pdo);
 $bookingController = new BookingController($bookingModel);
 $adminController = new AdminController($pdo);
@@ -42,7 +44,7 @@ $totalBookings = $bookingController->getTotalBookingCount();
 $tournaments = $tournamentController->getAllTournaments();
 $news = $newsController->getAllNews();
 $games = $gameController->getAllGames();
-
+$locations = $locationController->getAllLocations();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($_POST['days'] as $day => $values) {
         $openingController->updateDay([
@@ -56,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $openingHours = $openingHoursController->getAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -118,6 +121,21 @@ $openingHours = $openingHoursController->getAll();
                 </div>
                 <div class="mt-4 text-center">
                     <a href="openinghours.php" class="text-blue-500 hover:underline">Manage Opening Hours</a>
+                </div>
+
+                <div class="bg-neutral-800 p-6 rounded-lg shadow mb-6">
+                    <h2 class="text-white text-lg font-semibold mb-4">Locations</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <?php foreach ($locations as $loc): ?>
+                            <div class="bg-neutral-700 rounded p-3 text-center">
+                                <span class="block font-medium text-white"><?= htmlspecialchars($loc['locationName']) ?></span>
+                                <span class="text-gray-300 text-sm"><?= htmlspecialchars($loc['city']) ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="admin_locations.php" class="text-blue-500 hover:underline">Manage Locations</a>
+                    </div>
                 </div>
             </div>
         </section>

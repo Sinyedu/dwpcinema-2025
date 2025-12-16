@@ -14,6 +14,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a href="tournaments.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'tournaments.php' ? 'bg-neutral-500' : '' ?>">Manage Tournaments</a>
         <a href="games.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'games.php' ? 'bg-neutral-500' : '' ?>">Manage Games</a>
         <a href="users.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'users.php' ? 'bg-neutral-500' : '' ?>">Manage Users</a>
+        <a href="openinghours.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'openinghours.php' ? 'bg-neutral-500' : '' ?>">Manage Opening Hours</a>
+        <a href="locations.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'locations.php' ? 'bg-neutral-500' : '' ?>">Manage Locations</a>
         <a href="support.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'support.php' ? 'bg-neutral-500' : '' ?>">Manage Support Tickets</a>
         <a href="aboutus.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'aboutus.php' ? 'bg-neutral-500' : '' ?>">Manage About Us</a>
         <a href="bookings.php" class="block px-4 py-2 rounded hover:bg-neutral-700 <?= $current_page === 'bookings.php' ? 'bg-neutral-500' : '' ?>">Bookings Overview</a>

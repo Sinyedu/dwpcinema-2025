@@ -4,7 +4,6 @@
             <h4 class="text-white font-semibold text-2xl mb-4">Opening Times</h4>
             <ul class="text-gray-300">
                 <?php
-                // Assuming $pdo is your PDO instance
                 $stmt = $pdo->query("SELECT dayOfWeek, openTime, closeTime, isClosed FROM OpeningHours ORDER BY FIELD(dayOfWeek, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')");
                 $hours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -56,6 +55,15 @@
                     </svg>
                 </a>
             </div>
+        </div>
+        <div class="md:w-1/3">
+            <h4 class="text-white font-semibold text-lg mb-4">Wanna meet us?</h4>
+            <?php
+            $locations = $locationController->getAllLocations();
+            foreach ($locations as $loc): ?>
+                <p class="text-gray-300 mb-1"><?= htmlspecialchars($loc['locationName']) ?></p>
+                <p class="text-gray-400 text-sm"><?= htmlspecialchars($loc['address']) ?>, <?= htmlspecialchars($loc['city']) ?> <?= htmlspecialchars($loc['postcode']) ?></p>
+            <?php endforeach; ?>
         </div>
     </div>
 

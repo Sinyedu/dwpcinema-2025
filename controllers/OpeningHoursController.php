@@ -10,13 +10,11 @@ class OpeningHoursController
         $this->model = new OpeningHours($pdo);
     }
 
-    // Get all opening hours
     public function getAll(): array
     {
         return $this->model->getAll();
     }
 
-    // Update a day's hours
     public function updateDay(array $data): bool
     {
         $day = $data['dayOfWeek'] ?? '';
