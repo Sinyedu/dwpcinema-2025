@@ -2,6 +2,8 @@
 session_start();
 include __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/controllers/LocationController.php';
+
 
 $pdo = Database::getInstance();
 
@@ -31,6 +33,8 @@ $stmt2 = $pdo->query("
     LIMIT 3
 ");
 $news = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+$locationController = new LocationController($pdo);
+$locations = $locationController->getAllLocations();
 ?>
 
 <!DOCTYPE html>
