@@ -3,6 +3,10 @@ session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/UserSupportController.php';
 require_once __DIR__ . '/includes/csrf.php';
+require_once __DIR__ . '/controllers/LocationController.php';
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_validate($_POST['csrf_token'] ?? null)) {
@@ -86,6 +90,7 @@ unset($t);
 
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
+$locations = (new LocationController($pdo))->getAllLocations();
 ?>
 <!DOCTYPE html>
 <html lang="en">
