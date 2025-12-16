@@ -36,6 +36,7 @@ $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tickets = $adminSupport->getAllTickets();
 $bookings = $bookingController->getLatestBookings(5);
 $users = $adminController->getAllUsers();
+$totalBookings = $bookingController->getTotalBookingCount();
 $tournaments = $tournamentController->getAllTournaments();
 $news = $newsController->getAllNews();
 $games = $gameController->getAllGames();
@@ -72,6 +73,18 @@ $games = $gameController->getAllGames();
             <div class="bg-neutral-800 p-6 rounded-lg shadow text-center">
                 <h2 class="text-gray-400 text-sm uppercase mb-2">Registered Users</h2>
                 <p class="text-3xl font-bold text-white"><?= count($users) ?></p>
+            </div>
+            <div class="bg-neutral-800 p-6 rounded-lg shadow text-center">
+                <h2 class="text-gray-400 text-sm uppercase mb-2">Games</h2>
+                <p class="text-3xl font-bold text-white"><?= count($games) ?></p>
+            </div>
+            <div class="bg-neutral-800 p-6 rounded-lg shadow text-center">
+                <h2 class="text-gray-400 text-sm uppercase mb-2">Support Tickets</h2>
+                <p class="text-3xl font-bold text-white"><?= count($tickets) ?></p>
+            </div>
+            <div class="bg-neutral-800 p-6 rounded-lg shadow text-center">
+                <h2 class="text-gray-400 text-sm uppercase mb-2">Total Bookings</h2>
+                <p class="text-3xl font-bold text-white"><?= $totalBookings ?></p>
             </div>
         </section>
 

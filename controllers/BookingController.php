@@ -25,6 +25,11 @@ class BookingController
         return $this->bookingModel->getAll();
     }
 
+    public function getTotalBookingCount(): int
+    {
+        return $this->bookingModel->getTotalCount();
+    }
+
     public function getLatestBookings(int $limit = 5): array
     {
         return $this->bookingModel->getLatest($limit);
