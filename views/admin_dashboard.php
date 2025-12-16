@@ -122,20 +122,19 @@ $openingHours = $openingHoursController->getAll();
                 <div class="mt-4 text-center">
                     <a href="openinghours.php" class="text-blue-500 hover:underline">Manage Opening Hours</a>
                 </div>
-
-                <div class="bg-neutral-800 p-6 rounded-lg shadow mb-6">
-                    <h2 class="text-white text-lg font-semibold mb-4">Locations</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <?php foreach ($locations as $loc): ?>
-                            <div class="bg-neutral-700 rounded p-3 text-center">
-                                <span class="block font-medium text-white"><?= htmlspecialchars($loc['locationName']) ?></span>
-                                <span class="text-gray-300 text-sm"><?= htmlspecialchars($loc['city']) ?></span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="mt-4 text-center">
-                        <a href="admin_locations.php" class="text-blue-500 hover:underline">Manage Locations</a>
-                    </div>
+            </div>
+            <div class="bg-neutral-800 p-6 rounded-lg shadow mb-6">
+                <h2 class="text-white text-lg font-semibold mb-4">Locations</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <?php foreach ($locations as $loc): ?>
+                        <div class="bg-neutral-700 rounded p-3 text-center">
+                            <span class="block font-medium text-white"><?= htmlspecialchars($loc['locationName']) ?></span>
+                            <span class="text-gray-300 text-sm"><?= htmlspecialchars($loc['city']) ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="admin_locations.php" class="text-blue-500 hover:underline">Manage Locations</a>
                 </div>
             </div>
         </section>
