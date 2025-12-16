@@ -138,7 +138,12 @@ $games = $gameController->getAllGames();
 
 
             <div class="bg-neutral-800 rounded-lg shadow overflow-x-auto">
-                <h2 class="text-xl text-white font-semibold mt-12 mb-6">Recent Bookings</h2>
+                <h2 class="text-xl text-white font-semibold mt-4 mb-6 text-center">Recent Bookings</h2>
+                <div class="flex justify-end px-6 mb-4">
+                    <a href="bookings.php" class="text-blue-500 hover:underline text-sm">
+                        View all bookings
+                    </a>
+                </div>
                 <table class="min-w-full text-sm text-left text-gray-300">
                     <thead class="bg-neutral-700 text-gray-200 uppercase text-xs">
                         <tr>
@@ -185,11 +190,6 @@ $games = $gameController->getAllGames();
                     </tbody>
                 </table>
 
-                <div class="p-4 text-right">
-                    <a href="bookings.php" class="text-blue-500 hover:underline text-sm">
-                        View all bookings →
-                    </a>
-                </div>
             </div>
 
 
