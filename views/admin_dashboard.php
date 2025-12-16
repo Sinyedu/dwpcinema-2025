@@ -117,7 +117,7 @@ $openingHours = $openingHoursController->getAll();
                     <?php endforeach; ?>
                 </div>
                 <div class="mt-4 text-center">
-                    <a href="opening_hours.php" class="text-blue-500 hover:underline">Manage Opening Hours</a>
+                    <a href="openinghours.php" class="text-blue-500 hover:underline">Manage Opening Hours</a>
                 </div>
             </div>
         </section>
