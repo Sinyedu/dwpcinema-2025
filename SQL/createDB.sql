@@ -452,3 +452,20 @@ INSERT INTO News (newsTitle, newsContent, newsAuthor, newsImage) VALUES
 ('Community Event: Meet the Pros', 'Fans can meet professional players and streamers during special Q&A sessions.', 'Admin', 'https://via.placeholder.com/600x400'),
 ('Summer Lineup Announced', 'Valorant Masters and Rocket League World Cup confirmed for this summer!', 'Admin', 'https://via.placeholder.com/600x400');
 
+
+INSERT INTO OpeningHours (dayOfWeek, openTime, closeTime, isClosed) VALUES
+('Monday', '10:00:00', '22:00:00', FALSE),
+('Tuesday', '10:00:00', '22:00:00', FALSE),
+('Wednesday', '10:00:00', '22:00:00', FALSE),
+('Thursday', '10:00:00', '22:00:00', FALSE),
+('Friday', '10:00:00', '23:00:00', FALSE),
+('Saturday', '10:00:00', '23:00:00', FALSE),
+('Sunday', '10:00:00', '21:00:00', FALSE);
+
+INSERT INTO AboutUs (aboutTitle, aboutContent, aboutFooter) VALUES
+('About Esports Cinema', 'Esports Cinema is the premier destination for esports enthusiasts, offering a unique blend of competitive gaming and cinematic experiences. Our state-of-the-art facilities are designed to provide fans with an immersive environment to watch live tournaments, screenings, and exclusive events.', '© 2024 Esports Cinema. All rights reserved.'),
+('Our Mission', 'Our mission is to foster a vibrant esports community by providing top-notch viewing experiences, promoting local talent, and hosting world-class events. We strive to be the go-to venue for gamers and fans alike, delivering unforgettable moments in the world of esports.', 'Join us in celebrating the passion and excitement of competitive gaming!'),
+('Our Team', 'Our dedicated team of esports enthusiasts, event organizers, and hospitality professionals work tirelessly to ensure that every visit to Esports Cinema is memorable. From curating exciting event lineups to providing exceptional customer service, we are committed to excellence in all that we do.', 'Meet the faces behind Esports Cinema and learn more about our journey.'),
+('Community Engagement', 'At Esports Cinema, we believe in the power of community. We actively engage with local gaming groups, schools, and organizations to promote esports and create opportunities for aspiring players. Through workshops, tournaments, and outreach programs, we aim to inspire the next generation of esports talent.', 'Get involved and be a part of our growing community!'),
+('Sustainability Initiatives', 'We are committed to sustainability and environmental responsibility. Esports Cinema implements eco-friendly practices such as energy-efficient lighting, waste reduction programs, and sustainable sourcing for our concessions. We believe that gaming and environmental stewardship can go hand in hand.', 'Learn more about our green initiatives and how we are making a difference.'),
+('Future Plans', 'Looking ahead, Esports Cinema plans to expand our facilities, introduce new technologies, and host even more high-profile esports events. We are excited about the future of esports and are dedicated to staying at the forefront of this dynamic industry.', 'Stay tuned for upcoming announcements and developments!');
