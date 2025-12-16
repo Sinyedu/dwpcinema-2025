@@ -65,7 +65,7 @@ $locations = $locationController->getAllLocations();
     <div class="flex-1 ml-64 p-8">
         <header class="flex justify-between items-center mb-8 border-b pb-4">
             <h1 class="text-2xl text-white font-semibold">Manage Locations</h1>
-            <a href="dashboard.php" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500 text-sm">Back to Dashboard</a>
+            <a href="admin_dashboard.php" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500 text-sm">Back to Dashboard</a>
         </header>
 
         <?php if ($success): ?>
