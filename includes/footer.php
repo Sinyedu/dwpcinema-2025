@@ -1,7 +1,25 @@
 <footer class="bg-neutral-900 text-white mt-16">
     <div class="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row md:justify-evenly md:items-start gap-12">
         <div class="md:w-1/3">
-            <h4 class="text-white font-semibold text-2xl mb-4">About Us</h4>
+            <h4 class="text-white font-semibold text-2xl mb-4">Opening Times</h4>
+            <ul class="text-gray-300">
+                <?php
+                // Assuming $pdo is your PDO instance
+                $stmt = $pdo->query("SELECT dayOfWeek, openTime, closeTime, isClosed FROM OpeningHours ORDER BY FIELD(dayOfWeek, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')");
+                $hours = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach ($hours as $h) {
+                    echo '<li class="mb-1">';
+                    echo htmlspecialchars($h['dayOfWeek']) . ': ';
+                    if ($h['isClosed']) {
+                        echo 'Closed';
+                    } else {
+                        echo date('H:i', strtotime($h['openTime'])) . ' - ' . date('H:i', strtotime($h['closeTime']));
+                    }
+                    echo '</li>';
+                }
+                ?>
+            </ul>
         </div>
 
         <div class="md:w-1/3">

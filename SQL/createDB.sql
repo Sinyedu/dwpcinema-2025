@@ -10,6 +10,13 @@ CREATE TABLE Game (
     gameGenre VARCHAR(50)
 );
 
+CREATE TABLE OpeningHours (
+    dayOfWeek ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') PRIMARY KEY,
+    openTime TIME NOT NULL,
+    closeTime TIME NOT NULL,
+    isClosed BOOLEAN DEFAULT FALSE
+);
+
 CREATE TABLE Hall (
     hallID INT PRIMARY KEY AUTO_INCREMENT,
     hallName VARCHAR(100) NOT NULL,

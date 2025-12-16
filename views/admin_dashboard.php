@@ -8,6 +8,7 @@ require_once "../controllers/NewsController.php";
 require_once "../controllers/BookingController.php";
 require_once "../models/Booking.php";
 require_once "../controllers/GameController.php";
+require_once __DIR__ . '/../controllers/OpeningHoursController.php';
 include __DIR__ . '/../includes/adminSidebar.php';
 
 $pdo = Database::getInstance();
@@ -25,6 +26,7 @@ $tournamentController = new TournamentController($pdo);
 $newsController = new NewsController($pdo);
 $gameController = new GameController($pdo);
 $adminSupport = new AdminSupportController($pdo);
+$openingHoursController = new OpeningHoursController($pdo);
 
 $reservationsStmt = $pdo->query("
     SELECT *
@@ -40,6 +42,20 @@ $totalBookings = $bookingController->getTotalBookingCount();
 $tournaments = $tournamentController->getAllTournaments();
 $news = $newsController->getAllNews();
 $games = $gameController->getAllGames();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    foreach ($_POST['days'] as $day => $values) {
+        $openingController->updateDay([
+            'dayOfWeek' => $day,
+            'openTime' => $values['open'],
+            'closeTime' => $values['close'],
+            'isClosed' => $values['closed'] ?? 0
+        ]);
+    }
+    $success = "Opening hours updated successfully!";
+}
+
+$openingHours = $openingHoursController->getAll();
 ?>
 
 <!DOCTYPE html>
@@ -86,6 +102,25 @@ $games = $gameController->getAllGames();
                 <h2 class="text-gray-400 text-sm uppercase mb-2">Total Bookings</h2>
                 <p class="text-3xl font-bold text-white"><?= $totalBookings ?></p>
             </div>
+
+            <form method="POST">
+                <?php foreach ($openingHours as $h): ?>
+                    <div class="mb-4">
+                        <h4 class="text-white font-semibold"><?= htmlspecialchars($h['dayOfWeek']) ?></h4>
+                        <label>
+                            <input type="time" name="days[<?= $h['dayOfWeek'] ?>][open]" value="<?= htmlspecialchars($h['openTime']) ?>">
+                        </label>
+                        <label>
+                            <input type="time" name="days[<?= $h['dayOfWeek'] ?>][close]" value="<?= htmlspecialchars($h['closeTime']) ?>">
+                        </label>
+                        <label>
+                            Closed:
+                            <input type="checkbox" name="days[<?= $h['dayOfWeek'] ?>][closed]" value="1" <?= $h['isClosed'] ? 'checked' : '' ?>>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Update Opening Hours</button>
+            </form>
         </section>
 
         <h2 class="text-xl text-white font-semibold mb-6">Manage Content</h2>
