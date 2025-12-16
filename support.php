@@ -90,7 +90,8 @@ unset($t);
 
 $activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $messages = $activeTicketID ? $ctrl->getMessages($activeTicketID) : [];
-$locations = (new LocationController($pdo))->getAllLocations();
+$locationController = new LocationController($pdo);
+$locations = $locationController->getAllLocations();
 ?>
 <!DOCTYPE html>
 <html lang="en">
