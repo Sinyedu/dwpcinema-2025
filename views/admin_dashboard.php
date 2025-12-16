@@ -179,7 +179,7 @@ $games = $gameController->getAllGames();
                                         <?= htmlspecialchars($b['seats']) ?>
                                     </td>
                                     <td class="px-4 py-3 font-semibold text-white">
-                                        <?= number_format($b['totalAmount'], 2) ?> kr.
+                                        <?= number_format($b['totalAmount'], 2) ?> $
                                     </td>
                                     <td class="px-4 py-3">
                                         <?= htmlspecialchars($b['bookingDate']) ?>
