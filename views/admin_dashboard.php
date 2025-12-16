@@ -34,7 +34,7 @@ $reservationsStmt = $pdo->query("
 ");
 $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tickets = $adminSupport->getAllTickets();
-$bookings = $bookingController->getLatestBookings(10);
+$bookings = $bookingController->getLatestBookings(5);
 $users = $adminController->getAllUsers();
 $tournaments = $tournamentController->getAllTournaments();
 $news = $newsController->getAllNews();

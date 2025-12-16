@@ -65,7 +65,7 @@ class Booking
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getLatest(int $limit = 10): array
+    public function getLatest(int $limit = 5): array
     {
         $stmt = $this->pdo->prepare("
         SELECT *
