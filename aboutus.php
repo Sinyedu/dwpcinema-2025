@@ -2,10 +2,13 @@
 session_start();
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/controllers/AboutUsController.php';
+require_once __DIR__ . '/controllers/LocationController.php';
 
 $pdo = Database::getInstance();
 $ctrl = new AboutUsController($pdo);
 $aboutItems = $ctrl->getAll();
+$locationController = new LocationController($pdo);
+$locations = $locationController->getAllLocations();
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +33,7 @@ $aboutItems = $ctrl->getAll();
                 <?php endif; ?>
             </section>
         <?php endforeach; ?>
+        <?php include __DIR__ . '/includes/footer.php'; ?>
     </main>
 </body>
 
