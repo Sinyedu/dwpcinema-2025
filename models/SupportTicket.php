@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../controllers/SecurityController.php';
 class SupportTicket
 {
     private PDO $pdo;
@@ -11,6 +12,8 @@ class SupportTicket
 
     public function createTicket(int $userID, string $subject, string $priority = 'medium'): int
     {
+        $subject = SecurityController::sanitizeInput($subject);
+
         $stmt = $this->pdo->prepare("
             INSERT INTO {$this->table} (userID, subject, priority)
             VALUES (:userID, :subject, :priority)

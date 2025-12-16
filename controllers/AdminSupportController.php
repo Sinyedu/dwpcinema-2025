@@ -38,6 +38,7 @@ class AdminSupportController
             return false;
         }
 
+        $message = SecurityController::sanitizeInput($message);
         return $this->model->addMessage($ticketID, $adminID, 'admin', $message);
     }
 

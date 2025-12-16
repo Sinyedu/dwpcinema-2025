@@ -44,8 +44,6 @@ class UserSupportController
         string $subject,
         string $message,
         string $priority = 'medium',
-        ?int $gameID = null,
-        ?int $showingID = null
     ): int {
         $subject = SecurityController::sanitizeInput($subject);
         $message = SecurityController::sanitizeInput($message);
@@ -58,7 +56,6 @@ class UserSupportController
             $userID,
             $subject,
             $priority,
-            $showingID
         );
 
         $this->model->addMessage($ticketID, $userID, 'user', $message);

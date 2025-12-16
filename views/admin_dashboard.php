@@ -5,6 +5,8 @@ require_once "../controllers/AdminController.php";
 require_once __DIR__ . '/../classes/Database.php';
 require_once "../controllers/TournamentController.php";
 require_once "../controllers/NewsController.php";
+require_once "../controllers/BookingController.php";
+require_once "../models/Booking.php";
 require_once "../controllers/GameController.php";
 include __DIR__ . '/../includes/adminSidebar.php';
 
@@ -14,7 +16,8 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: admin_login.php");
     exit;
 }
-
+$bookingModel = new Booking($pdo);
+$bookingController = new BookingController($bookingModel);
 $adminController = new AdminController($pdo);
 $reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY createdAt DESC");
 $reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,9 +25,16 @@ $tournamentController = new TournamentController($pdo);
 $newsController = new NewsController($pdo);
 $gameController = new GameController($pdo);
 $adminSupport = new AdminSupportController($pdo);
+
+$reservationsStmt = $pdo->query("
+    SELECT *
+    FROM ContactForm
+    WHERE category = 'Reservation'
+    ORDER BY createdAt DESC
+");
+$reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
 $tickets = $adminSupport->getAllTickets();
-
-
+$bookings = $bookingController->getAllBookings();
 $users = $adminController->getAllUsers();
 $tournaments = $tournamentController->getAllTournaments();
 $news = $newsController->getAllNews();
@@ -124,6 +134,62 @@ $games = $gameController->getAllGames();
                         </li>
                     <?php endforeach; ?>
                 </ul>
+            </div>
+
+
+            <div class="bg-neutral-800 rounded-lg shadow overflow-x-auto">
+                <h2 class="text-xl text-white font-semibold mt-12 mb-6">Recent Bookings</h2>
+                <table class="min-w-full text-sm text-left text-gray-300">
+                    <thead class="bg-neutral-700 text-gray-200 uppercase text-xs">
+                        <tr>
+                            <th class="px-4 py-3">ID</th>
+                            <th class="px-4 py-3">User</th>
+                            <th class="px-4 py-3">Showing</th>
+                            <th class="px-4 py-3">Seats</th>
+                            <th class="px-4 py-3">Total</th>
+                            <th class="px-4 py-3">Booked At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($bookings)): ?>
+                            <tr>
+                                <td colspan="6" class="px-4 py-6 text-center text-gray-400">
+                                    No bookings found.
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($bookings as $b): ?>
+                                <tr class="border-b border-neutral-700 hover:bg-neutral-700">
+                                    <td class="px-4 py-3"><?= $b['bookingID'] ?></td>
+                                    <td class="px-4 py-3">User #<?= $b['userID'] ?></td>
+                                    <td class="px-4 py-3">
+                                        <?= htmlspecialchars($b['showingDate']) ?>
+                                        <?= htmlspecialchars($b['showingTime']) ?>
+                                        <br>
+                                        <span class="text-gray-400">
+                                            <?= htmlspecialchars($b['hallName']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <?= htmlspecialchars($b['seats']) ?>
+                                    </td>
+                                    <td class="px-4 py-3 font-semibold text-white">
+                                        <?= number_format($b['totalAmount'], 2) ?> kr.
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <?= htmlspecialchars($b['bookingDate']) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
+                <div class="p-4 text-right">
+                    <a href="bookings.php" class="text-blue-500 hover:underline text-sm">
+                        View all bookings →
+                    </a>
+                </div>
             </div>
 
 
