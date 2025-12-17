@@ -12,6 +12,7 @@ SELECT t.tournamentID,
        t.tournamentName, 
        t.tournamentDescription, 
        t.startDate, 
+       t.isHidden,
        g.gameName,
        g.gameGenre,
        COUNT(s.showingID) AS upcomingShowings,
@@ -20,6 +21,7 @@ FROM Tournament t
 JOIN Game g ON t.gameID = g.gameID
 LEFT JOIN `Match` m ON m.tournamentID = t.tournamentID
 LEFT JOIN Showing s ON s.matchID = m.matchID AND s.showingDate >= CURDATE()
+WHERE t.isHidden = 0
 GROUP BY t.tournamentID
 ORDER BY t.startDate DESC
 LIMIT 3;
