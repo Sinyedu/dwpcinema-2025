@@ -47,8 +47,7 @@ $seats = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
 $tierColors = [
     'VIP' => 'bg-blue-400',
-    'Premium' => 'bg-green-400',
-    'Standard' => 'bg-gray-400'
+    'Standard' => 'bg-green-400'
 ];
 
 $total = $booking['totalAmount'];
