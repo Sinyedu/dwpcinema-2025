@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Minimal PSR-0-ish autoloader: ClassName -> classes|models|controllers/ClassName.php.
+ * Minimal PSR-0-ish autoloader: ClassName -> classes|models/ClassName.php.
  * Deliberately independent of Composer so the app runs where vendor/ is not deployed.
  */
 spl_autoload_register(static function (string $class): void {

@@ -5,9 +5,9 @@ $aboutModel = new AboutUs(db());
 if (is_post()) {
     require_csrf();
     $data = [
-        'aboutTitle' => trim((string)($_POST['aboutTitle'] ?? '')),
-        'aboutContent' => trim((string)($_POST['aboutContent'] ?? '')),
-        'aboutFooter' => trim((string)($_POST['aboutFooter'] ?? '')),
+        'aboutTitle' => post_str('aboutTitle'),
+        'aboutContent' => post_str('aboutContent'),
+        'aboutFooter' => post_str('aboutFooter'),
     ];
     $id = (int)($_POST['aboutID'] ?? 0);
 
@@ -27,14 +27,10 @@ $aboutItems = $aboutModel->getAll();
 $editItem = isset($_GET['edit']) ? $aboutModel->getById((int)$_GET['edit']) : null;
 $csrfToken = $csrf->token();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin About Us - DWP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin About Us - DWP';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

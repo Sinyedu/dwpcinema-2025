@@ -19,14 +19,10 @@ if (is_post()) {
 
 $users = $userModel->getAllUsers();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Users - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Users - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen ml-64">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

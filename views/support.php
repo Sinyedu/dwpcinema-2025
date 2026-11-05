@@ -5,7 +5,7 @@ require_admin();
 $desk = new SupportDesk(db());
 
 // ---- JSON endpoints used by public/js/adminSupport.js ----
-if (strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') {
+if (is_ajax()) {
     if (!is_post()) {
         json_response(['success' => false, 'error' => 'Invalid request'], 400);
     }

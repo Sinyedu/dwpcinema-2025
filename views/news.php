@@ -17,9 +17,9 @@ $cleanImage = static function (string $value): string {
 if (is_post()) {
     require_csrf();
     $data = [
-        'newsTitle' => trim((string)($_POST['newsTitle'] ?? '')),
-        'newsContent' => trim((string)($_POST['newsContent'] ?? '')),
-        'newsAuthor' => trim((string)($_POST['newsAuthor'] ?? '')),
+        'newsTitle' => post_str('newsTitle'),
+        'newsContent' => post_str('newsContent'),
+        'newsAuthor' => post_str('newsAuthor'),
         'newsImage' => $cleanImage((string)($_POST['newsImage'] ?? '')),
     ];
     $id = (int)($_POST['newsID'] ?? 0);
@@ -29,7 +29,7 @@ if (is_post()) {
     } elseif ($data['newsTitle'] === '' || $data['newsContent'] === '' || $data['newsAuthor'] === '') {
         flash('Title, content and author are required.');
     } else {
-        if (trim((string)($_POST['newsImage'] ?? '')) !== '' && $data['newsImage'] === '') {
+        if (post_str('newsImage') !== '' && $data['newsImage'] === '') {
             flash('Image must be an http(s) URL or a site path; it was left empty.');
         }
         isset($_POST['add']) ? $newsModel->create($data) : (isset($_POST['update']) ? $newsModel->update($id, $data) : null);
@@ -40,14 +40,10 @@ if (is_post()) {
 $news = $newsModel->getAll();
 $editNews = isset($_GET['edit']) ? $newsModel->getNewsById((int)$_GET['edit']) : null;
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin News - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin News - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

@@ -92,4 +92,19 @@ final class UserModelTest extends TestCase
 
         $this->assertArrayNotHasKey('passwordHash', $this->users->getAllUsers()[0]);
     }
+
+    public function testReservationContactAndCooldownTimestamp(): void
+    {
+        $this->users->register('Ada', 'L', 'ada@example.com', 'secret-pass');
+        $id = $this->users->authenticate('ada@example.com', 'secret-pass')['userID'];
+
+        $before = $this->users->getReservationContact($id);
+        $this->assertSame('ada@example.com', $before['userEmail']);
+        $this->assertNull($before['lastReservationAt']);
+
+        $this->users->touchLastReservation($id);
+
+        $this->assertNotNull($this->users->getReservationContact($id)['lastReservationAt']);
+        $this->assertNull($this->users->getReservationContact(999999));
+    }
 }

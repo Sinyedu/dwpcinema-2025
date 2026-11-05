@@ -7,14 +7,13 @@ $validTime = static fn($v) => is_string($v) && preg_match('/^([01]\d|2[0-3]):[0-
 
 if (is_post()) {
     require_csrf();
-    $text = static fn(string $k) => trim((string)($_POST[$k] ?? ''));
 
     if (isset($_POST['addTournament']) || isset($_POST['updateTournament'])) {
         $data = [
-            'tournamentName' => $text('tournamentName'),
-            'tournamentDescription' => $text('tournamentDescription'),
-            'startDate' => $text('startDate'),
-            'endDate' => $text('endDate'),
+            'tournamentName' => post_str('tournamentName'),
+            'tournamentDescription' => post_str('tournamentDescription'),
+            'startDate' => post_str('startDate'),
+            'endDate' => post_str('endDate'),
             'gameID' => (int)($_POST['gameID'] ?? 0),
         ];
         if ($data['tournamentName'] === '' || !$data['gameID'] || !$validDate($data['startDate']) || !$validDate($data['endDate']) || $data['endDate'] < $data['startDate']) {
@@ -30,9 +29,9 @@ if (is_post()) {
         $data = [
             'tournamentID' => (int)($_POST['tournamentID'] ?? 0),
             'gameID' => (int)($_POST['gameID'] ?? 0),
-            'matchName' => $text('matchName'),
-            'matchDate' => $text('matchDate'),
-            'matchTime' => $text('matchTime'),
+            'matchName' => post_str('matchName'),
+            'matchDate' => post_str('matchDate'),
+            'matchTime' => post_str('matchTime'),
             'hallID' => (int)($_POST['hallID'] ?? 0),
         ];
         if ($data['matchName'] === '' || !$data['tournamentID'] || !$data['gameID'] || !$data['hallID'] || !$validDate($data['matchDate']) || !$validTime($data['matchTime'])) {
@@ -50,14 +49,10 @@ $halls = $tournamentModel->getHalls();
 $matchesByTournament = $tournamentModel->getMatchesGrouped();
 $csrf_token = $csrf->token();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Tournaments - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Tournaments - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen ml-64 text-white">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

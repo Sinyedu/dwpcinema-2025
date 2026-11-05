@@ -3,14 +3,10 @@ require_once __DIR__ . '/../includes/bootstrap.php';
 require_admin();
 $bookings = (new Booking(db()))->getAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Bookings</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Manage Bookings';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen flex">
 

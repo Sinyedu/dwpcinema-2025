@@ -9,16 +9,21 @@ final class ReservationService
 {
     private const COOLDOWN_SECONDS = 3600;
 
-    public function __construct(private PDO $pdo, private array $emailConfig)
+    private User $users;
+    private Tournament $tournaments;
+    private ContactForm $submissions;
+
+    public function __construct(PDO $pdo, private array $emailConfig)
     {
+        $this->users = new User($pdo);
+        $this->tournaments = new Tournament($pdo);
+        $this->submissions = new ContactForm($pdo);
     }
 
     /** @return array{success: string, error: string} */
     public function submit(array $post, int $userID): array
     {
-        $stmt = $this->pdo->prepare('SELECT firstName, lastName, userEmail, lastReservationAt FROM `User` WHERE userID = ?');
-        $stmt->execute([$userID]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $this->users->getReservationContact($userID);
 
         if (!$user) {
             return ['success' => '', 'error' => 'User not found.'];
@@ -40,21 +45,19 @@ final class ReservationService
             return ['success' => '', 'error' => 'Your subject or message is too long.'];
         }
 
-        $tournamentStmt = $this->pdo->prepare('SELECT tournamentName FROM Tournament WHERE tournamentID = ?');
-        $tournamentStmt->execute([$tournamentID]);
-        $tournamentName = $tournamentStmt->fetchColumn();
-        if ($tournamentName === false) {
+        $tournamentName = $this->tournaments->getName($tournamentID);
+        if ($tournamentName === null) {
             return ['success' => '', 'error' => 'Please select a valid tournament.'];
         }
 
         try {
-            $this->sendMail($user, $subject, $message, (string)$tournamentName);
+            $this->sendMail($user, $subject, $message, $tournamentName);
         } catch (MailException $e) {
             error_log('Reservation mail failed: ' . $e->getMessage());
             return ['success' => '', 'error' => 'Your reservation could not be sent. Please try again later.'];
         }
 
-        (new ContactForm($this->pdo))->createSubmission([
+        $this->submissions->createSubmission([
             'firstName' => $user['firstName'],
             'lastName' => $user['lastName'],
             'userEmail' => $user['userEmail'],
@@ -62,7 +65,7 @@ final class ReservationService
             'message' => $message,
             'tournament' => $tournamentID,
         ]);
-        $this->pdo->prepare('UPDATE `User` SET lastReservationAt = NOW() WHERE userID = ?')->execute([$userID]);
+        $this->users->touchLastReservation($userID);
 
         return ['success' => 'Your reservation has been sent successfully!', 'error' => ''];
     }

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 
-$isAjax = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+$isAjax = is_ajax();
 
 if (!$auth->isUser()) {
     $isAjax ? json_response(['success' => false, 'error' => 'Please log in.'], 401) : require_user();

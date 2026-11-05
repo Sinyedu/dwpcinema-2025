@@ -13,14 +13,10 @@ $games = (new Game($pdo))->getAll();
 $locations = (new Location($pdo))->getAll();
 $openingHours = (new OpeningHours($pdo))->getAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Dashboard - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen flex">
 

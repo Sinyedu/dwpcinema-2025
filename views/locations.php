@@ -8,7 +8,7 @@ if (is_post()) {
     require_csrf();
     $data = [];
     foreach (['locationName', 'address', 'city', 'postcode', 'country'] as $field) {
-        $data[$field] = trim((string)($_POST[$field] ?? ''));
+        $data[$field] = post_str($field);
     }
     $action = $_POST['action'] ?? '';
     $id = (int)($_POST['locationID'] ?? 0);
@@ -34,14 +34,10 @@ if (is_post()) {
 
 $locations = $locationModel->getAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Locations - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Locations - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen flex">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

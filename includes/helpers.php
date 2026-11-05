@@ -24,3 +24,16 @@ function tournament_image(string $tournamentName, string $gameName, string $imgD
     }
     return null;
 }
+
+/** A trimmed text field from $_POST. Missing or non-string values (e.g. arrays) become ''. Never HTML-encodes. */
+function post_str(string $key): string
+{
+    $value = $_POST[$key] ?? '';
+    return is_string($value) ? trim($value) : '';
+}
+
+/** True for fetch()/XHR requests made by our own JavaScript (they send X-Requested-With). */
+function is_ajax(): bool
+{
+    return strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+}

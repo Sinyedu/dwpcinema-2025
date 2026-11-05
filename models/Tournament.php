@@ -71,6 +71,14 @@ class Tournament
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getName(int $id): ?string
+    {
+        $stmt = $this->pdo->prepare('SELECT tournamentName FROM Tournament WHERE tournamentID = ?');
+        $stmt->execute([$id]);
+        $name = $stmt->fetchColumn();
+        return $name === false ? null : (string)$name;
+    }
+
     public function create(array $data): bool
     {
         return $this->pdo->prepare('

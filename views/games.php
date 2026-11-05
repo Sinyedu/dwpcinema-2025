@@ -4,8 +4,8 @@ require_admin();
 $gameModel = new Game(db());
 if (is_post()) {
     require_csrf();
-    $name = trim((string)($_POST['gameName'] ?? ''));
-    $genre = trim((string)($_POST['gameGenre'] ?? ''));
+    $name = post_str('gameName');
+    $genre = post_str('gameGenre');
     $id = (int)($_POST['gameID'] ?? 0);
 
     try {
@@ -28,14 +28,10 @@ if (is_post()) {
 $games = $gameModel->getAll();
 $editGame = isset($_GET['edit']) ? $gameModel->getById((int)$_GET['edit']) : null;
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Games - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Games - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>

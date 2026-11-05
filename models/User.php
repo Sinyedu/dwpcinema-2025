@@ -76,6 +76,19 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+    /** Name, email and the time of the user's last reservation request (for the reservation cooldown). */
+    public function getReservationContact(int $userID): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT firstName, lastName, userEmail, lastReservationAt FROM User WHERE userID = ?');
+        $stmt->execute([$userID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function touchLastReservation(int $userID): void
+    {
+        $this->pdo->prepare('UPDATE User SET lastReservationAt = NOW() WHERE userID = ?')->execute([$userID]);
+    }
+
     /** @return bool false if the email already belongs to another user */
     public function updateUser(int $userID, string $firstName, string $lastName, string $email, string $avatar): bool
     {
