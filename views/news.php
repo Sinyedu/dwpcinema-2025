@@ -1,71 +1,52 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$newsModel = new News(db());
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-require_once __DIR__ . '/../classes/Database.php';
-require_once "../controllers/NewsController.php";
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
-}
-
-include __DIR__ . '/../includes/adminSidebar.php';
-
-$pdo = Database::getInstance();
-$newsController = new NewsController($pdo);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Invalid CSRF token!");
+/** Only http(s) URLs or site-relative paths are allowed as an image reference. */
+$cleanImage = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
     }
+    $isUrl = filter_var($value, FILTER_VALIDATE_URL) && preg_match('#^https?://#i', $value);
+    $isLocal = preg_match('#^(/|img/|public/)[^:]*$#', $value) === 1;
+    return ($isUrl || $isLocal) ? $value : '';
+};
 
+if (is_post()) {
+    require_csrf();
     $data = [
-        'newsTitle' => trim($_POST['newsTitle'] ?? ''),
-        'newsContent' => trim($_POST['newsContent'] ?? ''),
-        'newsAuthor' => trim($_POST['newsAuthor'] ?? ''),
-        'newsImage' => trim($_POST['newsImage'] ?? null)
+        'newsTitle' => post_str('newsTitle'),
+        'newsContent' => post_str('newsContent'),
+        'newsAuthor' => post_str('newsAuthor'),
+        'newsImage' => $cleanImage((string)($_POST['newsImage'] ?? '')),
     ];
-
-    if (isset($_POST['add'])) {
-        $newsController->createNews($data);
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        header("Location: news.php");
-        exit;
-    }
-
-    if (isset($_POST['update'])) {
-        $newsController->updateNews($_POST['newsID'], $data);
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        header("Location: news.php");
-        exit;
-    }
+    $id = (int)($_POST['newsID'] ?? 0);
 
     if (isset($_POST['delete'])) {
-        $newsController->deleteNews($_POST['newsID']);
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        header("Location: news.php");
-        exit;
+        $newsModel->delete($id);
+    } elseif ($data['newsTitle'] === '' || $data['newsContent'] === '' || $data['newsAuthor'] === '') {
+        flash('Title, content and author are required.');
+    } else {
+        if (post_str('newsImage') !== '' && $data['newsImage'] === '') {
+            flash('Image must be an http(s) URL or a site path; it was left empty.');
+        }
+        isset($_POST['add']) ? $newsModel->create($data) : (isset($_POST['update']) ? $newsModel->update($id, $data) : null);
     }
+    redirect('views/news.php');
 }
 
-$news = $newsController->getAllNews();
-$editNews = isset($_GET['edit']) ? $newsController->getNewsById((int)$_GET['edit']) : null;
+$news = $newsModel->getAll();
+$editNews = isset($_GET['edit']) ? $newsModel->getNewsById((int)$_GET['edit']) : null;
+?>
+<?php
+$pageTitle = 'Admin News - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin News - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
 <body class="bg-neutral-900 min-h-screen">
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="max-w-6xl mx-auto px-6 py-10">
 

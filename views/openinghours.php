@@ -1,41 +1,36 @@
 <?php
-session_start();
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../controllers/OpeningHoursController.php';
-include __DIR__ . '/../includes/adminSidebar.php';
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$hoursModel = new OpeningHours(db());
+$success = $error = '';
 
-$pdo = Database::getInstance();
-$openingController = new OpeningHoursController($pdo);
+if (is_post()) {
+    require_csrf();
+    $weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    $isTime = static fn($v) => is_string($v) && preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $v) === 1;
 
-$success = '';
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        foreach ($_POST['days'] as $day => $values) {
-            $openingController->updateDay([
-                'dayOfWeek' => $day,
-                'openTime' => $values['open'],
-                'closeTime' => $values['close'],
-                'isClosed' => isset($values['closed']) ? 1 : 0
-            ]);
+    foreach ((array)($_POST['days'] ?? []) as $day => $values) {
+        if (!in_array($day, $weekdays, true) || !is_array($values)) {
+            continue;
         }
-        $success = "Opening hours updated successfully!";
-    } catch (Exception $e) {
-        $error = "Error updating opening hours: " . $e->getMessage();
+        $closed = isset($values['closed']);
+        if (!$closed && (!$isTime($values['open'] ?? null) || !$isTime($values['close'] ?? null))) {
+            $error = "Please enter valid opening and closing times for $day.";
+            break;
+        }
+        $hoursModel->updateDay($day, (string)($values['open'] ?? '00:00'), (string)($values['close'] ?? '00:00'), $closed);
+    }
+    if (!$error) {
+        $success = 'Opening hours updated successfully!';
     }
 }
 
-$openingHours = $openingController->getAll();
+$openingHours = $hoursModel->getAll();
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard - Opening Hours</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Admin Dashboard - Opening Hours';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen flex">
 
@@ -56,6 +51,7 @@ $openingHours = $openingController->getAll();
         <?php endif; ?>
 
         <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<?= $csrf->field() ?>
             <?php foreach ($openingHours as $h): ?>
                 <div class="bg-neutral-800 rounded p-4 shadow hover:shadow-lg transition">
                     <h4 class="text-white font-semibold mb-3"><?= htmlspecialchars($h['dayOfWeek']) ?></h4>

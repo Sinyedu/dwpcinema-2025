@@ -1,95 +1,55 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+$desk = new SupportDesk(db());
 
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../controllers/AdminSupportController.php';
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../admin_login.php");
-    exit;
-}
-
-$pdo = Database::getInstance();
-$adminSupport = new AdminSupportController($pdo);
-$tickets = $adminSupport->getAllTickets();
-
-foreach ($tickets as &$t) {
-    $t['status'] = $adminSupport->getTicketStatus($t['ticketID']);
-}
-unset($t);
-
-if (
-    isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-) {
-    header('Content-Type: application/json');
-
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        echo json_encode(['success' => false, 'error' => 'Invalid CSRF token']);
-        exit;
+// ---- JSON endpoints used by public/js/adminSupport.js ----
+if (is_ajax()) {
+    if (!is_post()) {
+        json_response(['success' => false, 'error' => 'Invalid request'], 400);
     }
+    require_csrf();
 
     $ticketID = (int)($_POST['ticketID'] ?? 0);
     $action = $_POST['action'] ?? null;
-    $message = trim($_POST['message'] ?? '');
 
     try {
-        if ($action === 'close' && $ticketID) {
-            $success = $adminSupport->updateTicketStatus($ticketID, 'closed');
-            echo json_encode(['success' => $success, 'status' => 'closed']);
-            exit;
+        if (in_array($action, ['close', 'reopen'], true) && $ticketID) {
+            $status = $action === 'close' ? 'closed' : 'open';
+            $desk->setStatus($ticketID, $status);
+            json_response(['success' => true, 'status' => $status]);
         }
-
-        if ($action === 'reopen' && $ticketID) {
-            $success = $adminSupport->updateTicketStatus($ticketID, 'open');
-            echo json_encode(['success' => $success, 'status' => 'open']);
-            exit;
+        if (isset($_POST['message']) && $ticketID) {
+            $desk->replyAsAdmin($ticketID, $auth->adminId(), (string)$_POST['message']);
+            json_response(['success' => true]);
         }
-
-        if ($message && $ticketID) {
-            $success = $adminSupport->replyToTicket($ticketID, $_SESSION['admin_id'], $message);
-            echo json_encode(['success' => $success]);
-            exit;
-        }
-
-        echo json_encode(['success' => false, 'error' => 'Invalid request']);
-        exit;
-    } catch (Throwable $e) {
-        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-        exit;
+        json_response(['success' => false, 'error' => 'Invalid request'], 400);
+    } catch (SupportException $e) {
+        json_response(['success' => false, 'error' => $e->getMessage()], 422);
     }
 }
 
+// ---- Page ----
+$tickets = $desk->allTickets();
+$activeTicketID = filter_input(INPUT_GET, 'ticketID', FILTER_VALIDATE_INT) ?: ($tickets[0]['ticketID'] ?? 0);
 
-$activeTicketID = isset($_GET['ticketID']) ? (int)$_GET['ticketID'] : ($tickets[0]['ticketID'] ?? 0);
 $activeTicket = null;
 foreach ($tickets as $t) {
-    if ($t['ticketID'] === $activeTicketID) {
+    if ((int)$t['ticketID'] === (int)$activeTicketID) {
         $activeTicket = $t;
         break;
     }
 }
+$messages = $activeTicket ? $desk->messagesForAdmin((int)$activeTicketID) : [];
 
-$messages = $activeTicketID ? $adminSupport->getTicketMessages($activeTicketID) : [];
+// Highest priority first (stable for equal priorities).
+$order = ['high' => 1, 'medium' => 2, 'low' => 3];
+usort($tickets, fn($a, $b) => ($order[$a['priority']] ?? 4) <=> ($order[$b['priority']] ?? 4));
 
-usort($tickets, function ($a, $b) {
-    $order = ['high' => 1, 'medium' => 2, 'low' => 3];
-    return ($order[$a['priority']] ?? 4) - ($order[$b['priority']] ?? 4);
-});
+$pageTitle = 'Admin Support - DWP Cinema';
+include __DIR__ . '/../includes/head.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Support - DWP Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
 
 <body class="bg-neutral-900 text-white flex min-h-screen">
     <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
@@ -99,7 +59,7 @@ usort($tickets, function ($a, $b) {
 
         <header class="flex justify-between items-center mb-8 pb-4 border-b border-neutral-700">
             <h1 class="text-2xl font-semibold">Support Tickets</h1>
-            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 hover:bg-red-500 text-white text-sm">Logout</a>
+            <?= logout_button('Logout', 'px-4 py-2 rounded bg-red-600 hover:bg-red-500 text-white text-sm') ?>
         </header>
 
         <div class="grid md:grid-cols-3 gap-6">
@@ -118,19 +78,19 @@ usort($tickets, function ($a, $b) {
                             };
                         ?>
                             <li>
-                                <a href="?ticketID=<?= $t['ticketID'] ?>"
-                                    class="flex justify-between items-center p-2 rounded hover:bg-neutral-700 <?= $t['ticketID'] === $activeTicketID ? 'bg-neutral-700' : '' ?>">
+                                <a href="?ticketID=<?= (int)$t['ticketID'] ?>"
+                                    class="flex justify-between items-center p-2 rounded hover:bg-neutral-700 <?= (int)$t['ticketID'] === (int)$activeTicketID ? 'bg-neutral-700' : '' ?>">
                                     <div>
-                                        <div class="font-medium"><?= htmlspecialchars($t['subject']) ?></div>
+                                        <div class="font-medium"><?= e($t['subject']) ?></div>
                                         <div class="text-xs text-gray-400">
-                                            <?= htmlspecialchars($t['firstName'] . ' ' . $t['lastName']) ?> • <?= htmlspecialchars($t['status']) ?>
+                                            <?= e($t['firstName'] . ' ' . $t['lastName']) ?> • <?= e($t['status']) ?>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <span class="px-2 py-1 text-xs text-white rounded <?= $priorityColor ?>">
-                                            <?= ucfirst($t['priority']) ?>
+                                            <?= e(ucfirst($t['priority'])) ?>
                                         </span>
-                                        <span class="text-xs text-gray-400"><?= htmlspecialchars($t['updatedAt']) ?></span>
+                                        <span class="text-xs text-gray-400"><?= e($t['updatedAt']) ?></span>
                                     </div>
                                 </a>
                             </li>
@@ -142,21 +102,21 @@ usort($tickets, function ($a, $b) {
             <div class="col-span-2 bg-neutral-800 rounded shadow p-6 flex flex-col h-[600px]">
                 <h2 class="font-semibold text-lg mb-3">Messages</h2>
                 <div id="messageBox" class="flex-1 overflow-y-auto mb-3 px-3 py-2 bg-neutral-900 rounded border border-neutral-700"
-                    data-ticket-status="<?= htmlspecialchars($activeTicket['status'] ?? 'open') ?>">
+                    data-ticket-status="<?= e($activeTicket['status'] ?? 'open') ?>">
                     <?php foreach ($messages as $msg): ?>
                         <div class="mb-2 <?= $msg['senderRole'] === 'admin' ? 'text-red-400' : 'text-blue-400' ?>">
-                            <strong><?= htmlspecialchars(ucfirst($msg['senderRole'])) ?>:</strong>
-                            <?= htmlspecialchars($msg['message']) ?>
-                            <span class="text-gray-500 text-xs block"><?= $msg['createdAt'] ?></span>
+                            <strong><?= e(ucfirst($msg['senderRole'])) ?>:</strong>
+                            <?= e($msg['message']) ?>
+                            <span class="text-gray-500 text-xs block"><?= e($msg['createdAt']) ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
-                <?php if ($activeTicketID): ?>
+                <?php if ($activeTicket): ?>
                     <form id="replyForm" class="mb-3">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="ticketID" value="<?= $activeTicketID ?>">
-                        <textarea name="message" rows="3" class="w-full p-2 border rounded mb-2 bg-neutral-900 text-white border-neutral-700" placeholder="Type your message..." required></textarea>
+                        <?= $csrf->field() ?>
+                        <input type="hidden" name="ticketID" value="<?= (int)$activeTicketID ?>">
+                        <textarea name="message" rows="3" maxlength="5000" class="w-full p-2 border rounded mb-2 bg-neutral-900 text-white border-neutral-700" placeholder="Type your message..." required></textarea>
                         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                             Send Reply
                         </button>
@@ -175,7 +135,7 @@ usort($tickets, function ($a, $b) {
         </div>
     </div>
     <script>
-        window.csrfToken = "<?= $_SESSION['csrf_token'] ?>";
+        window.csrfToken = <?= json_encode($csrf->token()) ?>;
     </script>
     <script src="../public/js/adminSupport.js" defer></script>
 </body>

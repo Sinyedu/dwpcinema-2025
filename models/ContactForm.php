@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '../../controllers/SecurityController.php';
 
 class ContactForm
 {
@@ -45,11 +44,11 @@ class ContactForm
 
     public function createSubmission(array $data): bool
     {
-        $firstName    = SecurityController::sanitizeInput($data['firstName']);
-        $lastName     = SecurityController::sanitizeInput($data['lastName']);
-        $email        = SecurityController::sanitizeInput($data['userEmail']);
-        $category     = SecurityController::sanitizeInput($data['category']);
-        $message      = SecurityController::sanitizeInput($data['message']);
+        $firstName    = trim((string)$data['firstName']);
+        $lastName     = trim((string)$data['lastName']);
+        $email        = trim((string)$data['userEmail']);
+        $category     = trim((string)$data['category']);
+        $message      = trim((string)$data['message']);
         $tournamentID = isset($data['tournament']) && !empty($data['tournament']) ? (int)$data['tournament'] : null;
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

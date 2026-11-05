@@ -1,127 +1,61 @@
 <?php
-session_start();
-require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$tournamentModel = new Tournament(db());
+$validDate = static fn($v) => is_string($v) && ($d = DateTime::createFromFormat('Y-m-d', $v)) && $d->format('Y-m-d') === $v;
+$validTime = static fn($v) => is_string($v) && preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $v) === 1;
 
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
+if (is_post()) {
+    require_csrf();
+
+    if (isset($_POST['addTournament']) || isset($_POST['updateTournament'])) {
+        $data = [
+            'tournamentName' => post_str('tournamentName'),
+            'tournamentDescription' => post_str('tournamentDescription'),
+            'startDate' => post_str('startDate'),
+            'endDate' => post_str('endDate'),
+            'gameID' => (int)($_POST['gameID'] ?? 0),
+        ];
+        if ($data['tournamentName'] === '' || !$data['gameID'] || !$validDate($data['startDate']) || !$validDate($data['endDate']) || $data['endDate'] < $data['startDate']) {
+            flash('Please provide a name, a game, and a valid start and end date (end after start).');
+        } elseif (isset($_POST['addTournament'])) {
+            $tournamentModel->create($data);
+        } else {
+            $tournamentModel->update((int)($_POST['tournamentID'] ?? 0), $data);
+        }
+    } elseif (isset($_POST['toggleHideTournament'])) {
+        $tournamentModel->setHidden((int)($_POST['tournamentID'] ?? 0), (bool)(int)($_POST['isHidden'] ?? 0));
+    } elseif (isset($_POST['addMatch'])) {
+        $data = [
+            'tournamentID' => (int)($_POST['tournamentID'] ?? 0),
+            'gameID' => (int)($_POST['gameID'] ?? 0),
+            'matchName' => post_str('matchName'),
+            'matchDate' => post_str('matchDate'),
+            'matchTime' => post_str('matchTime'),
+            'hallID' => (int)($_POST['hallID'] ?? 0),
+        ];
+        if ($data['matchName'] === '' || !$data['tournamentID'] || !$data['gameID'] || !$data['hallID'] || !$validDate($data['matchDate']) || !$validTime($data['matchTime'])) {
+            flash('Please provide a match name, game, hall, and a valid date and time.');
+        } else {
+            $tournamentModel->addMatchWithShowing($data);
+        }
+    }
+    redirect('views/tournaments.php');
 }
 
-$pdo = Database::getInstance();
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrf_token = $_SESSION['csrf_token'];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die('Invalid CSRF token');
-    }
-
-    if (isset($_POST['addTournament'])) {
-        $stmt = $pdo->prepare("
-            INSERT INTO Tournament (tournamentName, tournamentDescription, startDate, endDate, gameID)
-            VALUES (:name, :description, :startDate, :endDate, :gameID)
-        ");
-        $stmt->execute([
-            ':name' => $_POST['tournamentName'],
-            ':description' => $_POST['tournamentDescription'],
-            ':startDate' => $_POST['startDate'],
-            ':endDate' => $_POST['endDate'],
-            ':gameID' => $_POST['gameID']
-        ]);
-        header("Location: tournaments.php");
-        exit;
-    }
-
-    if (isset($_POST['updateTournament'])) {
-        $stmt = $pdo->prepare("
-            UPDATE Tournament
-            SET tournamentName = :name,
-                tournamentDescription = :description,
-                startDate = :startDate,
-                endDate = :endDate,
-                gameID = :gameID
-            WHERE tournamentID = :id
-        ");
-        $stmt->execute([
-            ':name' => $_POST['tournamentName'],
-            ':description' => $_POST['tournamentDescription'],
-            ':startDate' => $_POST['startDate'],
-            ':endDate' => $_POST['endDate'],
-            ':gameID' => $_POST['gameID'],
-            ':id' => $_POST['tournamentID']
-        ]);
-        header("Location: tournaments.php");
-        exit;
-    }
-
-    if (isset($_POST['toggleHideTournament'])) {
-        $stmt = $pdo->prepare("UPDATE Tournament SET isHidden = :hidden WHERE tournamentID = :id");
-        $stmt->execute([
-            ':hidden' => $_POST['isHidden'],
-            ':id' => $_POST['tournamentID']
-        ]);
-        header("Location: tournaments.php");
-        exit;
-    }
-
-    if (isset($_POST['addMatch'])) {
-        $stmt = $pdo->prepare("
-            INSERT INTO `Match` (tournamentID, gameID, matchName, matchDate, matchTime, hallID)
-            VALUES (:tournamentID, :gameID, :matchName, :matchDate, :matchTime, :hallID)
-        ");
-        $stmt->execute([
-            ':tournamentID' => $_POST['tournamentID'],
-            ':gameID' => $_POST['gameID'],
-            ':matchName' => $_POST['matchName'],
-            ':matchDate' => $_POST['matchDate'],
-            ':matchTime' => $_POST['matchTime'],
-            ':hallID' => $_POST['hallID']
-        ]);
-
-        $matchID = $pdo->lastInsertId();
-
-        $stmt2 = $pdo->prepare("
-            INSERT INTO Showing (matchID, hallID, showingDate, showingTime)
-            VALUES (:matchID, :hallID, :date, :time)
-        ");
-        $stmt2->execute([
-            ':matchID' => $matchID,
-            ':hallID' => $_POST['hallID'],
-            ':date' => $_POST['matchDate'],
-            ':time' => $_POST['matchTime']
-        ]);
-
-        header("Location: tournaments.php");
-        exit;
-    }
-}
-
-$tournaments = $pdo->query("
-    SELECT t.*, g.gameName
-    FROM Tournament t
-    LEFT JOIN Game g ON t.gameID = g.gameID
-    ORDER BY t.startDate ASC
-")->fetchAll(PDO::FETCH_ASSOC);
-
-$games = $pdo->query("SELECT * FROM Game ORDER BY gameName ASC")->fetchAll(PDO::FETCH_ASSOC);
-$halls = $pdo->query("SELECT * FROM Hall ORDER BY hallName ASC")->fetchAll(PDO::FETCH_ASSOC);
-
-include __DIR__ . '/../includes/adminSidebar.php';
+$tournaments = $tournamentModel->getAll();
+$games = (new Game(db()))->getAllByName();
+$halls = $tournamentModel->getHalls();
+$matchesByTournament = $tournamentModel->getMatchesGrouped();
+$csrf_token = $csrf->token();
+?>
+<?php
+$pageTitle = 'Admin Tournaments - DWP Esports Cinema';
+include __DIR__ . '/../includes/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Tournaments - DWP Esports Cinema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
 <body class="bg-neutral-900 min-h-screen ml-64 text-white">
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
     <div class="max-w-6xl mx-auto px-6 py-10">
 
         <h1 class="text-2xl font-semibold mb-6">Manage Tournaments</h1>
@@ -167,9 +101,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
                 <p class="mb-2">Dates: <?= $t['startDate'] ?> - <?= $t['endDate'] ?></p>
 
                 <?php
-                $matchesStmt = $pdo->prepare("SELECT m.*, h.hallName FROM `Match` m LEFT JOIN Hall h ON m.hallID = h.hallID WHERE m.tournamentID = ? ORDER BY m.matchDate, m.matchTime");
-                $matchesStmt->execute([$t['tournamentID']]);
-                $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+                $matches = $matchesByTournament[$t['tournamentID']] ?? [];
                 ?>
 
                 <?php if ($matches): ?>

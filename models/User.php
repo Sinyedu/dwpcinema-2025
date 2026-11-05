@@ -1,140 +1,131 @@
 <?php
-require_once __DIR__ . '/../classes/Hasher.php';
+declare(strict_types=1);
 
 class User
 {
-    private $pdo;
-    private $table = "User";
+    private const SAFE_COLUMNS = 'userID, firstName, lastName, userEmail, isActive, lastActive, avatar';
 
-    public function __construct($pdo)
+    public function __construct(private PDO $pdo)
     {
-        $this->pdo = $pdo;
     }
 
-    public function emailExists($email)
+    public function emailExists(string $email, ?int $exceptUserID = null): bool
     {
-        $stmt = $this->pdo->prepare("
-            SELECT COUNT(*) 
-            FROM {$this->table} 
-            WHERE userEmail = ?
-        ");
-        $stmt->execute([$email]);
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM User WHERE userEmail = ? AND userID <> ?');
+        $stmt->execute([$email, $exceptUserID ?? 0]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function register($firstName, $lastName, $email, $password)
+    public function register(string $firstName, string $lastName, string $email, string $password): bool
     {
         if ($this->emailExists($email)) {
             return false;
         }
 
-        $hashedPw = PasswordHasher::hash($password);
-
-        $stmt = $this->pdo->prepare("
-            INSERT INTO {$this->table} 
-                (firstName, lastName, userEmail, passwordHash, isActive, lastActive)
-            VALUES (?, ?, ?, ?, 1, NULL)
-        ");
-
-        return $stmt->execute([$firstName, $lastName, $email, $hashedPw]);
+        try {
+            $stmt = $this->pdo->prepare('
+                INSERT INTO User (firstName, lastName, userEmail, passwordHash, isActive, lastActive)
+                VALUES (?, ?, ?, ?, 1, NULL)
+            ');
+            return $stmt->execute([$firstName, $lastName, $email, PasswordHasher::hash($password)]);
+        } catch (PDOException $e) {
+            if ($this->isUniqueViolation($e)) { // lost a race with a concurrent registration
+                return false;
+            }
+            throw $e;
+        }
     }
 
-    public function login($email, $password)
+    /**
+     * Verify credentials only. Whether the account may log in (active? admin?) is policy
+     * and lives in LoginService. Upgrades an outdated password hash on success.
+     */
+    public function authenticate(string $email, string $password): ?array
     {
-        $stmt = $this->pdo->prepare("
-            SELECT * 
-            FROM {$this->table} 
-            WHERE userEmail = ?
-        ");
+        $stmt = $this->pdo->prepare('SELECT * FROM User WHERE userEmail = ?');
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && PasswordHasher::verify($password, $user['passwordHash'])) {
-
-            $update = $this->pdo->prepare("
-                UPDATE {$this->table} 
-                SET lastActive = NOW() 
-                WHERE userID = ?
-            ");
-            $update->execute([$user['userID']]);
-
-            return $user;
+        if (!$user || !PasswordHasher::verify($password, $user['passwordHash'])) {
+            return null;
         }
 
-        return false;
+        if (PasswordHasher::needsRehash($user['passwordHash'])) {
+            $this->pdo->prepare('UPDATE User SET passwordHash = ? WHERE userID = ?')
+                ->execute([PasswordHasher::hash($password), $user['userID']]);
+        }
+
+        return $user;
     }
 
-    public function getAllUsers()
+    public function touchLastActive(int $userID): void
     {
-        $stmt = $this->pdo->prepare("
-            SELECT 
-                userID, 
-                firstName, 
-                lastName, 
-                userEmail,
-                isActive,
-                lastActive,
-                avatar
-            FROM {$this->table}
-            ORDER BY userID ASC
-        ");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->pdo->prepare('UPDATE User SET lastActive = NOW() WHERE userID = ?')->execute([$userID]);
+    }
+
+    public function getAllUsers(): array
+    {
+        return $this->pdo->query('SELECT ' . self::SAFE_COLUMNS . ' FROM User ORDER BY userID ASC')
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getUserById(int $userID): ?array
     {
-        $stmt = $this->pdo->prepare("
-            SELECT * 
-            FROM {$this->table} 
-            WHERE userID = ?
-        ");
+        $stmt = $this->pdo->prepare('SELECT ' . self::SAFE_COLUMNS . ' FROM User WHERE userID = ?');
         $stmt->execute([$userID]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function updateUser(
-        int $userID,
-        string $firstName,
-        string $lastName,
-        string $email,
-        string $avatar
-    ): bool {
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->table}
-            SET firstName = ?, 
-                lastName = ?, 
-                userEmail = ?, 
-                avatar = ?
-            WHERE userID = ?
-        ");
-
-        return $stmt->execute([$firstName, $lastName, $email, $avatar, $userID]);
-    }
-
-    public function deleteUser(int $userID): bool
+    /** Name, email and the time of the user's last reservation request (for the reservation cooldown). */
+    public function getReservationContact(int $userID): ?array
     {
-        return $this->deactivateUser($userID);
+        $stmt = $this->pdo->prepare('SELECT firstName, lastName, userEmail, lastReservationAt FROM User WHERE userID = ?');
+        $stmt->execute([$userID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+    public function touchLastReservation(int $userID): void
+    {
+        $this->pdo->prepare('UPDATE User SET lastReservationAt = NOW() WHERE userID = ?')->execute([$userID]);
+    }
+
+    /** @return bool false if the email already belongs to another user */
+    public function updateUser(int $userID, string $firstName, string $lastName, string $email, string $avatar): bool
+    {
+        if ($this->emailExists($email, $userID)) {
+            return false;
+        }
+
+        try {
+            return $this->pdo->prepare('
+                UPDATE User SET firstName = ?, lastName = ?, userEmail = ?, avatar = ? WHERE userID = ?
+            ')->execute([$firstName, $lastName, $email, $avatar, $userID]);
+        } catch (PDOException $e) {
+            if ($this->isUniqueViolation($e)) {
+                return false;
+            }
+            throw $e;
+        }
+    }
+
+    /** Accounts are deactivated, never hard-deleted (bookings and tickets reference them). */
     public function deactivateUser(int $userID): bool
     {
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->table} 
-            SET isActive = 0 
-            WHERE userID = ?
-        ");
-        return $stmt->execute([$userID]);
+        return $this->setActive($userID, 0);
     }
 
     public function activateUser(int $userID): bool
     {
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->table} 
-            SET isActive = 1 
-            WHERE userID = ?
-        ");
-        return $stmt->execute([$userID]);
+        return $this->setActive($userID, 1);
+    }
+
+    private function setActive(int $userID, int $active): bool
+    {
+        return $this->pdo->prepare('UPDATE User SET isActive = ? WHERE userID = ?')->execute([$active, $userID]);
+    }
+
+    private function isUniqueViolation(PDOException $e): bool
+    {
+        return ($e->errorInfo[0] ?? $e->getCode()) === '23000';
     }
 }

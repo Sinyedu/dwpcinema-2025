@@ -1,66 +1,39 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrfToken = $_SESSION['csrf_token'];
-
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../controllers/AboutUsController.php';
-
-$pdo = Database::getInstance();
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
-}
-
-$ctrl = new AboutUsController($pdo);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Invalid CSRF token!");
-    }
-
-    if (isset($_POST['add'])) {
-        $ctrl->create($_POST);
-        header("Location: aboutus.php");
-        exit;
-    }
-
-    if (isset($_POST['update'])) {
-        $ctrl->update($_POST['aboutID'], $_POST);
-        header("Location: aboutus.php");
-        exit;
-    }
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$aboutModel = new AboutUs(db());
+if (is_post()) {
+    require_csrf();
+    $data = [
+        'aboutTitle' => post_str('aboutTitle'),
+        'aboutContent' => post_str('aboutContent'),
+        'aboutFooter' => post_str('aboutFooter'),
+    ];
+    $id = (int)($_POST['aboutID'] ?? 0);
 
     if (isset($_POST['delete'])) {
-        $ctrl->delete($_POST['aboutID']);
-        header("Location: aboutus.php");
-        exit;
+        $aboutModel->delete($id);
+    } elseif ($data['aboutTitle'] === '' || $data['aboutContent'] === '') {
+        flash('Title and content are required.');
+    } elseif (isset($_POST['add'])) {
+        $aboutModel->create($data);
+    } elseif (isset($_POST['update'])) {
+        $aboutModel->update($id, $data);
     }
+    redirect('views/aboutus.php');
 }
 
-$aboutItems = $ctrl->getAll();
-$editItem = isset($_GET['edit']) ? $ctrl->getById((int)$_GET['edit']) : null;
-
-include __DIR__ . '/../includes/adminSidebar.php';
+$aboutItems = $aboutModel->getAll();
+$editItem = isset($_GET['edit']) ? $aboutModel->getById((int)$_GET['edit']) : null;
+$csrfToken = $csrf->token();
+?>
+<?php
+$pageTitle = 'Admin About Us - DWP';
+include __DIR__ . '/../includes/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin About Us - DWP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
 <body class="bg-neutral-900 min-h-screen">
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
     <div class="max-w-6xl mx-auto px-6 py-10">
 
         <h1 class="text-2xl text-white font-semibold mb-6">Manage About Us</h1>

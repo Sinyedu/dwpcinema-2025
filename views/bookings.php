@@ -1,35 +1,16 @@
 <?php
-session_start();
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../models/Booking.php';
-require_once __DIR__ . '/../controllers/BookingController.php';
-include __DIR__ . '/../includes/adminSidebar.php';
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
-}
-
-$pdo = Database::getInstance();
-
-$bookingModel = new Booking($pdo);
-$bookingController = new BookingController($bookingModel);
-
-$bookings = $bookingController->getAllBookings();
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$bookings = (new Booking(db()))->getAll();
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Bookings</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<?php
+$pageTitle = 'Manage Bookings';
+include __DIR__ . '/../includes/head.php';
+?>
 
 <body class="bg-neutral-900 min-h-screen flex">
 
-    <?php include "../includes/adminSidebar.php"; ?>
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">
 

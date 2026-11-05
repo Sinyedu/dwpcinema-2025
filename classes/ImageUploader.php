@@ -1,79 +1,92 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * Accepts an uploaded avatar image, validates it by content (not by client-supplied name),
+ * downsizes it, and re-encodes it (which strips any payload hidden in the original bytes).
+ *
+ * @throws RuntimeException with a user-safe message when the upload is refused
+ */
 class ImageUploader
 {
-    private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
-    private array $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
-    private int $maxSize;
+    private const TYPES = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+    ];
+
     private string $uploadDir;
     private int $maxWidth = 512;
     private int $maxHeight = 512;
 
-    public function __construct(string $uploadDir = __DIR__ . '/../public/uploads/avatars/', int $maxSize = 5242880)
+    public function __construct(string $uploadDir = __DIR__ . '/../public/uploads/avatars/', private int $maxSize = 5242880)
     {
-        $this->uploadDir = rtrim($uploadDir, '/') . '/';
-        $this->maxSize = $maxSize;
+        $this->uploadDir = rtrim($uploadDir, '/\\') . '/';
 
-        if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0755, true);
+        if (!is_dir($this->uploadDir) && !mkdir($this->uploadDir, 0755, true) && !is_dir($this->uploadDir)) {
+            throw new RuntimeException('Upload directory is not available.');
         }
     }
 
+    /** @return string path relative to public/, e.g. "uploads/avatars/1700000000_ab12cd34.png" */
     public function upload(array $file): string
     {
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception("File upload error (code {$file['error']}).");
+        if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('The file could not be uploaded.');
         }
-
         if ($file['size'] > $this->maxSize) {
-            throw new Exception("File too large. Maximum size is " . ($this->maxSize / 1024 / 1024) . "MB.");
+            throw new RuntimeException('File too large. Maximum size is ' . round($this->maxSize / 1024 / 1024, 1) . 'MB.');
         }
 
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->file($file['tmp_name']);
-        if (!in_array($mime, $this->allowedMime)) {
-            throw new Exception("Invalid file type.");
+        $mime = @(new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']); // false when unreadable
+        $ext = is_string($mime) ? (self::TYPES[$mime] ?? null) : null;
+        if ($ext === null) {
+            throw new RuntimeException('Invalid file type. Use a JPG, PNG or WebP image.');
         }
 
-        $safeName = preg_replace("/[^a-zA-Z0-9_\.-]/", "_", basename($file['name']));
-        $ext = strtolower(pathinfo($safeName, PATHINFO_EXTENSION));
-
-        if (!in_array($ext, $this->allowedExtensions)) {
-            throw new Exception("Unsupported file extension.");
+        $size = @getimagesize($file['tmp_name']);
+        if ($size === false || $size[0] < 1 || $size[1] < 1) {
+            throw new RuntimeException('That file is not a valid image.');
         }
-
-        [$width, $height] = getimagesize($file['tmp_name']);
-        $ratio = min($this->maxWidth / $width, $this->maxHeight / $height, 1);
-        $newWidth = (int)($width * $ratio);
-        $newHeight = (int)($height * $ratio);
+        [$width, $height] = $size;
 
         $image = match ($mime) {
-            'image/jpeg' => imagecreatefromjpeg($file['tmp_name']),
-            'image/png'  => imagecreatefrompng($file['tmp_name']),
-            'image/webp' => imagecreatefromwebp($file['tmp_name']),
-            default      => throw new Exception("Unsupported image type."),
+            'image/jpeg' => @imagecreatefromjpeg($file['tmp_name']),
+            'image/png' => @imagecreatefrompng($file['tmp_name']),
+            'image/webp' => @imagecreatefromwebp($file['tmp_name']),
         };
+        if ($image === false) {
+            throw new RuntimeException('That image could not be read.');
+        }
+
+        $ratio = min($this->maxWidth / $width, $this->maxHeight / $height, 1);
+        $newWidth = max(1, (int)($width * $ratio));
+        $newHeight = max(1, (int)($height * $ratio));
 
         $resized = imagecreatetruecolor($newWidth, $newHeight);
+        if ($mime === 'image/png' || $mime === 'image/webp') {
+            imagealphablending($resized, false);
+            imagesavealpha($resized, true);
+        }
         imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-        $newFileName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $targetPath = $this->uploadDir . $newFileName;
+        // Random server-chosen name; the client's filename is never used.
+        $fileName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $target = $this->uploadDir . $fileName;
 
-        switch ($mime) {
-            case 'image/jpeg':
-                imagejpeg($resized, $targetPath, 85);
-                break;
-            case 'image/png':
-                imagepng($resized, $targetPath, 6);
-                break;
-            case 'image/webp':
-                imagewebp($resized, $targetPath, 80);
-                break;
-        }
+        $saved = match ($mime) {
+            'image/jpeg' => imagejpeg($resized, $target, 85),
+            'image/png' => imagepng($resized, $target, 6),
+            'image/webp' => imagewebp($resized, $target, 80),
+        };
 
         imagedestroy($image);
         imagedestroy($resized);
 
-        return "uploads/avatars/" . $newFileName;
+        if (!$saved) {
+            throw new RuntimeException('The image could not be saved.');
+        }
+
+        return 'uploads/avatars/' . $fileName;
     }
 }

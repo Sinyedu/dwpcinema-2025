@@ -6,7 +6,9 @@
 Thumbs.db
 # Composer dependencies
 /vendor/
-
+.agents/
+.claude/
+CLAUDE.md
 # Config and credentials
 /config/config.php
 .env
@@ -23,3 +25,10 @@ admin/
 # Node / frontend builds (optional)
 node_modules/
 dist/
+# Agent skills
+docs/agents/
+.scratch/
+skills-lock.json
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/

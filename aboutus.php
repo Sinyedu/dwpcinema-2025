@@ -1,24 +1,11 @@
 <?php
-session_start();
-require_once __DIR__ . '/classes/Database.php';
-require_once __DIR__ . '/controllers/AboutUsController.php';
-require_once __DIR__ . '/controllers/LocationController.php';
+require_once __DIR__ . '/includes/bootstrap.php';
 
-$pdo = Database::getInstance();
-$ctrl = new AboutUsController($pdo);
-$aboutItems = $ctrl->getAll();
-$locationController = new LocationController($pdo);
-$locations = $locationController->getAllLocations();
+$aboutItems = (new AboutUs(db()))->getAll();
+
+$pageTitle = 'About Us - DWP';
+include __DIR__ . '/includes/head.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>About Us - DWP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
 
 <body class="bg-neutral-900 text-white">
     <?php include __DIR__ . '/includes/navbar.php'; ?>
@@ -26,15 +13,15 @@ $locations = $locationController->getAllLocations();
         <h1 class="text-3xl font-bold mb-8 text-center">About Us</h1>
         <?php foreach ($aboutItems as $item): ?>
             <section class="bg-neutral-800 p-6 rounded shadow mb-6">
-                <h2 class="text-xl font-semibold mb-2"><?= htmlspecialchars($item['aboutTitle']) ?></h2>
-                <p class="text-white mb-2"><?= nl2br(htmlspecialchars($item['aboutContent'])) ?></p>
+                <h2 class="text-xl font-semibold mb-2"><?= e($item['aboutTitle']) ?></h2>
+                <p class="text-white mb-2"><?= nl2br(e($item['aboutContent'])) ?></p>
                 <?php if ($item['aboutFooter']): ?>
-                    <p class="text-gray-200 text-sm"><?= htmlspecialchars($item['aboutFooter']) ?></p>
+                    <p class="text-gray-200 text-sm"><?= e($item['aboutFooter']) ?></p>
                 <?php endif; ?>
             </section>
         <?php endforeach; ?>
-        <?php include __DIR__ . '/includes/footer.php'; ?>
     </main>
+    <?php include __DIR__ . '/includes/footer.php'; ?>
 </body>
 
 </html>

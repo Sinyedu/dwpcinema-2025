@@ -1,0 +1,36 @@
+# Local development stack:  docker compose up --build   ->  http://localhost:8080
+# Admin portal: http://localhost:8080/admin_login.php  (admin@example.com / admin12345)
+services:
+  web:
+    build: ./docker
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: dwpcinemaDB
+      DB_USER: root
+      DB_PASSWORD: root
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
+      # Run once, in order, the first time the volume is created.
+      - ./SQL/createDB.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./SQL/migrations/001_support_message_is_read.sql:/docker-entrypoint-initdb.d/02-migrations.sql:ro
+      - ./docker/db/03-dev-users.sql:/docker-entrypoint-initdb.d/03-dev-users.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  dbdata:
