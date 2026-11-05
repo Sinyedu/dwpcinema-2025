@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Application settings. Uses config/config.php when present (production, see config.example.php);
+ * Application settings. Uses config/config.php when present (see config.example.php);
  * otherwise reads environment variables (Docker / CI).
  */
 final class Config
