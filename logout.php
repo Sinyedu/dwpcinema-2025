@@ -1,19 +1,11 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/bootstrap.php';
 
-unset($_SESSION['user_id'], $_SESSION['user_name']);
-unset($_SESSION['admin_id'], $_SESSION['admin_name']);
-
-session_destroy();
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
+// POST + CSRF only, so a third-party page can't log visitors out via a link/image.
+if (!is_post()) {
+    redirect('index.php');
 }
+require_csrf();
 
-header("Location: logged_out.php");
-exit;
-?>
+destroy_session();
+redirect('logged_out.php');

@@ -1,66 +1,18 @@
 <?php
-session_start();
-require_once __DIR__ . '/../controllers/AdminSupportController.php';
-require_once "../controllers/AdminController.php";
-require_once __DIR__ . '/../classes/Database.php';
-require_once "../controllers/TournamentController.php";
-require_once "../controllers/NewsController.php";
-require_once "../controllers/BookingController.php";
-require_once "../models/Booking.php";
-require_once "../controllers/GameController.php";
-require_once __DIR__ . '/../controllers/LocationController.php';
-require_once __DIR__ . '/../controllers/OpeningHoursController.php';
-include __DIR__ . '/../includes/adminSidebar.php';
-
-$pdo = Database::getInstance();
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
-}
-$locationController = new LocationController($pdo);
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$pdo = db();
 $bookingModel = new Booking($pdo);
-$bookingController = new BookingController($bookingModel);
-$adminController = new AdminController($pdo);
-$reservationsStmt = $pdo->query("SELECT * FROM ContactForm WHERE category = 'Reservation' ORDER BY createdAt DESC");
-$reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
-$tournamentController = new TournamentController($pdo);
-$newsController = new NewsController($pdo);
-$gameController = new GameController($pdo);
-$adminSupport = new AdminSupportController($pdo);
-$openingHoursController = new OpeningHoursController($pdo);
-
-$reservationsStmt = $pdo->query("
-    SELECT *
-    FROM ContactForm
-    WHERE category = 'Reservation'
-    ORDER BY createdAt DESC
-");
-$reservations = $reservationsStmt->fetchAll(PDO::FETCH_ASSOC);
-$tickets = $adminSupport->getAllTickets();
-$bookings = $bookingController->getLatestBookings(5);
-$users = $adminController->getAllUsers();
-$totalBookings = $bookingController->getTotalBookingCount();
-$tournaments = $tournamentController->getAllTournaments();
-$news = $newsController->getAllNews();
-$games = $gameController->getAllGames();
-$locations = $locationController->getAllLocations();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach ($_POST['days'] as $day => $values) {
-        $openingController->updateDay([
-            'dayOfWeek' => $day,
-            'openTime' => $values['open'],
-            'closeTime' => $values['close'],
-            'isClosed' => $values['closed'] ?? 0
-        ]);
-    }
-    $success = "Opening hours updated successfully!";
-}
-
-$openingHours = $openingHoursController->getAll();
-
+$bookings = $bookingModel->getLatest(5);
+$totalBookings = $bookingModel->getTotalCount();
+$users = (new User($pdo))->getAllUsers();
+$tickets = (new SupportDesk($pdo))->allTickets();
+$tournaments = (new Tournament($pdo))->getAll();
+$news = (new News($pdo))->getAll();
+$games = (new Game($pdo))->getAll();
+$locations = (new Location($pdo))->getAll();
+$openingHours = (new OpeningHours($pdo))->getAll();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,12 +24,12 @@ $openingHours = $openingHoursController->getAll();
 
 <body class="bg-neutral-900 min-h-screen flex">
 
-    <?php include "../includes/adminSidebar.php"; ?>
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="flex-1 ml-64 p-8">
         <header class="flex justify-between items-center mb-8 border-b pb-4">
             <h1 class="text-2xl text-white font-semibold">Admin Dashboard</h1>
-            <a href="logout.php" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm">Logout</a>
+            <?= logout_button("Logout", "px-4 py-2 rounded bg-red-600 text-white hover:bg-red-500 text-sm") ?>
         </header>
 
         <section class="grid md:grid-cols-3 gap-6 mb-10">

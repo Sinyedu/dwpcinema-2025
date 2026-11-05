@@ -1,51 +1,38 @@
 <?php
-class Showing {
-    private $pdo;
+declare(strict_types=1);
 
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
+class Showing
+{
+    public function __construct(private PDO $pdo)
+    {
     }
 
-    public function getAll($tournamentID = null) {
-        $sql = "
-            SELECT 
-                s.showingID,
-                s.showingDate,
-                s.showingTime,
-                h.hallName,
-                h.totalSeats,
-                m.tournamentID,
-                t.tournamentName,
-                (SELECT COUNT(*) FROM Booking b WHERE b.showingID = s.showingID) AS bookedSeats
-            FROM Showing s
-            JOIN Hall h ON s.hallID = h.hallID
-            JOIN `Match` m ON s.matchID = m.matchID
-            JOIN Tournament t ON m.tournamentID = t.tournamentID
-        ";
-
+    /** Upcoming showings of visible tournaments, optionally for one tournament, with seat counts. */
+    public function upcoming(?int $tournamentID = null): array
+    {
+        $where = "CONCAT(s.showingDate, ' ', s.showingTime) >= NOW() AND t.isHidden = 0";
         $params = [];
         if ($tournamentID) {
-            $sql .= " WHERE m.tournamentID = ?";
+            $where .= ' AND m.tournamentID = ?';
             $params[] = $tournamentID;
         }
 
-        $sql .= " ORDER BY s.showingDate, s.showingTime";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getById($showingID) {
         $stmt = $this->pdo->prepare("
-            SELECT s.showingID, s.showingDate, s.showingTime, h.hallName, h.totalSeats, m.tournamentID, t.tournamentName
+            SELECT s.showingID, s.showingDate, s.showingTime, h.hallName, h.totalSeats,
+                   m.tournamentID, t.tournamentName, m.matchName,
+                   IFNULL((
+                       SELECT COUNT(DISTINCT bs.seatID)
+                       FROM Booking_Seat bs JOIN Booking b ON bs.bookingID = b.bookingID
+                       WHERE b.showingID = s.showingID
+                   ), 0) AS bookedSeats
             FROM Showing s
             JOIN Hall h ON s.hallID = h.hallID
             JOIN `Match` m ON s.matchID = m.matchID
             JOIN Tournament t ON m.tournamentID = t.tournamentID
-            WHERE s.showingID = ?
+            WHERE $where
+            ORDER BY s.showingDate ASC, s.showingTime ASC
         ");
-        $stmt->execute([$showingID]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

@@ -1,54 +1,24 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$userModel = new User(db());
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+if (is_post()) {
+    require_csrf();
+    $userID = (int)($_POST['userID'] ?? 0);
+
+    if ($userID === $auth->adminId() && (isset($_POST['deactivate']) || isset($_POST['delete']))) {
+        flash('You cannot deactivate your own account.');
+    } elseif (isset($_POST['activate'])) {
+        $userModel->activateUser($userID);
+    } elseif (isset($_POST['deactivate']) || isset($_POST['delete'])) {
+        $userModel->deactivateUser($userID); // accounts are never hard-deleted
+    }
+    redirect('views/users.php');
 }
 
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '../../controllers/UserController.php';
-
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: admin_login.php");
-    exit;
-}
-
-
-$pdo = Database::getInstance();
-$userController = new UserController($pdo);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die('Invalid CSRF token');
-    }
-
-    $userID = (int)$_POST['userID'];
-
-    if (isset($_POST['deactivate'])) {
-        $userController->deactivateUser($userID);
-        header("Location: users.php");
-        exit;
-    }
-
-    if (isset($_POST['activate'])) {
-        $userController->activateUser($userID);
-        header("Location: users.php");
-        exit;
-    }
-
-    if (isset($_POST['delete'])) {
-        $userController->deleteUser($userID);
-        header("Location: users.php");
-        exit;
-    }
-}
-
-$users = $userController->listUsers();
-
-include __DIR__ . '/../includes/adminSidebar.php';
+$users = $userModel->getAllUsers();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,6 +29,7 @@ include __DIR__ . '/../includes/adminSidebar.php';
 </head>
 
 <body class="bg-neutral-900 min-h-screen ml-64">
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="max-w-7xl mx-auto px-6 py-10">
         <h1 class="text-3xl font-bold mb-6 text-white">Manage Users</h1>

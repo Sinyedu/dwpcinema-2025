@@ -1,58 +1,33 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/bootstrap.php';
+require_admin();
+$gameModel = new Game(db());
+if (is_post()) {
+    require_csrf();
+    $name = trim((string)($_POST['gameName'] ?? ''));
+    $genre = trim((string)($_POST['gameGenre'] ?? ''));
+    $id = (int)($_POST['gameID'] ?? 0);
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    try {
+        if (isset($_POST['delete'])) {
+            $gameModel->delete($id);
+        } elseif ($name === '') {
+            flash('Game name is required.');
+        } elseif (isset($_POST['add'])) {
+            $gameModel->create($name, $genre);
+        } elseif (isset($_POST['update'])) {
+            $gameModel->update($id, $name, $genre);
+        }
+    } catch (PDOException $e) {
+        error_log('games.php: ' . $e->getMessage());
+        flash('That game could not be deleted because tournaments still use it.');
+    }
+    redirect('views/games.php');
 }
 
-include __DIR__ . '/../includes/adminSidebar.php';
-require_once "../controllers/GameController.php";
-require_once __DIR__ . '/../classes/Database.php';
-
-$pdo = Database::getInstance();
-$gameController = new GameController($pdo);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Invalid CSRF token!");
-    }
-
-    if (isset($_POST['add'])) {
-        $data = [
-            'gameName' => $_POST['gameName'] ?? '',
-            'gameGenre' => $_POST['gameGenre'] ?? ''
-        ];
-        $gameController->createGame($data);
-        header("Location: games.php");
-        exit;
-    }
-
-    if (isset($_POST['update'])) {
-        $data = [
-            'gameName' => $_POST['gameName'] ?? '',
-            'gameGenre' => $_POST['gameGenre'] ?? ''
-        ];
-        $gameController->updateGame($_POST['gameID'], $data);
-        header("Location: games.php");
-        exit;
-    }
-
-    if (isset($_POST['delete'])) {
-        $gameController->deleteGame($_POST['gameID']);
-        header("Location: games.php");
-        exit;
-    }
-}
-
-$games = $gameController->getAllGames();
-
-$editGame = null;
-if (isset($_GET['edit'])) {
-    $editGame = $gameController->getGameById((int)$_GET['edit']);
-}
+$games = $gameModel->getAll();
+$editGame = isset($_GET['edit']) ? $gameModel->getById((int)$_GET['edit']) : null;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,6 +38,7 @@ if (isset($_GET['edit'])) {
 </head>
 
 <body class="bg-neutral-900 min-h-screen">
+    <?php include __DIR__ . '/../includes/adminSidebar.php'; ?>
 
     <div class="max-w-6xl mx-auto px-6 py-10">
 
